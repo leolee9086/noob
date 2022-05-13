@@ -136,7 +136,6 @@ module.exports = class {
 
   async 渲染块id(blockid) {
     let data = {}; //处理中文乱码
-    if (!this.使用导出接口) {
       data.id = blockid;
       let url1 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/filetree/getDoc`;
       console.log(this.单块分享,'jjj')
@@ -225,25 +224,7 @@ module.exports = class {
       }
 
       return this.渲染模板(content);
-    }
-    if (blockid) {
-      data.id = blockid;
-      let url1 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/export/exportHTML`;
-      let data1 = {
-        id: blockid,
-        pdf: false,
-        savePath: `${this.workspace.replace("\\", "/")}/temp/export/`,
-      };
-      let res1 = await this.siyuandata(url1, data1);
-      let content = res1.data.content;
-      let tempdiv = document.createElement("div");
-      tempdiv.innerHTML = content;
-
-      tempdiv = this.parseblockref(tempdiv);
-      content = tempdiv.innerHTML;
-
-      return this.渲染模板(content);
-    }
+    
   }
   async siyuandata(url, data) {
     let resData = null;
