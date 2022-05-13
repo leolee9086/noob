@@ -1,0 +1,32 @@
+/*星标属性*/
+/*为了文件少点，只用了一张图片作为星标的源，你其实也可以自己改一下*/
+*[custom-star="1"]{
+    background-image:url(star5.svg );
+    background-size:50px;
+    background-repeat:no-repeat;
+    background-position:-40px 0%;
+    }
+    *[custom-star="2"]{ 
+    background-image:url(star5.svg );
+    background-size:50px;
+    background-repeat:no-repeat;
+    background-position:-30px 0%;
+    }
+    *[custom-star="3"]{ 
+    background-image:url(star5.svg );
+    background-size:50px;
+    background-repeat:no-repeat;
+    background-position:-20px 0%;
+    }
+    *[custom-star="4"]{ 
+    background-image:url(star5.svg );
+    background-size:50px;
+    background-repeat:no-repeat;
+    background-position:-10px 0%;
+    }
+    *[custom-star="5"]{ 
+    background-image:url(star5.svg );
+    background-size:50px;
+    background-repeat:no-repeat;
+    background-position:0% 0%;
+    }

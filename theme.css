@@ -1,0 +1,7 @@
+@import url(../daylight/theme.css);
+@media print{
+    div[data-type="NodeThematicBreak"]{
+        page-break-after:always;
+        display:none !important
+    }
+}
