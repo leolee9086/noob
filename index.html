@@ -79,6 +79,14 @@
                             <el-switch active-text="暴露附件" v-model="config.暴露附件" />
                         </el-col>
                     </el-row>
+                    
+                </el-form-item>
+                <el-form-item label="搜索设置" v-if="!config.有限分享">
+                    <el-row>
+                        <el-col :span="8">
+                            <el-switch active-text="允许搜索" v-model="config.允许搜索" />
+                        </el-col>
+                    </el-row>
                 </el-form-item>
                 <el-form-item label="思源图床账号id">
                     <el-input v-model="config.思源账号id" />
@@ -132,6 +140,9 @@
             },
             保存() {
                 const formData = new FormData()
+                if(this.congfig.有限分享){
+                    this.config.允许搜索=false
+                }
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], {type: 'text/json'})
 

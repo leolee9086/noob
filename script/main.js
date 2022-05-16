@@ -56,24 +56,8 @@ if (window.require) {
   console.log(button);
   button.addEventListener("click", 点击打开服务器设置窗口);
 }
-/*function 更新文档缓存(){
-  let url =  `http://192.168.0.9/api/updatecache`
-  let data={id:"20200812220555-lj3enxa"}
-  window
-      .fetch(url, {
-        body: JSON.stringify(data),
-        method: "POST",
-        headers: {
-          Authorization: `Token ${siyuan.config.accessAuthCode}`,
-        },
-      })
-      .then(function (response) {
-        resData = response.json();
-      });
-}
-window.addEventListener('click',更新文档缓存)
-*/
-
+const watchjs = require (`${workspaceDir}/conf/appearance/themes/naive/config/watch.js`)
+const watch=watchjs.监听路径列表(workspaceDir)
 if (window.require) {
   const fs = require("fs");
 
@@ -81,9 +65,13 @@ if (window.require) {
     "/conf/appearance/themes/naive/script/server");
   console.log(userId);
   window.publishserver = server.创建服务器(workspaceDir, userId);
-  const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
-
-  fs.watch(cusoptionpath, async function () {
+  for (let path  in watch){
+    fs.watch(watch[path], {recursive:true},async function () {
+      window.location.reload();
+    });
+  }
+  fs.watch(`${workspaceDir}/conf/appearance/themes/naive/config/watch.js`, async function () {
     window.location.reload();
   });
+
 }

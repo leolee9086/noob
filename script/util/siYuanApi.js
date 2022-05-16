@@ -3,7 +3,11 @@ async function 向思源请求数据(url,apitoken,data){
     await fetch(url,{
         body: JSON.stringify(data),
         method:'POST',
-        headers:{'Authorization': 'Token '+ apitoken },
+        headers:{
+            'Authorization': 'Token '+ apitoken,
+            'user-agent': 'Mozilla Mobile/4.0 MDN Example',
+ 
+        },
     }).then(function(response){resData= response.json()})
     return resData
 }
@@ -175,8 +179,8 @@ async function 以id获取文档块markdown(思源伺服ip,apitokn,文档id){
     //文档hepath与Markdown 内容
 }
 
-async function 列出指定路径下文档(思源伺服ip,apitokn,路径){
-    let data = {"path":路径}
+async function 列出指定路径下文档(思源伺服ip,apitokn,notebook,path,sort){
+    let data = {"notebook":notebook,"path":path,"sort":sort}
     let url = 'http://'+思源伺服ip+'/api/filetree/listDocsByPath'
     return 向思源请求数据(url,apitokn,data)
     //文档hepath与Markdown 内容
@@ -314,7 +318,6 @@ async function 生成文档树(思源伺服ip,apitoken){
         block=>{
         block.pathArray=block.path.split("/")
         block.pathArray=block.pathArray.slice(1,block.pathArray.length-1)
-       
     }
     )
     全文档数据.forEach(

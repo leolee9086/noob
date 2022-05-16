@@ -14,6 +14,7 @@ module.exports = {
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
     console.log(cusoption);
     let realoption = this.生成默认设置(cusoption,workspaceDir,userId)
+
     console.log(cusoption);
     console.log(workspaceDir)
   
@@ -23,7 +24,14 @@ module.exports = {
     this.渲染器= 渲染器
 
     const express1 = require("express");
+  
     const app =  express1();
+    //var bodyParser = require('body-parser')
+
+    //app.use(bodyParser.urlencoded({ extended: false }))
+    //app.use(express1.json());
+
+   //app.use(bodyParser.json())
     const port = realoption.发布端口;
     let 空页面 =''
     console.log(realoption.空页面内容.slice(5,realoption.空页面内容.length),6)
@@ -51,7 +59,20 @@ module.exports = {
         else{res.sendStatus(404)}
       })
    
-   
+      app.post("/api/notebook/lsNotebooks",  (req, res) => {
+        if(realoption.允许搜索&&!realoption.有限分享){
+        console.log(req)
+        this.转发请求(req,res,true)}
+      });
+      app.post("/api/filetree/listDocsByPath",  (req, res) => {
+        if(realoption.允许搜索&&!realoption.有限分享){
+          console.log(req)
+          this.转发请求(req,res,true)}      });
+      app.post("/api/search/fullTextSearchBlock",  (req, res) => {
+        if(realoption.允许搜索&&!realoption.有限分享){
+          console.log(req)
+          this.转发请求(req,res,true)}
+      });
       app.post("/api/*",  (req, res) => {
         if(realoption.暴露api){
         console.log(req)
@@ -59,7 +80,11 @@ module.exports = {
         else{res.sendStatus(404)}
       });
     
-    
+  
+      app.get("/emojis/*",  (req, res) => {
+        console.log(req)
+        this.转发请求(req,res)}
+      );
       app.get("/widgets/*",  (req, res) => {
         console.log(realoption)
         if(realoption.暴露挂件){
@@ -179,7 +204,7 @@ module.exports = {
       }
     );
   },
-  转发请求:async function (req, res) {
+  转发请求:async function (req, res,flag) {
     const http = require("http");
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
@@ -255,7 +280,7 @@ module.exports = {
       暴露附件:false,
       脚注内容:`path:${workspaceDir}\\conf\\appearance\\themes\\naive\\script\\footer.html`,
       单块分享:true,
-      
+      允许搜索:false,
     };
     option.workspace=workspaceDir
     for (let prop in option) {

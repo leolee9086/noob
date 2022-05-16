@@ -1,4 +1,3 @@
-
 module.exports = class {
   constructor(option) {
     console.log(option);
@@ -15,6 +14,8 @@ module.exports = class {
     };
     this.使用图床资源 = option.使用图床资源;
     this.有限分享 = option.有限分享;
+    this.允许搜索 = option.允许搜索;
+
     this.发布端口 = option.发布端口;
     console.log(this.发布端口, "发布端口");
     this.思源账号id = option.思源账号id;
@@ -25,7 +26,13 @@ module.exports = class {
 
     this.获取发布脚本内容();
     this.获取发布脚注内容();
+    //  this.生成文档树()
   }
+  /* async 生成文档树(){
+    const 文档生成 = require(`${this.workspace}/conf/appearance/themes/naive/config/page.js`);
+    this.文档树 = await 文档生成.生成文档树(this.思源伺服地址+':'+this.思源伺服端口,'',this.workspace)
+  
+  } */
   获取发布脚本内容() {
     let 脚本内容 = "";
     const fs = require("fs");
@@ -136,95 +143,30 @@ module.exports = class {
 
   async 渲染块id(blockid) {
     let data = {}; //处理中文乱码
-      data.id = blockid;
-      let url1 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/filetree/getDoc`;
-      console.log(this.单块分享,'jjj')
-      let data1 = null;
-      if (this.单块分享) {
-        data1 = { id: blockid, k: "", mode: 0, size: 102400 };
-      } else {
-        data1 = { id: blockid, k: "", mode: 0, size: 1000 };
-      }
-      let res1 = await this.siyuandata(url1, data1);
-      let url2 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/block/getDocInfo`;
-      let data2 = { id: blockid };
-      let res2 = await this.siyuandata(url2, data2);
-      let background = null;
-      let titlediv = null;
-      let title = null;
-      if (res2 && res2.data && res2.data.ial) {
-        let ial = res2.data.ial;
-        title = ial.title;
-        let icon = ial.icon;
+    // this.生成文档树()
 
-        let image = ial["title-img"];
-        let imagehtml = "";
-        titlediv = document.createElement("div");
-        if (title) {
-          titlediv.innerHTML = `
-        
-        </div>
-          <div data-subtype="h1" data-node-id="${blockid}" data-type="NodeHeading" class="h1">
-          <div contenteditable="false" spellcheck="false">${title}</div>
-          <div class="protyle-attr" contenteditable="false"></div>
-        </div>`;
-        }
-        if (image) {
-          imagehtml = `<img class="" 
-           style="${image};width:100%;height:30vh ;" 
-           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">`;
-        }
+    data.id = blockid;
+    let url1 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/filetree/getDoc`;
+    console.log(this.单块分享, "jjj");
+    let data1 = null;
+    if (this.单块分享) {
+      data1 = { id: blockid, k: "", mode: 0, size: 102400 };
+    } else {
+      data1 = { id: blockid, k: "", mode: 0, size: 1000 };
+    }
+    let res1 = await this.siyuandata(url1, data1);
+    let content = res1.data.content;
+    let 头图和标题 = await this.渲染页面标题和背景图(blockid);
 
-        background = document.createElement("div");
-        background.innerHTML = `
-        <div class="protyle-background" data-node-id="20200812220555-lj3enxa" style="min-height: 30vh;">
-          <div class="protyle-background__img">
-           ${imagehtml}
-      
-        </div>
-        <div class="protyle-background__iconw" style="left: 40px;top: calc(30vh - 40px);position: absolute;">
-        <div class="protyle-background__icon" data-menu="true" data-type="open-emoji">
-        <svg class="custom-icon">
-        <use xlink:href="#icon-${icon}"></use>
-        </svg>
-        </div>
-      </div>
-        </div>
-          `;
-        if (!image) {
-          background = document.createElement("div");
-          background.innerHTML = `
-            <div class="protyle-background" data-node-id="20200812220555-lj3enxa" style="min-height: 10vh;">
-              <div class="protyle-background__img">
-          
-            </div>
-            <div class="protyle-background__iconw" style="left: 40px;top: calc(10vh - 40px);position: absolute;">
-            <div class="protyle-background__icon" data-menu="true" data-type="open-emoji">
-            <svg class="custom-icon">
-              <use xlink:href="#icon-${icon}"></use>
-            </svg>
-            </div>
-          </div>
-            </div>
-              `;
-        }
-      }
+    let tempdiv = document.createElement("div");
+    tempdiv.innerHTML = content;
+    tempdiv = this.parseblockref(tempdiv);
+    content = tempdiv.innerHTML;
+    if (头图和标题) {
+      return this.渲染模板(content, 头图和标题);
+    }
 
-      let content = res1.data.content;
-      if (title) {
-        content = titlediv.innerHTML + content;
-      }
-
-      let tempdiv = document.createElement("div");
-      tempdiv.innerHTML = content;
-      tempdiv = this.parseblockref(tempdiv);
-      content = tempdiv.innerHTML;
-      if (background) {
-        return this.渲染模板(content, background.innerHTML);
-      }
-
-      return this.渲染模板(content);
-    
+    return this.渲染模板(content);
   }
   async siyuandata(url, data) {
     let resData = null;
@@ -241,7 +183,53 @@ module.exports = class {
       });
     return resData;
   }
+  async 渲染页面标题和背景图(blockid) {
+    let {
+      标题元素,
+    } = require(`${this.workspace}/conf/appearance/themes/naive/config/title.js`);
+    let {
+      头图元素,
+    } = require(`${this.workspace}/conf/appearance/themes/naive/config/background.js`);
+
+    let url2 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/block/getDocInfo`;
+    let data2 = { id: blockid };
+    let res2 = await this.siyuandata(url2, data2);
+    let background = null;
+    let titlediv = null;
+    let title = null;
+    if (res2 && res2.data && res2.data.ial) {
+      let ial = res2.data.ial;
+      title = ial.title;
+      let icon = ial.icon;
+      let image = ial["title-img"];
+      titlediv = document.createElement("div");
+      if (title) {
+        titlediv.innerHTML = await 标题元素(
+          blockid,
+          title,
+          icon,
+          this.workspace
+        );
+      }
+      background = document.createElement("div");
+      background.innerHTML = await 头图元素(
+        blockid,
+        image,
+        ial,
+        this.workspace
+      );
+    }
+    return background.innerHTML + titlediv.innerHTML;
+  }
   渲染模板(content, 头图) {
+    let 工具栏脚本 = ""   
+    if(!this.有限分享&&this.允许搜索){
+    工具栏脚本=  ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
+      <!-- 导入组件库 -->
+      <script src="https://unpkg.com/element-plus"></script>
+      <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/toolbar.js"></script>
+      `
+    }
     return `<!DOCTYPE html>
     <html><head>
     <meta charset="utf-8">
@@ -254,10 +242,18 @@ module.exports = class {
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${this.基础样式}">
     <link rel="stylesheet" type="text/css" id="themeStyle" href="${this.发布主题}">
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+
     <style>
-        body {background-color: var(--b3-theme-background);color: var(--b3-theme-on-background)}
-        .b3-typography, .protyle-wysiwyg, .protyle-title {font-size:21px !important}
-    .b3-typography code:not(.hljs), .protyle-wysiwyg code:not(.hljs) { font-variant-ligatures: normal }
+        body {
+          background-color: var(--b3-theme-background);
+          color: var(--b3-theme-on-background);
+          margin:0
+        }
+          .b3-typography, .protyle-wysiwyg, .protyle-title {font-size:21px !important}
+         .b3-typography code:not(.hljs), .protyle-wysiwyg code:not(.hljs) { font-variant-ligatures: normal 
+        
+        }
     .li > .protyle-action {height:42px;line-height: 42px}
     .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h1, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h2, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h3, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h4, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h5, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h6 {line-height:42px;}
     .protyle-wysiwyg [data-node-id].li > .protyle-action:after {height: 21px;width: 21px;margin:-10.5px 0 0 -10.5px}
@@ -280,6 +276,50 @@ module.exports = class {
     border-radius: 4px;
     display:block
     }
+    .b3-list.b3-list--background ul,.b3-list.b3-list--background li{
+      display:flex;
+      padding:0
+    }
+    .b3-list.b3-list--background svg{
+      height:14px;
+      width:14px
+    }
+    #toolbar{
+      height:50px;
+      width:100vw;
+      max-height:50px;
+      padding-top:20px;
+      background-color:var(--b3-themes-surface)
+    }
+    :root {
+      --el-color-primary: var(--b3-themes-bcakground);
+    }
+    .menu_item_icon{
+      width:30px;
+      height:30px;
+      vertical-align:center;
+
+    }
+    .menu_item_icon svg{
+      width:30px;
+      height:30px;
+      max-width:100%;
+      max-height:100%;
+      vertical-align:center;
+    }
+    .menu_item{
+      height:100%;
+      
+    }
+    .list_item_icon image,.list_item_icon img,.list_item_icon svg{
+      width:18px;
+      height:18px;
+      max-width:100%;
+      max-height:100%;
+      vertical-align:center;
+    }
+    
+
     </style>
     <link id="protyleHljsStyle" rel="stylesheet" type="text/css" href="${this.高亮样式}">
    
@@ -739,10 +779,23 @@ module.exports = class {
       <path d="M3.76 25.88l12.24-12.213 12.24 12.213 3.76-3.76-16-16-16 16 3.76 3.76z"></path>
     </symbol>
     </defs></svg>
+
+    <div id="toolbar" class="toolbar fn__flex">
+     
+    </div>
     ${头图}
-    <div class="protyle-wysiwyg protyle-wysiwyg--attr" style="max-width: 100%;margin: 0 auto;" id="preview">
+    <div style="
+      position:absolute;
+      width:400px;
+      max-width: 400px;
+      top:30vh;
+      left:10px
+    " >    
+    </div>
+    <div class="protyle-wysiwyg protyle-wysiwyg--attr" style="margin: 0 auto;max-width: 80vw" id="preview">
     ${content}
     </div>
+    
     <div>${this.脚注html内容}</div>
    <script src="https://assets.b3logfile.com/siyuan/1622718220689/assets/highlight.min-20220504013958-m3rgses.js"  id="protyleHljsScript"></script>
     <script src="http://${this.发布地址}:${this.发布端口}/stage/protyle/js/highlight.js/third-languages.js?v=1.0.0" id="protyleHljsThirdScript"></script>
@@ -787,6 +840,8 @@ module.exports = class {
     <script>
         ${this.发布脚本内容}
     </script>
+
+    ${工具栏脚本}
     </body>
     </html>
     `;
