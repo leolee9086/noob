@@ -157,12 +157,13 @@ module.exports = class {
     }
     let res1 = await this.siyuandata(url1, data1);
     let content = res1.data.content;
+    let docid = res1.data.id
     let 头图和标题 = await this.渲染页面标题和背景图(blockid);
 
     let tempdiv = document.createElement("div");
     tempdiv.innerHTML = content;
     tempdiv = this.parseblockref(tempdiv);
-    tempdiv =await this.刷新嵌入块(tempdiv);
+    tempdiv =await this.刷新嵌入块(tempdiv,docid);
     content = tempdiv.innerHTML;
     if (头图和标题) {
       return this.渲染模板(content, 头图和标题);
@@ -223,21 +224,21 @@ module.exports = class {
     }
     return background.innerHTML + titlediv.innerHTML;
   }
-  async 刷新嵌入块(元素) {
+  async 刷新嵌入块(元素,docid) {
     let 嵌入块数组 = 元素.querySelectorAll('[data-type="NodeBlockQueryEmbed"]');
     if (嵌入块数组[0]) {
       for (let i = 0; i < 嵌入块数组.length; i++) {
         let el = 嵌入块数组[i];
-        el.innerHTML = await this.获取嵌入块内容(el);
+        el.innerHTML = await this.获取嵌入块内容(el,docid);
       }
     }
     console.log(元素);
     return 元素;
   }
-  async 获取嵌入块内容(嵌入块, 文档id) {
+  async 获取嵌入块内容(嵌入块,docid) {
     let smt = 嵌入块.getAttribute("data-content");
     let id数组 = [];
-    let 当前文档id = 文档id;
+    let 当前文档id = docid;
     let 嵌入块id = 嵌入块.getAttribute("data-node-id");
     let 嵌入块信息 = await 以sql向思源请求块数据(
       this.思源伺服ip,
