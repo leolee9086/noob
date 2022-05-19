@@ -58,7 +58,7 @@ module.exports = {
    
       app.get('/assets/*',(req, res)=>{
         if(realoption.暴露附件){
-        this.转发JSON请求(req,res) }
+        this.转发请求(req,res) }
         else{res.sendStatus(404)}
       })
    
