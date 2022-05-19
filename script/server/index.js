@@ -14,7 +14,7 @@ module.exports = {
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
     console.log(cusoption);
     let realoption = this.生成默认设置(cusoption,workspaceDir,userId)
-
+    this.realoption=realoption
     console.log(cusoption);
     console.log(workspaceDir)
   
@@ -22,16 +22,19 @@ module.exports = {
   
     渲染器 = new 渲染器类(realoption);
     this.渲染器= 渲染器
+    var bodyParser = require('body-parser');
 
     const express1 = require("express");
-  
+    const xmlparser = require('express-xml-bodyparser')
     const app =  express1();
-    //var bodyParser = require('body-parser')
+   //app.use(express1.text());  //body-parser 解析json格式数据
+  //  app.use(xmlparser());  //body-parser 解析json格式数据
 
-    //app.use(bodyParser.urlencoded({ extended: false }))
-    //app.use(express1.json());
-
-   //app.use(bodyParser.json())
+   app.use(bodyParser.json());  //body-parser 解析json格式数据
+   app.use(bodyParser.urlencoded({            //此项必须在 bodyParser.json 下面,为参数编码
+     extended: true
+   }));
+    console.log(express1.json)    
     const port = realoption.发布端口;
     let 空页面 =''
     console.log(realoption.空页面内容.slice(5,realoption.空页面内容.length),6)
@@ -55,28 +58,34 @@ module.exports = {
    
       app.get('/assets/*',(req, res)=>{
         if(realoption.暴露附件){
-        this.转发请求(req,res) }
+        this.转发JSON请求(req,res) }
         else{res.sendStatus(404)}
       })
    
       app.post("/api/notebook/lsNotebooks",  (req, res) => {
         if(realoption.允许搜索&&!realoption.有限分享){
-        console.log(req)
-        this.转发请求(req,res,true)}
+     this.转发JSON请求(req,res)
+ 
+      }
       });
       app.post("/api/filetree/listDocsByPath",  (req, res) => {
         if(realoption.允许搜索&&!realoption.有限分享){
-          console.log(req)
-          this.转发请求(req,res,true)}      });
+        this.转发JSON请求(req,res,true)
+          console.log(req.body,1)
+
+      }      
+      });
       app.post("/api/search/fullTextSearchBlock",  (req, res) => {
         if(realoption.允许搜索&&!realoption.有限分享){
-          console.log(req)
-          this.转发请求(req,res,true)}
+         console.log(req.body)
+         this.转发JSON请求(req,res,true)
+
+        }
       });
       app.post("/api/*",  (req, res) => {
         if(realoption.暴露api){
         console.log(req)
-        this.转发请求(req,res)}
+        this.转发JSON请求(req,res)}
         else{res.sendStatus(404)}
       });
     
@@ -98,24 +107,24 @@ module.exports = {
       console.log(query,99);
       if (query.id || query.blockid) {
         let content = "";
-        let realblcokid = query.id || query.blockid || realoption.首页.思源文档id;
+        let realblockid = query.id || query.blockid || realoption.首页.思源文档id;
         let 块信息数组 = await 以sql向思源请求块数据(
           `${realoption.思源伺服地址}:${realoption.思源伺服端口}`,
 
           "",
-          `select root_id , path  from blocks where id = '${realblcokid}'`
+          `select root_id , path  from blocks where id = '${realblockid}'`
         );
         console.log(块信息数组,'bbb');
         if (块信息数组 && 块信息数组[0]) {
           let realdocid = 块信息数组[0].root_id;
           console.log(realoption.单块分享)
-          if(realoption.单块分享){realdocid=realblcokid}
-          let 路径数据 = await this.解析路径(块信息数组[0].path,realoption);
-          let flag = false;
-          for (doc in 路径数据) {
-            console.log(路径数据[doc],"ddd")
-            路径数据[doc]["custom-publish"] ? (flag = true) : null;
-          }
+          if(realoption.单块分享){realdocid=realblockid}
+       //   let 路径数据 = await this.解析路径(块信息数组[0].path,realoption);
+          let flag = await this.判定id权限(realdocid);
+        //  for (doc in 路径数据) {
+          //  console.log(路径数据[doc],"ddd")
+           // 路径数据[doc]["custom-publish"] ? (flag = true) : null;
+         // }
         //  console.log(路径数据,'ccc');
           console.log(realoption,'kkk')
           if(!realoption.有限分享){flag=true}
@@ -204,15 +213,16 @@ module.exports = {
       }
     );
   },
-  转发请求:async function (req, res,flag) {
+  转发请求: function (req, res) {
     const http = require("http");
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
-    console.log(req.url)
+    console.log(req.url,req.body)
+    
     var options = {
       method: req.method,
-      hostname: "127.0.0.1",
-      port: "6806",
+      hostname: this.realoption.思源伺服地址,
+      port: this.realoption.思源伺服端口,
       path: req.url,
       headers: { originHeaders },
     };
@@ -223,6 +233,7 @@ module.exports = {
       postbody.push(chunk);
     });
     req.on("end", () => {
+      console.log('end')
       let postbodyBuffer = Buffer.concat(postbody);
       // 定义变量接收目标服务器返回的数据
       let responsebody = [];
@@ -234,18 +245,90 @@ module.exports = {
         response2.on("end", () => {
           // 处理目标服务器数据,并将其返回给客户端
           responsebodyBuffer = Buffer.concat(responsebody);
+          console.log(response2,25)
           res.setHeader("Access-Control-Allow-Private-Network",true);
           res.end(responsebodyBuffer);
         });
       });
       // 将接收到的客户端请求数据发送到目标服务器;
+
       request1.write(postbodyBuffer);
       request1.end();
+
     });
+   // console.log(req.body,2)
+  },
+  async 转发JSON请求(req,res){
+    console.log(req.url,req.body)
+    var { connection, host, ...originHeaders } = req.headers;
+    // 构造请求报文
+    console.log(req.url,req.body)
+    resData={}
+    let syres = {}
+    apitoken = ''
+    let url ='http://'+ this.realoption.思源伺服地址+':'+this.realoption.思源伺服端口+req.url
+    let flag =false
+    syres = await this.请求数据(url,apitoken,req.body)
+    if(syres&&syres.data){
+      if (this.realoption.有限分享){
+         flag =await this.判定数据权限(req.url,req.body,syres.data)
+      }
+      else {flag = true}
+    }
+    console.log(syres)
+    if(flag){
+    res.end(JSON.stringify(syres))}
+    else{
+      res.status(404).end('check your auth')
+    }
+  },
+  async 判定数据权限(请求url,请求数据,响应数据){
+    if(this.realoption.暴露api){
+      return true
+    }
+    if(this.realoption.允许搜索&&请求url=="/api/search/fullTextSearchBlock"){
+      return true
+    }
+    else return false
+  },
+  async 判定id权限(块id){
+    let flag = false;
+
+    let 块信息数组 = await 以sql向思源请求块数据(
+      `${this.realoption.思源伺服地址}:${this.realoption.思源伺服端口}`,
+
+      "",
+      `select root_id , path  from blocks where id = '${块id}'`
+    );
+    if (块信息数组 && 块信息数组[0]) {
+      let 路径数据 = await this.解析路径(块信息数组[0].path,this.realoption);
+      for (doc in 路径数据) {
+        console.log(路径数据[doc],"ddd")
+        路径数据[doc]["custom-publish"] ? (flag = true) : null;
+      }
+    }
+   
+    return flag
+  },
+  请求数据: async function (url, apitoken, data) {
+    let resData = null;
+    let str = JSON.stringify(data)
+    try{
+    await fetch(url, {
+      body: str,
+      method: "POST",
+      headers: {
+//          'Content-Type': 'text/plain;charset=UTF-8',
+
+          Authorization: "Token " + apitoken,
+      }
+    }).then(function (response) {
+      resData = response.json();
+    });
+    return resData}catch(e){console.log(e)};
   },
   终止服务:async function(){
     console.log(global.publishserver)
-    console.log("这里的报错是特性,不要改动")
 
     await global.publishserver.close()
     await global.publishserver.listen(null)

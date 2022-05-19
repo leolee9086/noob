@@ -15,6 +15,8 @@ const 主题 = {};
 const naive= {
   竖线菜单设置:[]
 }
+
+
 主题.加载程序({ src: `${主题.根目录}/script/util/siYuanApi.js` });
 主题.加载程序({ src: `${主题.根目录}/script/main.js`, type: "module" });
 

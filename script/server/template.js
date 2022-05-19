@@ -228,6 +228,8 @@ module.exports = class {
       <!-- 导入组件库 -->
       <script src="https://unpkg.com/element-plus"></script>
       <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/toolbar.js"></script>
+      <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/backlink.js"></script>
+
       `
     }
     return `<!DOCTYPE html>
@@ -795,7 +797,7 @@ module.exports = class {
     <div class="protyle-wysiwyg protyle-wysiwyg--attr" style="margin: 0 auto;max-width: 80vw" id="preview">
     ${content}
     </div>
-    
+    <div id="backlinks"></div>
     <div>${this.脚注html内容}</div>
    <script src="https://assets.b3logfile.com/siyuan/1622718220689/assets/highlight.min-20220504013958-m3rgses.js"  id="protyleHljsScript"></script>
     <script src="http://${this.发布地址}:${this.发布端口}/stage/protyle/js/highlight.js/third-languages.js?v=1.0.0" id="protyleHljsThirdScript"></script>

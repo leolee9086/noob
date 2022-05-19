@@ -73,10 +73,10 @@ const toolbar = Vue.createApp({
                     <el-col :span="10">
                     <el-link :href='"/?blockid="+搜索结果条目.id' >
 
-                    <el-span>
+                    <span>
                     {{搜索结果条目.hPath}}
 
-                </el-span>
+                </span>
                 </el-link>
 
                     </el-col>
@@ -154,7 +154,6 @@ const toolbar = Vue.createApp({
 
           if (el) {
             el.box = 笔记本列表[i].id;
-            this.生成子文档树(el);
           }
         }
       }
@@ -197,13 +196,14 @@ const toolbar = Vue.createApp({
 
     请求数据: async function (url, apitoken, data) {
       let resData = null;
+      let str = JSON.stringify(data)
       await fetch(url, {
-        body: JSON.stringify(data),
+        body: str,
         method: "POST",
         headers: {
-          Authorization: "Token " + apitoken,
-          "user-agent": "Mozilla Mobile/4.0 MDN Example",
-        },
+            'Content-Type': 'application/json',
+            Authorization: "Token " + apitoken,
+        }
       }).then(function (response) {
         resData = response.json();
       });
