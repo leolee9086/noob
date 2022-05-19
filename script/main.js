@@ -1,7 +1,7 @@
 function 获取url参数 (参数名) {
   const search = location.search; // 返回类似于 ?a=10&b=20&c=30
-  const res = new URLSearchParams(search);
-  return res.get(参数名)
+  const obj = new URLSearchParams(search);
+  return obj.get(参数名)
 }
 function 打开块id(块id){
   let 临时目标 = document.querySelector('div.protyle-wysiwyg div[data-node-id] div[contenteditable][spellcheck]');

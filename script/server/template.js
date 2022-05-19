@@ -23,6 +23,7 @@ module.exports = class {
     this.workspace = option.workspace;
     this.脚注内容 = option.脚注内容;
     this.单块分享 = option.单块分享;
+    this.思源伺服ip =this.思源伺服地址+':'+this.思源伺服端口;
 
     this.获取发布脚本内容();
     this.获取发布脚注内容();
@@ -161,6 +162,7 @@ module.exports = class {
     let tempdiv = document.createElement("div");
     tempdiv.innerHTML = content;
     tempdiv = this.parseblockref(tempdiv);
+    tempdiv =await this.刷新嵌入块(tempdiv);
     content = tempdiv.innerHTML;
     if (头图和标题) {
       return this.渲染模板(content, 头图和标题);
@@ -221,16 +223,65 @@ module.exports = class {
     }
     return background.innerHTML + titlediv.innerHTML;
   }
+  async 刷新嵌入块(元素) {
+    let 嵌入块数组 = 元素.querySelectorAll('[data-type="NodeBlockQueryEmbed"]');
+    if (嵌入块数组[0]) {
+      for (let i = 0; i < 嵌入块数组.length; i++) {
+        let el = 嵌入块数组[i];
+        el.innerHTML = await this.获取嵌入块内容(el);
+      }
+    }
+    console.log(元素);
+    return 元素;
+  }
+  async 获取嵌入块内容(嵌入块, 文档id) {
+    let smt = 嵌入块.getAttribute("data-content");
+    let id数组 = [];
+    let 当前文档id = 文档id;
+    let 嵌入块id = 嵌入块.getAttribute("data-node-id");
+    let 嵌入块信息 = await 以sql向思源请求块数据(
+      this.思源伺服ip,
+      "",
+      `select * from blocks where id = ${嵌入块id}`
+    );
+    let 当前父id;
+    if (嵌入块信息&&嵌入块信息["data"]&&嵌入块信息["data"][0]) {
+      当前父id = 嵌入块信息["data"][0]["parent_id"];
+    }
+    当前文档id ? id数组.push(当前文档id) : null;
+    当前父id ? id数组.push(当前父id) : null;
+    嵌入块id? id数组.push(嵌入块id) : null;
+    嵌入块.getAttribute("data-node-id")
+      ? id数组.push(嵌入块.getAttribute("data-node-id"))
+      : null;
+    let res =
+      (await 以sql获取嵌入块内容(this.思源伺服ip, "", id数组, smt)) || {};
+    console.log(res);
+    let data = res.data || {};
+    console.log(data);
+
+    let blocks = data.blocks || [];
+    console.log(blocks);
+
+    let 嵌入块内容 = "";
+    blocks.forEach((el) => {
+      console.log(el);
+      嵌入块内容 = 嵌入块内容 + el.content;
+    });
+
+    嵌入块.innerHTML = 嵌入块内容 + 嵌入块.innerHTML;
+    return 嵌入块.innerHTML;
+  }
   渲染模板(content, 头图) {
-    let 工具栏脚本 = ""   
-    if(!this.有限分享&&this.允许搜索){
-    工具栏脚本=  ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
+    let 工具栏脚本 = "";
+    if (!this.有限分享 && this.允许搜索) {
+      工具栏脚本 = ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
       <!-- 导入组件库 -->
       <script src="https://unpkg.com/element-plus"></script>
       <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/toolbar.js"></script>
       <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/backlink.js"></script>
 
-      `
+      `;
     }
     return `<!DOCTYPE html>
     <html><head>
