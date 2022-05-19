@@ -33,7 +33,7 @@ module.exports = {
         <div 
         spellcheck="false" 
         contenteditable="false" 
-        class='h1' 
+        id="doctitle"
         data-subtype='h1'  
         data-node-id="${docid}"  
         spellcheck="false" 
