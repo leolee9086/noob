@@ -162,8 +162,9 @@ module.exports = class {
 
     let tempdiv = document.createElement("div");
     tempdiv.innerHTML = content;
-    tempdiv = this.parseblockref(tempdiv);
     tempdiv =await this.刷新嵌入块(tempdiv,docid);
+
+    tempdiv = this.parseblockref(tempdiv);
     content = tempdiv.innerHTML;
     if (头图和标题) {
       return this.渲染模板(content, 头图和标题);
