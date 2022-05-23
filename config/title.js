@@ -37,7 +37,7 @@ module.exports = {
         data-subtype='h1'  
         data-node-id="${docid}"  
         spellcheck="false" 
-        class="protyle-title" 
+        class="h1" 
         data-render="true">${title}
         </div>
     </div>

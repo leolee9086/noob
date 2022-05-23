@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <!-- 导入 Vue 3 -->
@@ -10,7 +9,6 @@
     <script src="https://unpkg.com/element-plus"></script>
 
 </head>
-
 <body>
     <div id="app"></div>
 </body>
@@ -134,7 +132,7 @@
         },
         methods: {
             重置() {
-                fetch('./config/publish.json').then((response) => response.json()).then(json => {
+                fetch('.././config/publish.json').then((response) => response.json()).then(json => {
                     this.config = Vue.reactive(json)
                 })
             },
@@ -170,7 +168,7 @@
     const readJson = function () {
         console.log(this)
         let vm = this
-        fetch('./config/publish.json').then((response) => response.json()).then(json => {
+        fetch('.././config/publish.json').then((response) => response.json()).then(json => {
             customfig = Vue.reactive(json)
             const vm = app.mount('#app')
         })
