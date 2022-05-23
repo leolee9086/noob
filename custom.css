@@ -1,26 +1,26 @@
 :root {
-    --b3-theme-primary: #4285f4;
+    --b3-theme-primary: rgba(66, 133, 244, 1);
     --b3-theme-primary-light: rgba(66, 133, 244, 0.54);
     --b3-theme-primary-lighter: rgba(66, 133, 244, 0.38);
     --b3-theme-primary-lightest: rgba(66, 133, 244, 0.12);
-    --b3-theme-secondary: #f3a92f;
-    --b3-theme-background: #f8f9fa;
-    --b3-theme-surface: #f3f3f3;
+    --b3-theme-secondary: rgba(243, 169, 47, 1);
+    --b3-theme-background: rgba(248, 249, 250, 1);
+    --b3-theme-surface: rgba(243, 243, 243, 1);
     --b3-theme-surface-light: rgba(243, 243, 243, .86);
-    --b3-theme-error: #d23f31;
-    --b3-theme-on-primary: #fff;
-    --b3-theme-on-secondary: #fff;
-    --b3-theme-on-background: #202124;
-    --b3-theme-on-surface: #5f6368;
-    --b3-theme-on-error: #fff;
+    --b3-theme-error: rgba(210, 63, 49, 1);
+    --b3-theme-on-primary: rgba(255, 255, 255, 1);
+    --b3-theme-on-secondary: rgba(255, 255, 255, 1);
+    --b3-theme-on-background: rgba(32, 33, 36, 1);
+    --b3-theme-on-surface: rgba(95, 99, 104, 1);
+    --b3-theme-on-error: rgba(255, 255, 255, 1);
     --b3-font-family: "quote", "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
     --b3-font-family-code: "JetBrainsMono-Regular", mononoki, Consolas, "Liberation Mono", Menlo, Courier, monospace, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
     --b3-font-family-graph: mononoki;
     --b3-font-family-emoji: "Segoe UI Emoji", "Segoe UI Symbol", "Segoe UI", "Apple Color Emoji", "Twemoji Mozilla", "Noto Color Emoji", "Android Emoji";
-    --b3-border-color: rgba(0, 0, 0, .1);
-    --b3-scroll-color: rgba(0, 0, 0, .2);
+    --b3-border-color: rgba(0, 0, 0, 0.1);
+    --b3-scroll-color: rgba(0, 0, 0, 0.2);
     --b3-list-hover: rgba(0, 0, 0, .05);
-    --b3-tab-background: #f3f3f3;
+    --b3-tab-background: rgba(243, 243, 243, 1);
     --b3-tab-background-hover: #e9eaeb;
     --b3-menu-background: #f8f9fa;
     --b3-tooltips-color: rgba(0, 0, 0, 0.54);
@@ -66,39 +66,39 @@
     --b3-diff-add-surface: #97f295;
     --b3-diff-del: #fee8e9;
     --b3-diff-del-surface: #ffb6ba;
-    --b3-graph-p-point: #076f7e;
-    --b3-graph-heading-point: #660e7a;
-    --b3-graph-math-point: #80FFA5;
-    --b3-graph-code-point: #00DDFF;
-    --b3-graph-table-point: #37A2FF;
-    --b3-graph-list-point: #FF0087;
-    --b3-graph-todo-point: #FFBF00;
-    --b3-graph-olist-point: #b3005f;
-    --b3-graph-listitem-point: #f65b00;
-    --b3-graph-bq-point: #8d48e3;
-    --b3-graph-super-point: #dd79ff;
-    --b3-graph-doc-point: #202124;
-    --b3-graph-tag-point: #dbf32f;
-    --b3-graph-asset-point: #05c091;
-    --b3-graph-line: #5f6368;
-    --b3-graph-ref-line: #d23f31;
-    --b3-graph-tag-line: #5f6b06;
-    --b3-graph-tag-tag-line: #dbf32f;
-    --b3-graph-asset-line: #037457;
-    --b3-graph-hl-point: #f3a92f;
-    --b3-graph-hl-line: #4285f4;
+    --b3-graph-p-point: rgba(7, 111, 126, 1);
+    --b3-graph-heading-point: rgba(102, 14, 122, 1);
+    --b3-graph-math-point: rgba(128, 255, 165, 1);
+    --b3-graph-code-point: rgba(0, 221, 255, 1);
+    --b3-graph-table-point: rgba(55, 162, 255, 1);
+    --b3-graph-list-point: rgba(255, 0, 135, 1);
+    --b3-graph-todo-point: rgba(255, 191, 0, 1);
+    --b3-graph-olist-point: rgba(179, 0, 95, 1);
+    --b3-graph-listitem-point: rgba(246, 91, 0, 1);
+    --b3-graph-bq-point: rgba(141, 72, 227, 1);
+    --b3-graph-super-point: rgba(221, 121, 255, 1);
+    --b3-graph-doc-point: rgba(32, 33, 36, 1);
+    --b3-graph-tag-point: rgba(219, 243, 47, 1);
+    --b3-graph-asset-point: rgba(5, 192, 145, 1);
+    --b3-graph-line: rgba(95, 99, 104, 1);
+    --b3-graph-ref-line: rgba(210, 63, 49, 1);
+    --b3-graph-tag-line: rgba(95, 107, 6, 1);
+    --b3-graph-tag-tag-line: rgba(219, 243, 47, 1);
+    --b3-graph-asset-line: rgba(3, 116, 87, 1);
+    --b3-graph-hl-point: rgba(243, 169, 47, 1);
+    --b3-graph-hl-line: rgba(66, 133, 244, 1);
     --b3-protyle-search-background: #ffe955;
     --b3-protyle-search-border-color: #f2e680;
     --b3-protyle-search-current-background: #a5d3fe;
     --b3-protyle-code-background: rgba(27, 31, 35, .05);
-    --b3-protyle-inline-strong-color: #202124;
-    --b3-protyle-inline-em-color: #202124;
-    --b3-protyle-inline-s-color: #202124;
-    --b3-protyle-inline-link-color: #4285f4;
-    --b3-protyle-inline-mark-background: #ffe955;
-    --b3-protyle-inline-mark-color: #202124;
-    --b3-protyle-inline-tag-color: #5f6368;
-    --b3-protyle-inline-blockref-color: #660e7a;
+    --b3-protyle-inline-strong-color: rgba(32, 33, 36, 1);
+    --b3-protyle-inline-em-color: rgba(32, 33, 36, 1);
+    --b3-protyle-inline-s-color: rgba(32, 33, 36, 1);
+    --b3-protyle-inline-link-color: rgba(66, 133, 244, 1);
+    --b3-protyle-inline-mark-background: rgba(255, 233, 85, 1);
+    --b3-protyle-inline-mark-color: rgba(32, 33, 36, 1);
+    --b3-protyle-inline-tag-color: rgba(95, 99, 104, 1);
+    --b3-protyle-inline-blockref-color: rgba(102, 14, 122, 1);
     --b3-pdf-sidebar-width: 200px;
     --b3-pdf-offset: 0;
     --b3-pdf-background1: var(--b3-theme-error);
@@ -500,25 +500,5 @@ div[data-type="NodeBlockQueryEmbed"]>div {
 
 .protyle-wysiwyg .sb>[data-node-id] {
     margin: 3px
-}
-
-@importurl(mokuai/fuxikapian.css) {
-
-}
-
-@importurl(mokuai/liebiaobiaoge.css) {
-
-}
-
-@importurl(mokuai/liebiaokapian.css) {
-
-}
-
-@importurl(mokuai/xingbiao.css) {
-
-}
-
-@importurl(mokuai/kanban.css) {
-
 }
 

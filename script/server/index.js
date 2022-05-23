@@ -8,6 +8,9 @@ module.exports = {
     }
     let path = require("path");
     const 渲染器类 = require("./template");
+    const api  =  require("../util/siYuanApi");
+    
+
     this.渲染器= null
     const fs = require("fs");
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
@@ -19,8 +22,9 @@ module.exports = {
     console.log(workspaceDir)
   
     console.log(realoption,15)
-  
+    思源api = new  api(realoption)
     渲染器 = new 渲染器类(realoption);
+    
     this.渲染器= 渲染器
     var bodyParser = require('body-parser');
 
@@ -108,7 +112,7 @@ module.exports = {
       if (query.id || query.blockid) {
         let content = "";
         let realblockid = query.id || query.blockid || realoption.首页.思源文档id;
-        let 块信息数组 = await 以sql向思源请求块数据(
+        let 块信息数组 = await 思源api.以sql向思源请求块数据(
           `${realoption.思源伺服地址}:${realoption.思源伺服端口}`,
 
           "",
@@ -187,7 +191,7 @@ module.exports = {
      for  (let i=0;i<pathArray.length;i++){
       let element=pathArray[i]
       obj[element] = {};
-      let attrs = await 以sql向思源请求块数据(
+      let attrs = await 思源api.以sql向思源请求块数据(
         `${realoption.思源伺服地址}:${realoption.思源伺服端口}`,
         "",
         `select * from attributes where root_id = '${element}'`
@@ -294,7 +298,7 @@ module.exports = {
   async 判定id权限(块id){
     let flag = false;
 
-    let 块信息数组 = await 以sql向思源请求块数据(
+    let 块信息数组 = await 思源api.以sql向思源请求块数据(
       `${this.realoption.思源伺服地址}:${this.realoption.思源伺服端口}`,
 
       "",

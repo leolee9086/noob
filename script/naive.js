@@ -7,7 +7,6 @@ const 滚动到元素 =function(event){
     console.log(id,targetblock)
     if(targetblock){
         event.preventDefault();
-
         window.scrollTo({top:targetblock.offsetTop,behavior:'smooth'})
         let css = document.createElement('style')
         css.innerHTML=`
@@ -20,7 +19,6 @@ const 滚动到元素 =function(event){
     }
 }
 const 滚动到url元素 =function(event){
-    
     let query= 解析url(window.location.href)
     if(query.id||query.blockid){
     let id = query.id?query.id:query.blockid
@@ -37,12 +35,10 @@ const 滚动到url元素 =function(event){
         `  
         document.head.appendChild(css)
         setTimeout(()=>css.remove(),1000)
-
     }
 }
 }
 const 解析url=function(url){
-    
     url = url || '';
     const queryObj = {};
     const reg = /[?&]([^=&#]+)=([^&#]*)/g;

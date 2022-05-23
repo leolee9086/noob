@@ -24,9 +24,11 @@ module.exports = class {
     this.脚注内容 = option.脚注内容;
     this.单块分享 = option.单块分享;
     this.思源伺服ip =this.思源伺服地址+':'+this.思源伺服端口;
+    const api  =  require("../util/siYuanApi");
 
     this.获取发布脚本内容();
     this.获取发布脚注内容();
+    this.思源api = new api(option)
     //  this.生成文档树()
   }
   /* async 生成文档树(){
@@ -241,7 +243,7 @@ module.exports = class {
     let id数组 = [];
     let 当前文档id = docid;
     let 嵌入块id = 嵌入块.getAttribute("data-node-id");
-    let 嵌入块信息 = await 以sql向思源请求块数据(
+    let 嵌入块信息 = await this.思源api.以sql向思源请求块数据(
       this.思源伺服ip,
       "",
       `select * from blocks where id = ${嵌入块id}`
@@ -257,7 +259,7 @@ module.exports = class {
       ? id数组.push(嵌入块.getAttribute("data-node-id"))
       : null;
     let res =
-      (await 以sql获取嵌入块内容(this.思源伺服ip, "", id数组, smt)) || {};
+      (await this.思源api.以sql获取嵌入块内容(this.思源伺服ip, "", id数组, smt)) || {};
     console.log(res);
     let data = res.data || {};
     console.log(data);

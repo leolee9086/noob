@@ -35,16 +35,9 @@ const winlist = {
   服务器设置窗口: null,
 };
 
-
-
-//加载窗口("http://192.168.0.9:6806/appearance/themes/naive/", option);
-
-
 if (window.require) {
   主题界面.注册顶栏按钮('打开服务器设置窗口',"iconPublish",窗口配置器.打开服务器设置窗口)
-  主题界面.注册顶栏按钮('打开图床设置',"iconImage",窗口配置器.打开服务器设置窗口)
-}
-if (window.require) {
+  主题界面.注册顶栏按钮('打开图床设置',"iconImage",窗口配置器.打开样式设置窗口)
   const fs = require("fs");
   const watchjs = require (`${workspaceDir}/conf/appearance/themes/naive/config/watch.js`)
   const watch=watchjs.监听路径列表(workspaceDir)
