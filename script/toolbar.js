@@ -27,7 +27,7 @@ const toolbar = Vue.createApp({
                     <span>
                         <span class="list_item_icon" v-if='data.icon' v-html='data.icon'></span>
                         
-                        <el-link :href='"/?blockid="+data.id'  v-if="data.box">
+                        <el-link :href='"/block/"+data.id'  v-if="data.box">
                         {{data.name}}
                         </el-link>
                         <span :href='"/?blockid="+data.id' v-if="!data.box">
@@ -71,7 +71,7 @@ const toolbar = Vue.createApp({
             <div v-for = "搜索结果条目 in 搜索结果">
                     <el-row>
                     <el-col :span="10">
-                    <el-link :href='"/?blockid="+搜索结果条目.id' >
+                    <el-link :href='"/block/"+搜索结果条目.id' >
 
                     <span>
                     {{搜索结果条目.hPath}}

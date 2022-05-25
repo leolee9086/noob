@@ -79,7 +79,7 @@ module.exports = class {
           "href",
           href.replace(
             "siyuan://blocks/",
-            `http://${this.发布地址}:${this.发布端口}/?blockid=`
+            `http://${this.发布地址}:${this.发布端口}/block/`
           )
         );
         href.indexOf("siyuan://") == 0
@@ -98,7 +98,7 @@ module.exports = class {
 
         link.setAttribute(
           "href",
-          `http://${this.发布地址}:${this.发布端口}/?blockid=${a.getAttribute(
+          `http://${this.发布地址}:${this.发布端口}/block/${a.getAttribute(
             "data-id"
           )}`
         );

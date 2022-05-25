@@ -5,3 +5,6 @@
         display:none !important
     }
 }
+div.protyle-wysiwyg.protyle-wysiwyg--attr[data-doc-type="NodeDocument"]{
+    padding-bottom: 50px!important;
+}

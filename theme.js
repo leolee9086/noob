@@ -13,7 +13,8 @@ const 主题 = {};
   document.head.appendChild(script);
 };
 const naive= {
-  竖线菜单设置:[]
+  竖线菜单设置:[],
+  footerWidget:"cc-template"
 }
 
 
