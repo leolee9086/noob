@@ -125,22 +125,29 @@ module.exports = class {
       });
     }
 
-    if (this.使用图床资源) {
       let assets = div.querySelectorAll("[src]");
       if (assets[0]) {
         assets.forEach((a) => {
           let src = a.getAttribute("src");
-          let ip = window.siyuan.config.localIPs[0];
 
-          src.indexOf("assets") == 0
-            ? a.setAttribute(
+          if(src.indexOf("assets") == 0){
+             if(this.使用图床资源){
+               a.setAttribute(
                 "src",
                 `https://assets.b3logfile.com/siyuan/${this.思源账号id}/` + src
               )
-            : null;
+            }
+              else{
+                a.setAttribute(
+                  "src",
+                  `/` + src
+                )
+              }
+            }
+          
         });
       }
-    }
+    
     return div;
   }
 
