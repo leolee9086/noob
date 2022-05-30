@@ -3,7 +3,7 @@ const watchjs = require(`${naive.workspaceDir}/conf/appearance/themes/naive/conf
 const watch = watchjs.监听路径列表(naive.workspaceDir);
 const server = require(naive.workspaceDir +
   "/conf/appearance/themes/naive/script/server/server.js");
-window.publishserver = server.创建服务器(naive.workspaceDir,naive.userId);
+naive.publishserver = server.创建服务器(naive.workspaceDir,naive.userId);
 for (let path in watch) {
   fs.watch(watch[path], { recursive: true },重新加载)
 }

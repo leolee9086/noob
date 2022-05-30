@@ -24,18 +24,13 @@ module.exports = class {
     this.脚注内容 = option.脚注内容;
     this.单块分享 = option.单块分享;
     this.思源伺服ip =this.思源伺服地址+':'+this.思源伺服端口;
-    const api  =  require("../app/ui/util/siYuanApi");
+    const api  =  require("../app/util/siYuanApi");
 
     this.获取发布脚本内容();
     this.获取发布脚注内容();
     this.思源api = new api(option)
-    //  this.生成文档树()
   }
-  /* async 生成文档树(){
-    const 文档生成 = require(`${this.workspace}/conf/appearance/themes/naive/config/page.js`);
-    this.文档树 = await 文档生成.生成文档树(this.思源伺服地址+':'+this.思源伺服端口,'',this.workspace)
-  
-  } */
+ 
   获取发布脚本内容() {
     let 脚本内容 = "";
     const fs = require("fs");

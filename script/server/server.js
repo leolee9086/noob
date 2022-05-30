@@ -5,9 +5,12 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
+    if(!naive.siyuan.user.userPaymentSum){
+      return null
+    }
     let path = require("path");
     const 渲染器类 = require("./template");
-    const api = require("../app/ui/util/siYuanApi");
+    const api = require("../app/util/siYuanApi");
     const nodered = require("node-red");
     const http = require("http");
 
@@ -407,11 +410,11 @@ module.exports = {
       }/appearance/themes/${
         window.siyuan.config.appearance.themeDark
       }/theme.css`,
-      发布脚本: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\script\\naive.js`,
+      发布脚本: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\config\\naive.js`,
       高亮样式: `http://${customoption.发布地址 || 思源伺服地址}:${
         customoption.发布端口 || 思源伺服端口
       }/stage/protyle/js/highlight.js/styles/github.min.css`,
-      空页面内容: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\script\\naive.html`,
+      空页面内容: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\config\\naive.html`,
       首页: {
         思源文档id: "20200812220555-lj3enxa",
       },
