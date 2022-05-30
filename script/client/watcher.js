@@ -31,7 +31,9 @@ export class DOM监听器{
     }
     结束监听(){
         this.监听器序列.forEach(
-            监听器=>监听器.disconnect()
+            监听器=>
+            {监听器.disconnect()
+            监听器=null}
         )
     }
     是否DOM序列(判定目标){
