@@ -1,8 +1,7 @@
-import { 加载图标 } from "./ui/icon.js";
-import { 窗口配置器 } from "./ui/page.js";
-import { 主题界面 } from "./ui/ui.js";
-import { DOM监听器 } from "./app/watcher.js";
-
+import { 加载图标 } from "./app/ui/icon.js";
+import { 窗口配置器 } from "./app/ui/page.js";
+import { 主题界面 } from "./app/ui/ui.js";
+import { DOM监听器 } from "./client/watcher.js";
 加载图标();
 function 获取url参数(参数名) {
   const search = location.search; // 返回类似于 ?a=10&b=20&c=30
@@ -73,6 +72,7 @@ const 编辑器监听回调 =async function (mutationsList, observer) {
         if (文档编辑器) {
           let footer = 文档编辑器.parentElement.querySelector("div.NodeDocumentFooter");
           let customfooterurl = 文档编辑器.getAttribute("custom-footerWidget")
+          let customfooterheight=文档编辑器.getAttribute("custom-footerHeight")||400
           if(!customfooterurl){
             customfooterurl = naive.footerWidget
           }
@@ -83,7 +83,7 @@ const 编辑器监听回调 =async function (mutationsList, observer) {
           div.setAttribute("data-id", 当前文档id);
           div.setAttribute("data-node-id", 当前文档id);
           div.setAttribute("data-type", 'NodeWidget');
-          div.setAttribute("style", 'z-index:1;top:calc(100% - 400px);max-width:100%;max-height:400px;width:100%;height:1000px;max-height:500px;background-color:var(--b3-theme-surface)');
+          div.setAttribute("style", `z-index:1;top:calc(100% - ${customfooterheight});max-width:100%;max-height:${customfooterheight};width:100%;height:${customfooterheight};max-height:500px;background-color:var(--b3-theme-surface)`);
           div.innerHTML=`
           <div class="iframe-content" style="width:100%;height:100%">
           <iframe
@@ -161,5 +161,4 @@ if (window.require) {
 }
 function 重新加载(){
   //window.location.reload();
-
 }

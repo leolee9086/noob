@@ -24,7 +24,7 @@ module.exports = class {
     this.脚注内容 = option.脚注内容;
     this.单块分享 = option.单块分享;
     this.思源伺服ip =this.思源伺服地址+':'+this.思源伺服端口;
-    const api  =  require("../util/siYuanApi");
+    const api  =  require("../app/ui/util/siYuanApi");
 
     this.获取发布脚本内容();
     this.获取发布脚注内容();

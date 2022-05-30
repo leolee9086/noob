@@ -7,7 +7,7 @@ module.exports = {
     }
     let path = require("path");
     const 渲染器类 = require("./template");
-    const api = require("../util/siYuanApi");
+    const api = require("../app/ui/util/siYuanApi");
     const nodered = require("node-red");
     const http = require("http");
 
