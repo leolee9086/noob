@@ -2,6 +2,10 @@ import { 加载图标 } from "./app/ui/icon.js";
 import { 窗口配置器 } from "./app/ui/page.js";
 import { 主题界面 } from "./app/ui/ui.js";
 import { DOM监听器 } from "./client/watcher.js";
+
+naive.竖线菜单设置=[]
+naive.editor={}
+naive.editor.footerWidget="cc-template"
 加载图标();
 function 获取url参数(参数名) {
   const search = location.search; // 返回类似于 ?a=10&b=20&c=30

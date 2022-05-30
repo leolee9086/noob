@@ -1,7 +1,6 @@
-const 主题 = {};
-主题.根目录 = "/appearance/themes/naive";
-//来自dark+主题
-主题.加载程序 = function (
+const naive = {};
+naive.根目录 = "/appearance/themes/naive";
+naive.加载js = function (
   option = { src, type: "module", async: false, defer: false }
 ) {
   let { src, type, async, defer } = option;
@@ -12,12 +11,9 @@ const 主题 = {};
   script.setAttribute("src", src);
   document.head.appendChild(script);
 };
-const naive= {
-  竖线菜单设置:[],
-  footerWidget:"cc-template"
+naive.加载js({ src: `${naive.根目录}/script/util/siYuanApi.js` });
+naive.加载js({ src: `${naive.根目录}/script/main.js`, type: "module" });
+if(window.require){
+  naive.加载js({src: `${naive.根目录}/script/sever/index.js`, type: "module"})
 }
-
-
-主题.加载程序({ src: `${主题.根目录}/script/util/siYuanApi.js` });
-主题.加载程序({ src: `${主题.根目录}/script/main.js`, type: "module" });
-
+naive.加载js({src: `${naive.根目录}/script/app/index.js`, type: "module"})

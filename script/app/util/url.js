@@ -3,7 +3,7 @@ export function 打开urlid(){
     if(url参数){
       let id =url参数.id
       if(id){
-        this.窗口内打开思源块(id)
+        窗口内打开思源块(id)
       }
     }
 }
