@@ -148,21 +148,5 @@ if (window.require) {
     "iconBrush",
     窗口配置器.打开样式设置窗口
   );
-  const fs = require("fs");
-  const watchjs = require(`${workspaceDir}/conf/appearance/themes/naive/config/watch.js`);
-  const watch = watchjs.监听路径列表(workspaceDir);
-  const server = require(workspaceDir +
-    "/conf/appearance/themes/naive/script/server");
-  console.log(userId);
-  window.publishserver = server.创建服务器(workspaceDir, userId);
-  for (let path in watch) {
-    fs.watch(watch[path], { recursive: true },重新加载)
-  }
-  fs.watch(
-    `${workspaceDir}/conf/appearance/themes/naive/config/watch.js`,
-    重新加载
-  );
 }
-function 重新加载(){
-  //window.location.reload();
-}
+
