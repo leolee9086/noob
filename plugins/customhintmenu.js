@@ -1,34 +1,3 @@
-
-
-
-let test1=  new ProtyleHtml
-console.log(test1.attributeChangedCallback)
-
-ProtyleHtml.prototype.attributeChangedCallback=function(name, oldValue, newValue) {
-  console.log(name)
-  if (name === 'data-content') {
-    const dataContent = Lute.UnEscapeHTMLStr(this.getAttribute('data-content'))
-    this.display.innerHTML = dataContent
-
-    const el = document.createElement('div');
-    el.innerHTML = dataContent;
-    console.log(el)
-    const scripts = el.getElementsByTagName("script")
-    for (let i = 0; i < scripts.length; i++) {
-      const s = document.createElement('script');
-      s.textContent = scripts[i].textContent;
-      this.display.appendChild(s);
-    }
-  }
-}
-
-
-let test =  new ProtyleHtml
-test.setAttribute("data-content","ceshi ")
-console.log(HTMLElement)
-console.log(test.attributeChangedCallback)
-
-
 const 判断键盘目标=function(event){
   let node = getSelection().getRangeAt(0).commonAncestorContainer;
   let el = null
@@ -37,24 +6,24 @@ const 判断键盘目标=function(event){
   渲染竖线菜单(event,el,node)  
 }
 const 生成竖线菜单项=function(菜单项目){
-  let 菜单项目元素 = document.createElement("button")
-  菜单项目元素.setAttribute("class", 'b3-list-item b3-list-item--two fn__block')
-  菜单项目元素.setAttribute("data-value",菜单项目.数据值)
-  菜单项目元素.setAttribute("style","width:100%;display:block")
-  菜单项目元素.innerHTML=`
-  <div class="b3-list-item__first" style="display:flex;align-items:center" >
-  <svg class="b3-list-item__graphic">
-  <use xlink:href="${菜单项目.菜单图标||"#iconFile"}">
-  </use></svg>
-  <span class="b3-list-item__text">
-  ${菜单项目.菜单文字}
-  </span>
-  <span class="b3-menu__accelerator">${菜单项目.唤起词列表[0]}</span>
-  </div>
-  `
-  菜单项目元素.addEventListener("click",()=>菜单项目.回调函数())
-  菜单项目元素.addEventListener("focus",()=>菜单项目元素.setAttribute("class","b3-list-item b3-list-item--two fn__block b3-list-item--focus"))
-  return 菜单项目元素
+    let 菜单项目元素 = document.createElement("button")
+    菜单项目元素.setAttribute("class", 'b3-list-item b3-list-item--two fn__block')
+    菜单项目元素.setAttribute("data-value",菜单项目.数据值)
+    菜单项目元素.setAttribute("style","width:100%;display:block")
+    菜单项目元素.innerHTML=`
+    <div class="b3-list-item__first" style="display:flex;align-items:center" >
+    <svg class="b3-list-item__graphic">
+    <use xlink:href="${菜单项目.菜单图标||"#iconFile"}">
+    </use></svg>
+    <span class="b3-list-item__text">
+    ${菜单项目.菜单文字}
+    </span>
+    <span class="b3-menu__accelerator">${菜单项目.唤起词列表[0]}</span>
+    </div>
+    `
+    菜单项目元素.addEventListener("click",()=>菜单项目.回调函数())
+    菜单项目元素.addEventListener("focus",()=>菜单项目元素.setAttribute("class","b3-list-item b3-list-item--two fn__block b3-list-item--focus"))
+    return 菜单项目元素
 }
 window.竖线菜单设置={"菜单项目列表":[],"唤起词最大长度":0}
 const 注册竖线菜单项目 = function(数据值,菜单图标,菜单文字,回调函数,唤起词列表){

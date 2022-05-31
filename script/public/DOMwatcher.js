@@ -8,6 +8,7 @@ export class DOM监听器{
         this.监听器序列 = [] 
         this.判定监听目标()
         this.开始监听()
+        this.自动刷新监听目标()
     }    
     判定监听目标(){
         if(typeof(this.监听目标)=='string'){
@@ -23,11 +24,24 @@ export class DOM监听器{
     开始监听(){
         if(this.监听目标序列&&this.监听目标序列[0]){
             this.监听目标序列.forEach(element => {
-                let 监听器 = new MutationObserver(this.监听器回调)
+                let 监听器 = new MutationObserver((mutationsList, observer)=>{
+                    this.监听器回调(mutationsList, observer)
+                    this.结束监听()
+                })
                 监听器.observe(element,this.监听选项)
                 this.监听器序列.push(监听器)
             });
         }
+      
+    }
+    自动刷新监听目标(){
+        let 监听器 = new MutationObserver(()=>{
+            this.判定监听目标()
+            this.开始监听()
+        })
+        监听器.observe(document,{
+            attributes: true, childList: true, subtree: true
+        })
     }
     结束监听(){
         this.监听器序列.forEach(

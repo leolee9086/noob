@@ -42,6 +42,21 @@ const 窗口配置器= {
       "http://192.168.0.9:6806/appearance/themes/naive/pages/styleconfig.html",
       option
     );
+  },
+  打开插件设置窗口() {
+    let option = {
+        width: 800,
+        height: 600,
+        alwaysOnTop:true,
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+        },
+      };
+    窗口配置器.加载窗口(
+      "http://192.168.0.9:6806/appearance/themes/naive/pages/plugin.html",
+      option
+    );
   }
 }
 export { 窗口配置器 as 窗口配置器 };

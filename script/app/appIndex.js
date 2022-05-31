@@ -1,21 +1,28 @@
 import { 加载图标 } from "./ui/icon.js";
 import { 窗口配置器 } from "./ui/page.js";
-import { 主题界面 } from "./ui/ui.js";
 import { DOM监听器 } from "../public/DOMwatcher.js";
 import { 主题插件 } from "./plugin.js";
-import { 事件总线 } from "../public/eventbus.js";
+import { 事件总线 } from "../public/eventBus.js";
+import { 共享数据总线 } from "../public/eventChannel.js";
 import { 快捷键监听器 } from "../public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
+import {styleEnhancer} from "../../plugins/corePlugins/styleEnhancer/index.js"
 naive.事件总线 = new 事件总线();
 naive.全局快捷键监听器 = new 快捷键监听器(document);
 naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
+naive.编辑器队列 = []
+naive.竖线菜单设置 = [];
+
 let res = await fetch("/appearance/themes/naive/config/style.json");
+
 naive.编辑器样式设置 = await res.json();
+
 naive.快捷键设置 = {
   打开服务器设置窗口: "ctrl+alt+p",
   打开样式设置窗口: "alt+s",
 };
+
 let res1 = await fetch("/appearance/themes/naive/config/fontStyles.json");
 
 naive.行内样式 = await res1.json();
@@ -35,10 +42,11 @@ naive.停用插件 = function () {
   console.log("测试");
 };
 console.log(naive);
-naive.竖线菜单设置 = [];
 naive.editor = {};
 naive.editor.footerWidget = "cc-template";
 naive.plugins = {};
+naive.plugins.styleEnhancer = new styleEnhancer({})
+
 naive.plugin = 主题插件;
 let 测试插件 = { name: "测试" };
 new naive.plugin(测试插件);
@@ -234,8 +242,13 @@ if (window.require) {
     );
   }
   主题界面.注册顶栏按钮(
-    "打开图床设置",
+    "打开编辑器设置",
     "iconBrush",
     窗口配置器.打开样式设置窗口
+  );
+  主题界面.注册顶栏按钮(
+    "打开插件设置",
+    "iconBrush",
+    窗口配置器.打开插件设置窗口
   );
 }

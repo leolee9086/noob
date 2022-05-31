@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- 导入 Vue 3 -->
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+    <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
+    <!-- 导入组件库 -->
+    <script src="https://unpkg.com/element-plus"></script>
+
+</head>
+
+<body>
+    <div id="app"></div>
+</body>
+<template style="display: false;" id="template">
+    <el-container>
+        <el-header>插件设置</el-header>
+        <el-main>
+            <el-form :model="config" label-width="120px">
+                <template v-for="(开关值,插件名) in config" :key = 插件名>
+                    <el-form-item :label="插件名" width="100%">
+                        <el-col :span="20">{{插件描述[插件名]||"这个插件没有描述"}}</el-col>
+                        <el-col :span="4"><el-switch v-model="config[插件名]" /></el-col>
+                    </el-form-item>
+                    <el-divider></el-divider>
+
+                </template>
+            </el-form>
+        </el-main>
+        <el-footer>
+
+            <el-button @click="重置()">
+                重置
+            </el-button>
+            <el-button @click="保存()">
+                保存
+            </el-button>
+        </el-footer>
+    </el-container>
+</template>
+<script>
+
+    let customfig = {}
+    async function 向思源请求数据(url, apitoken, data) {
+        let resData = null
+        await fetch(url, {
+            body: JSON.stringify(data),
+            method: 'POST',
+            headers: { 'Authorization': 'Token ' + apitoken },
+        }).then(function (response) { resData = response.json() })
+        return resData
+    }
+    const app = Vue.createApp({
+        template: document.getElementById('template').innerHTML,
+        data() {
+            return {
+                config: {},
+                插件描述:{}
+            }
+        },
+        mounted() {
+            this.config = customfig
+            for(let 插件名 in this.config){
+                fetch(`.././plugins/${插件名}/manifest.json`).then((response) => response.json()).then(json => {
+                    console.log(json)
+                    this.插件描述[插件名]=json.describe
+                    console.log(this.插件描述)
+                })
+            }
+        },
+        methods: {
+            重置() {
+                fetch('.././plugins/config.json').then((response) => response.json()).then(json => {
+                    this.config = Vue.reactive(json)
+                })
+            },
+            保存() {
+                const formData = new FormData()
+                data = JSON.stringify(this.config, undefined, 4)
+                var blob = new Blob([data], { type: 'text/json' })
+                formData.append('path', 'conf\\appearance\\themes\\naive\\plugins\\config.json')
+                formData.append('modTime', Date.now())
+                formData.append('file', blob)
+                let url = '/api/file/putFile'
+                fetch(url, {
+                    body: formData,
+                    method: "POST",
+                })
+            }
+        },
+        watch: {
+            config: {
+                handler(val) {
+                    console.log(val)
+                },
+                deep: true
+            }
+        }
+    })
+    app.use(ElementPlus);
+
+    const readJson = function () {
+        console.log(this)
+        let vm = this
+        fetch('.././plugins/config.json').then((response) => response.json()).then(json => {
+            customfig = Vue.reactive(json)
+            const vm = app.mount('#app')
+        })
+    }
+    readJson()
+
+</script>
+
+</html>

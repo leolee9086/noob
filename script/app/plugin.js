@@ -1,4 +1,6 @@
-export class 主题插件{
+import { 主题界面 } from "./ui/ui.js";
+
+export  class 主题插件{
     constructor(option){
         this.name =  option.name
         naive.plugins[this.name]=this
@@ -16,4 +18,17 @@ export class 主题插件{
     APP环境(){
         return naive.isApp
     }   
+    注册工具条项目(){
+        
+    }
+    编辑器队列(){
+        return naive.编辑器队列
+    }
+    加载css(option){
+        return naive.加载css(option)
+    }
+    加载js(){
+        return naive.加载js
+    }
+    
 }

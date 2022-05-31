@@ -1,0 +1,6 @@
+{
+    "corePlugins": true,
+    "test": true,
+    "test1": true,
+    "docEnhancer": false
+}
