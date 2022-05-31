@@ -11,6 +11,17 @@ naive.加载js = function (
   script.setAttribute("src", src);
   document.head.appendChild(script);
 };
+naive.加载css = function (
+  src = "daylight",sort = 1
+) {
+  let link = document.createElement("link");
+  link.setAttribute("href", src);
+  link.setAttribute("rel", "stylesheet");
+  link.setAttribute("class", "naiveStyle");
+  link.setAttribute("sort", sort||1);
+  document.head.appendChild(link);
+};
+
 //从siyuan对象加载必要的设置
 if(window.siyuan){
   naive.workspaceDir = window.siyuan.config.system.workspaceDir;

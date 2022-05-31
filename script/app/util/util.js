@@ -1,20 +1,4 @@
-function 解析url参数(url){
-    url = url || '';
-          const queryObj = {};
-          const reg = /[?&]([^=&#]+)=([^&#]*)/g;
-          const queryArr = url.match(reg) || [];
-          console.log(queryArr)
-          for (const i in queryArr) {
-              if (Object.hasOwnProperty.call(queryArr, i)) {
-                  const query = queryArr[i].split('=');
-                  const key = query[0].substr(1);
-                  const value = decodeURIComponent(query[1]);
-                  queryObj[key] ? queryObj[key] = [].concat(queryObj[key], value) : queryObj[key] = value;
-              }
-          }
-          console.log(queryObj)
-          return queryObj;
-  }
+
   function 窗口内打开思源块 (id){
     let 主界面=window.document
         console.log(主界面)

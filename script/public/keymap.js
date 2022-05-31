@@ -37,14 +37,15 @@ export class 快捷键监听器 {
   }
   快捷键字符串判定器(event) {
     let 快捷键字符串 = event.key.toLowerCase();
-    if (event.ctrlKey) {
-      快捷键字符串 = "ctrl+" + 快捷键字符串;
-    }
+  
     if (event.altKey) {
       快捷键字符串 = "alt+" + 快捷键字符串;
     }
     if (event.shiftKey) {
       快捷键字符串 = "shift+" + 快捷键字符串;
+    }
+    if (event.ctrlKey) {
+      快捷键字符串 = "ctrl+" + 快捷键字符串;
     }
     let 回调函数序列 = this["快捷键字典"][快捷键字符串];
     if (回调函数序列 && 回调函数序列[0]) {

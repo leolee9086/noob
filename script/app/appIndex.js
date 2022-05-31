@@ -3,17 +3,34 @@ import { 窗口配置器 } from "./ui/page.js";
 import { 主题界面 } from "./ui/ui.js";
 import { DOM监听器 } from "../public/DOMwatcher.js";
 import { 主题插件 } from "./plugin.js";
-import {事件总线} from "../public/eventbus.js"
-import {快捷键监听器} from "../public/keymap.js"
+import { 事件总线 } from "../public/eventbus.js";
+import { 快捷键监听器 } from "../public/keymap.js";
+import { 添加行内样式 } from "./util/font.js";
+naive.事件总线 = new 事件总线();
+naive.全局快捷键监听器 = new 快捷键监听器(document);
+naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
+naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
+let res = await fetch("/appearance/themes/naive/config/style.json");
+naive.编辑器样式设置 = await res.json();
+naive.快捷键设置 = {
+  打开服务器设置窗口: "ctrl+alt+p",
+  打开样式设置窗口: "alt+s",
+};
+let res1 = await fetch("/appearance/themes/naive/config/fontStyles.json");
 
-naive.事件总线 = new 事件总线()
-naive.全局快捷键监听器 = new 快捷键监听器(document)
-naive.全局快捷键监听器.on('ctrl+5',event=>{
-  console.log(event)
+naive.行内样式 = await res1.json();
+
+for (let 功能 in naive.快捷键设置) {
+  if (naive[功能]) {
+    naive.全局快捷键监听器.on(naive.快捷键设置[功能], naive[功能]);
+  }
 }
-)
-
-naive.事件总线.once('DOM改变',(数据)=>{console.log("测试一次性监听器",数据)})
+naive.加载css(
+  `/appearance/themes/${naive.编辑器样式设置.编辑器样式}/theme.css`
+);
+naive.事件总线.once("DOM改变", (数据) => {
+  console.log("测试一次性监听器", 数据);
+});
 naive.停用插件 = function () {
   console.log("测试");
 };
@@ -87,7 +104,7 @@ const 编辑器监听回调 = async function (mutationsList, observer) {
       mutation.target.getAttribute("updated")
     ) {
       naive.当前块id = mutation.target.getAttribute("data-node-id");
-      naive.事件总线.emitt('DOM改变',mutation)
+      naive.事件总线.emitt("DOM改变", mutation);
       let 文档编辑器 = mutation.target.parentElement;
       if (文档编辑器 && 文档编辑器.previousSibling.previousSibling) {
         let 当前文档id =
@@ -108,7 +125,7 @@ const 编辑器监听回调 = async function (mutationsList, observer) {
           let customfooterposition = 文档编辑器.getAttribute(
             "custom-footerPosition"
           );
-          if ((!footer) && customfooterurl) {
+          if (!footer && customfooterurl) {
             let div = document.createElement("div");
             div.setAttribute("class", "NodeDocumentFooter");
             div.setAttribute("data-id", 当前文档id);
@@ -140,7 +157,7 @@ const 编辑器监听回调 = async function (mutationsList, observer) {
             }
             文档编辑器.parentElement.appendChild(div);
           } else {
-            console.log(footer)
+            console.log(footer);
             let content = footer.querySelector("iframe");
             if (customfooterposition) {
               footer.style.position = customfooterposition;
@@ -161,9 +178,49 @@ let 编辑器监听器选项 = {
   监听目标: ".layout__center.fn__flex.fn__flex-1",
   监听器回调: 编辑器监听回调,
 };
-const 编辑器监听器 = new DOM监听器(编辑器监听器选项);
-编辑器监听器.开始监听();
-
+naive.编辑器监听器 = new DOM监听器(编辑器监听器选项);
+naive.编辑器监听器.开始监听();
+if (naive.编辑器样式设置.增强的行内样式) {
+  function 工具面板监听器回调(mutationsList, observer) {
+    for (let mutation of mutationsList) {
+      if (mutation.target) {
+        console.log(mutation.target);
+        let target = mutation.target;
+        let FontStyle = target.querySelectorAll(
+          'button.protyle-font__style[data-type="style4"]'
+        );
+        if (FontStyle[0]) {
+          let firstFontStyle = FontStyle[FontStyle.length - 1];
+          let span = firstFontStyle.parentElement.querySelector(
+            ".fn__space.fn__flex-1"
+          );
+          for (let 样式名 in naive.行内样式) {
+            if (
+              !firstFontStyle.parentElement.querySelector(
+                `[data-name='${样式名}']`
+              )
+            ) {
+              let newStyle = firstFontStyle.cloneNode();
+              newStyle.innerHTML = 样式名;
+              newStyle.setAttribute("data-name", 样式名);
+              newStyle.setAttribute("custom-data-type", "customInlineStyle");
+              newStyle.setAttribute("style", naive.行内样式[样式名]);
+              firstFontStyle.parentElement.insertBefore(newStyle, span);
+              newStyle.addEventListener("click", (event) =>
+                添加行内样式(event, naive.行内样式[样式名])
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+  let 工具栏面板监听器选项 = {
+    监听目标: ".protyle-util",
+    监听器回调: 工具面板监听器回调,
+  };
+  naive.工具栏面板监听器 = new DOM监听器(工具栏面板监听器选项);
+}
 if (window.require) {
   if (naive.siyuan.user.userPaymentSum) {
     主题界面.注册顶栏按钮(
@@ -171,13 +228,10 @@ if (window.require) {
       "iconPublish",
       窗口配置器.打开服务器设置窗口
     );
-  }
-  else {
-    主题界面.注册顶栏按钮(
-        "打开服务器设置窗口",
-        "iconPublish",
-        ()=>window.alert("仅思源订阅用户可用发布设置功能")
-      );  
+  } else {
+    主题界面.注册顶栏按钮("打开服务器设置窗口", "iconPublish", () =>
+      window.alert("仅思源订阅用户可用发布设置功能")
+    );
   }
   主题界面.注册顶栏按钮(
     "打开图床设置",
