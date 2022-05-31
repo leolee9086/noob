@@ -27,8 +27,8 @@ export  class 主题插件{
     加载css(option){
         return naive.加载css(option)
     }
-    加载js(){
-        return naive.加载js
+    加载js(option){
+        return naive.加载js(option)
     }
     
 }
