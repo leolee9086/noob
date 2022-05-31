@@ -8,8 +8,12 @@ import {快捷键监听器} from "../public/keymap.js"
 
 naive.事件总线 = new 事件总线()
 naive.全局快捷键监听器 = new 快捷键监听器(document)
+naive.全局快捷键监听器.on('ctrl+5',event=>{
+  console.log(event)
+}
+)
 
-naive.事件总线.on('DOM改变',(数据)=>{console.log(数据)})
+naive.事件总线.once('DOM改变',(数据)=>{console.log("测试一次性监听器",数据)})
 naive.停用插件 = function () {
   console.log("测试");
 };

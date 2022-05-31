@@ -34,4 +34,12 @@ export class 事件总线{
             )
         }
     }
+    once(事件类型,函数){
+        let that = this
+        that.中间函数 = function(数据){
+            函数(数据)
+            that.off(事件类型,that.中间函数)
+        }
+        this.on(事件类型,that.中间函数)
+    }
 }
