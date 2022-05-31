@@ -1,8 +1,15 @@
 import { 加载图标 } from "./ui/icon.js";
 import { 窗口配置器 } from "./ui/page.js";
 import { 主题界面 } from "./ui/ui.js";
-import { DOM监听器 } from "./DOMwatcher.js";
+import { DOM监听器 } from "../public/DOMwatcher.js";
 import { 主题插件 } from "./plugin.js";
+import {事件总线} from "../public/eventbus.js"
+import {快捷键监听器} from "../public/keymap.js"
+
+naive.事件总线 = new 事件总线()
+naive.全局快捷键监听器 = new 快捷键监听器(document)
+
+naive.事件总线.on('DOM改变',(数据)=>{console.log(数据)})
 naive.停用插件 = function () {
   console.log("测试");
 };
@@ -76,6 +83,7 @@ const 编辑器监听回调 = async function (mutationsList, observer) {
       mutation.target.getAttribute("updated")
     ) {
       naive.当前块id = mutation.target.getAttribute("data-node-id");
+      naive.事件总线.emitt('DOM改变',mutation)
       let 文档编辑器 = mutation.target.parentElement;
       if (文档编辑器 && 文档编辑器.previousSibling.previousSibling) {
         let 当前文档id =
@@ -91,12 +99,12 @@ const 编辑器监听回调 = async function (mutationsList, observer) {
           let customfooterheight =
             文档编辑器.getAttribute("custom-footerHeight") || 400;
           if (!customfooterurl) {
-            customfooterurl = naive.footerWidget;
+            customfooterurl = naive.editor.footerWidget;
           }
           let customfooterposition = 文档编辑器.getAttribute(
             "custom-footerPosition"
           );
-          if (!footer && customfooterurl) {
+          if ((!footer) && customfooterurl) {
             let div = document.createElement("div");
             div.setAttribute("class", "NodeDocumentFooter");
             div.setAttribute("data-id", 当前文档id);
@@ -128,6 +136,7 @@ const 编辑器监听回调 = async function (mutationsList, observer) {
             }
             文档编辑器.parentElement.appendChild(div);
           } else {
+            console.log(footer)
             let content = footer.querySelector("iframe");
             if (customfooterposition) {
               footer.style.position = customfooterposition;
