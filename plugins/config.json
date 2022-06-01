@@ -2,5 +2,6 @@
     "corePlugins": true,
     "docEnhancer": true,
     "condeEnhancer": true,
-    "styleEnhancer": true
+    "styleEnhancer": true,
+    "codeEnhancer": false
 }

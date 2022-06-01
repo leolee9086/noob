@@ -28,6 +28,3 @@ function 生成dom元素(元素对象) {
     return 临时元素
   }
 }
-function 获取块元素(id){
-  
-}

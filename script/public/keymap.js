@@ -32,7 +32,6 @@ export class 快捷键监听器 {
     }
   }
   结束监听() {
-
     this.目标元素.removeEventListener("keydown", this.真实快捷键字符串判定器);
   }
   快捷键字符串判定器(event) {

@@ -1,5 +1,7 @@
 const naive = {};
 naive.根目录 = "/appearance/themes/naive";
+naive.plugins = {};
+
 naive.加载js = function (
   option = { src, type: "module", async: false, defer: false }
 ) {

@@ -42,6 +42,11 @@ export class DOM监听器{
         监听器.observe(document,{
             attributes: true, childList: true, subtree: true
         })
+        let blocks = document.querySelectorAll(`protyle-wysiwyg div[data-node-id]`)
+        console.log(blocks)
+        blocks.forEach(block=>
+            block.addEventListener("click",(event)=>this.判定并获取块id(event))
+        )
     }
     结束监听(){
         this.监听器序列.forEach(
@@ -61,5 +66,20 @@ export class DOM监听器{
         else{
             return 判定目标 && typeof 判定目标 === 'object' && 判定目标.nodeType === 1 && typeof 判定目标.nodeName === 'string';
         }
+    }
+    判定并获取块id(event){
+        if(event&&event.target){
+            let target = event.target
+            this.获取id(target)
+        }
+    }
+    获取id(target){
+        if(target.getAttribute("data-node-id")){
+            naive.当前块id =  target.getAttribute("data-node-id")
+            console.log(naive.当前块id)
+            naive.事件总线.emitt("当前块id改变",naive.当前块id)
+        }
+        else target = target.parentElement
+        this.获取id(target)
     }
 }

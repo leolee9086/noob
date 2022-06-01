@@ -7,18 +7,16 @@ import { 主题界面 } from "./ui/ui.js";
 import { 共享数据总线 } from "../public/eventChannel.js";
 import { 快捷键监听器 } from "../public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
-import {styleEnhancer} from "../../plugins/styleEnhancer/index.js"
+
 naive.事件总线 = new 事件总线();
 naive.全局快捷键监听器 = new 快捷键监听器(document);
 naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
-naive.编辑器队列 = []
+naive.编辑器队列 = [];
 naive.竖线菜单设置 = [];
-naive.自定义块标菜单= []
+naive.自定义块标菜单 = [];
 let res = await fetch("/appearance/themes/naive/config/style.json");
 naive.编辑器样式设置 = await res.json();
-let res1 = await fetch("/appearance/themes/naive/config/fontStyles.json");
-naive.行内样式 = await res1.json();
 let res3 = await fetch("/appearance/themes/naive/config/keymap.json");
 naive.快捷键设置 = await res3.json();
 for (let 功能 in naive.快捷键设置) {
@@ -32,21 +30,27 @@ naive.加载css(
 //插件机制
 let res4 = await fetch("/appearance/themes/naive/plugins/config.json");
 
-naive.pluginConfig = await res4.json()
-naive.plugins={}
+naive.pluginConfig = await res4.json();
 naive.停用插件 = function (插件) {
-  naive.plugins[插件.name]=null
+  naive.plugins[插件.name] = null;
 };
-for(let 插件名 in naive.pluginConfig){
-  let option ={src: `/appearance/themes/naive/plugins/${插件名}/index.js`, type: "module"}
-  naive.加载js(option)
-  console.log("加载插件",插件名)
+console.log(naive)
+for (let 插件名 in naive.pluginConfig) {
+  let option = {
+    src: `/appearance/themes/naive/plugins/${插件名}/index.js`,
+    type: "module",
+  };
+  naive.加载js(option);
+  console.log("加载插件", 插件名);
 }
 naive.editor = {};
 naive.editor.footerWidget = "cc-template";
 naive.plugin = 主题插件;
-let option1 ={src: `/appearance/themes/naive/script/corePlugins/configPages.js`, type: "module"}
-naive.加载js(option1)
+let option1 = {
+  src: `/appearance/themes/naive/script/corePlugins/configPages.js`,
+  type: "module",
+};
+naive.加载js(option1);
 
 加载图标();
 console.log(naive);
@@ -85,22 +89,6 @@ const userId = window.siyuan.user.userId;
 const winlist = {
   服务器设置窗口: null,
 };
-const 菜单监听器回调 = function (mutationsList, observer) {
-  for (let mutation of mutationsList) {
-    if (mutation.type === "childList") {
-      console.log("A child node has been added or removed.");
-    } else if (mutation.type === "attributes") {
-      console.log(mutation);
-      console.log("The " + mutation.attributeName + " attribute was modified.");
-    }
-  }
-};
-let 监听器选项 = {
-  监听目标: "#commonMenu",
-  监听器回调: 菜单监听器回调,
-};
-//const 监听器 = new DOM监听器(监听器选项);
-//监听器.开始监听();
 
 const 编辑器监听回调 = async function (mutationsList, observer) {
   for (let mutation of mutationsList) {
@@ -191,32 +179,10 @@ if (naive.编辑器样式设置.增强的行内样式) {
     for (let mutation of mutationsList) {
       if (mutation.target) {
         console.log(mutation.target);
-        let target = mutation.target;
-        let FontStyle = target.querySelectorAll(
-          'button.protyle-font__style[data-type="style4"]'
-        );
-        if (FontStyle[0]) {
-          let firstFontStyle = FontStyle[FontStyle.length - 1];
-          let span = firstFontStyle.parentElement.querySelector(
-            ".fn__space.fn__flex-1"
-          );
-          for (let 样式名 in naive.行内样式) {
-            if (
-              !firstFontStyle.parentElement.querySelector(
-                `[data-name='${样式名}']`
-              )
-            ) {
-              let newStyle = firstFontStyle.cloneNode();
-              newStyle.innerHTML = 样式名;
-              newStyle.setAttribute("data-name", 样式名);
-              newStyle.setAttribute("custom-data-type", "customInlineStyle");
-              newStyle.setAttribute("style", naive.行内样式[样式名]);
-              firstFontStyle.parentElement.insertBefore(newStyle, span);
-              newStyle.addEventListener("click", (event) =>
-                添加行内样式(event, naive.行内样式[样式名])
-              );
-            }
-          }
+        if (mutation.target.getAttribute("class") == "protyle-util") {
+          naive.事件总线.emitt("工具栏面板显示", mutation.target);
+        } else {
+          naive.事件总线.emitt("工具栏面板隐藏", mutation.target);
         }
       }
     }
@@ -228,15 +194,40 @@ if (naive.编辑器样式设置.增强的行内样式) {
   naive.工具栏面板监听器 = new DOM监听器(工具栏面板监听器选项);
 }
 if (window.require) {
- 
-  主题界面.注册顶栏按钮(
-    {提示:"打开编辑器设置",
-    图标:"iconBrush",
-    回调函数:窗口配置器.打开样式设置窗口}
-  );
-  主题界面.注册顶栏按钮(
-    {提示:"打开插件设置",
-    图标:"iconBrush",
-    回调函数:窗口配置器.打开插件设置窗口}
-  );
+  主题界面.注册顶栏按钮({
+    提示: "打开编辑器设置",
+    图标: "iconBrush",
+    回调函数: 窗口配置器.打开样式设置窗口,
+  });
+  主题界面.注册顶栏按钮({
+    提示: "打开插件设置",
+    图标: "iconBrush",
+    回调函数: 窗口配置器.打开插件设置窗口,
+  });
+}
+document.addEventListener("mousedown", 判定并获取块id);
+naive.事件总线.on("当前块id改变", (id) => {
+  console.log(id);
+});
+function 判定并获取块id(event) {
+  if (event && event.target) {
+    let target = event.target;
+    获取id(target);
+  }
+}
+function 获取id(target) {
+  if (!target) {
+    return;
+  }
+  if (target.getAttribute("data-node-id")) {
+    if (target.getAttribute("data-node-id") !== naive.当前块id) {
+      naive.当前块id = target.getAttribute("data-node-id");
+      console.log(naive.当前块id);
+      naive.事件总线.emitt("当前块id改变", naive.当前块id);
+    }
+    return;
+  } else {
+    target = target.parentElement;
+    获取id(target);
+  }
 }

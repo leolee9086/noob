@@ -4,5 +4,5 @@
     "app":true,
     "auth":"leolee9086",
     "url":"",
-    "describe":"为文档块增加发布设置等功能,不必打开属性面板设置"
+    "describe":"增加更多的行内样式"
 }

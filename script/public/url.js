@@ -22,7 +22,5 @@ function 获取url参数 (参数名) {
     打开块id(窗口块id)
    }
   }
-  function 打开悬浮窗口(){
 
-  }
   

@@ -22,10 +22,9 @@ class configPages extends 主题插件 {
       };
       
     this.加载窗口(
-      "http://192.168.0.9:6806/appearance/themes/naive/pages/serverconfig.html",
+      "/appearance/themes/naive/pages/serverconfig.html",
       option
     );
   }
-
 }
 new configPages()

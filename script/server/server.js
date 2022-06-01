@@ -5,9 +5,6 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
-    if(!naive.siyuan.user.userPaymentSum){
-      return null
-    }
     let path = require("path");
     const 渲染器类 = require("./template");
     const api = require("../public/siYuanApi");
@@ -30,6 +27,7 @@ module.exports = {
 
     this.渲染器 = 渲染器;
     const bodyParser = require("body-parser");
+    //引入nodered
     const settings = {
       httpAdminRoot: "/red",
       httpNodeRoot: "/red/api",
@@ -38,7 +36,6 @@ module.exports = {
     };
 
     const express1 = require("express");
-    const xmlparser = require("express-xml-bodyparser");
     const app = express1();
 
     //app.use(express1.text());  //body-parser 解析json格式数据
