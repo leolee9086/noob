@@ -152,7 +152,6 @@ const 应用代码块到文档 = function(块id){
 注册自定义块标菜单("NodeList", "显示为导图","#iconList", 转换列表为导图);
 注册自定义块标菜单("NodeList", "显示为树状表格","#iconList", 转换列表为树状表格);
 注册自定义块标菜单("NodeList", "显示为默认","#iconList", 转换列表为默认视图);
-注册自定义块标菜单("NodeHeading", "转换为子文档","#iconFile" ,转换标题为子文档);
 注册自定义块标菜单("NodeHeading", "转换为子文档并留下块引","#iconFile" ,转换标题为子文档并留下块引);
 注册自定义块标菜单("NodeCodeBlock", "运行到当前窗口","#iconCode" ,运行代码块到文档);
 注册自定义块标菜单("NodeCodeBlock", "应用css到当前窗口","#iconCode" ,应用代码块到文档);

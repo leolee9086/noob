@@ -5,12 +5,24 @@ export  class 主题插件{
         this.name =  option.name
         naive.plugins[this.name]=this
         console.log(`加载${this.name}插件`)
+        this.app = naive
     }
     注册顶栏图标(option){
         return naive.注册顶栏图标(option)
     }
     注册通用菜单项目(option){
         return naive.注册通用菜单项目(option)
+    }
+    注册块标菜单(option){
+        let {块类型, 菜单文字,菜单图标, 回调函数} =option
+        this.app.自定义块标菜单[块类型] ? null : (自定义块标菜单[块类型] = {});
+        this.app.自定义块标菜单[块类型][菜单文字]
+          ? null
+          : (自定义块标菜单[块类型][菜单文字] = {});
+        this.app.自定义块标菜单[块类型][菜单文字]["回调函数"] = 回调函数;
+        this.app.自定义块标菜单[块类型][菜单文字]["菜单文字"] = 菜单文字;
+        this.app.自定义块标菜单[块类型][菜单文字]["菜单图标"] = 菜单图标;
+        this.app.自定义块标菜单[块类型][菜单文字]["注册插件"] = this.name;
     }
     停用 (){ 
         naive.停用插件(this)

@@ -3,10 +3,11 @@ import { 窗口配置器 } from "./ui/page.js";
 import { DOM监听器 } from "../public/DOMwatcher.js";
 import { 主题插件 } from "./plugin.js";
 import { 事件总线 } from "../public/eventBus.js";
+import { 主题界面 } from "./ui/ui.js";
 import { 共享数据总线 } from "../public/eventChannel.js";
 import { 快捷键监听器 } from "../public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
-import {styleEnhancer} from "../../plugins/corePlugins/styleEnhancer/index.js"
+import {styleEnhancer} from "../../plugins/styleEnhancer/index.js"
 naive.事件总线 = new 事件总线();
 naive.全局快捷键监听器 = new 快捷键监听器(document);
 naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
@@ -38,8 +39,8 @@ naive.加载css(
 naive.事件总线.once("DOM改变", (数据) => {
   console.log("测试一次性监听器", 数据);
 });
-naive.停用插件 = function () {
-  console.log("测试");
+naive.停用插件 = function (插件) {
+  naive.plugins[插件.name]=null
 };
 console.log(naive);
 naive.editor = {};

@@ -2,5 +2,7 @@
     "corePlugins": true,
     "test": true,
     "test1": true,
-    "docEnhancer": false
+    "docEnhancer": false,
+    "condeEnhancer": false,
+    "styleEnhancer": false
 }
