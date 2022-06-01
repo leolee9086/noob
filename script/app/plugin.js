@@ -43,5 +43,13 @@ export  class 主题插件{
     加载js(option){
         return naive.加载js(option)
     }
-    
+    加载窗口(url, windowParams, closeCallback) {
+        if (require) {
+            const { BrowserWindow } = require("@electron/remote");
+            // 新建窗口(Electron 环境)
+            let newWin = new BrowserWindow(windowParams);
+            newWin.loadURL(url);
+            newWin.name = "name";     
+        }
+      }
 }
