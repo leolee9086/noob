@@ -1,8 +1,6 @@
 {
     "corePlugins": true,
-    "test": true,
-    "test1": true,
-    "docEnhancer": false,
-    "condeEnhancer": false,
-    "styleEnhancer": false
+    "docEnhancer": true,
+    "condeEnhancer": true,
+    "styleEnhancer": true
 }

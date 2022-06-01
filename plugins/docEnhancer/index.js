@@ -1,17 +1,17 @@
 import {主题插件} from "../../script/app/plugin.js"
-export  class  styleEnhancer extends  主题插件  {
+class  docEnhancer extends  主题插件  {
     constructor(option){
         super(option)
         console.log(this)
-        let option = {
+        let option1 = {
             块类型:"NodeHeading", 
             菜单文字:"转换为子文档",
             菜单图标:"#iconFile",
             回调函数:this.转换标题为子文档 
         }
-        this.注册块标菜单(option)
+        this.注册块标菜单(option1)
     }
-    转换标题为子文档(){
+    async 转换标题为子文档(){
         let 块id = this.app.当前块id
         let 块数据 = null;
         let data = {
@@ -46,3 +46,4 @@ export  class  styleEnhancer extends  主题插件  {
         块标菜单.setAttribute("class","b3-menu fn__none")
     }
 }
+new docEnhancer({name:"docEnhancer"})

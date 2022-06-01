@@ -14,20 +14,13 @@ naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
 naive.编辑器队列 = []
 naive.竖线菜单设置 = [];
-
+naive.自定义块标菜单= []
 let res = await fetch("/appearance/themes/naive/config/style.json");
-
 naive.编辑器样式设置 = await res.json();
-
-naive.快捷键设置 = {
-  打开服务器设置窗口: "ctrl+alt+p",
-  打开样式设置窗口: "alt+s",
-};
-
 let res1 = await fetch("/appearance/themes/naive/config/fontStyles.json");
-
 naive.行内样式 = await res1.json();
-
+let res3 = await fetch("/appearance/themes/naive/config/keymap.json");
+naive.快捷键设置 = await res3.json();
 for (let 功能 in naive.快捷键设置) {
   if (naive[功能]) {
     naive.全局快捷键监听器.on(naive.快捷键设置[功能], naive[功能]);
@@ -36,24 +29,28 @@ for (let 功能 in naive.快捷键设置) {
 naive.加载css(
   `/appearance/themes/${naive.编辑器样式设置.编辑器样式}/theme.css`
 );
-naive.事件总线.once("DOM改变", (数据) => {
-  console.log("测试一次性监听器", 数据);
-});
+//插件机制
+let res4 = await fetch("/appearance/themes/naive/plugins/config.json");
+
+naive.pluginConfig = await res4.json()
+naive.plugins={}
 naive.停用插件 = function (插件) {
   naive.plugins[插件.name]=null
 };
-console.log(naive);
+for(let 插件名 in naive.pluginConfig){
+  let option ={src: `/appearance/themes/naive/plugins/${插件名}/index.js`, type: "module"}
+  naive.加载js(option)
+  console.log("加载插件",插件名)
+}
 naive.editor = {};
 naive.editor.footerWidget = "cc-template";
-naive.plugins = {};
-naive.plugins.styleEnhancer = new styleEnhancer({})
-
 naive.plugin = 主题插件;
-let 测试插件 = { name: "测试" };
-new naive.plugin(测试插件);
-naive.plugins.测试.停用();
+let option1 ={src: `/appearance/themes/naive/script/corePlugins/configPages.js`, type: "module"}
+naive.加载js(option1)
 
 加载图标();
+console.log(naive);
+
 function 获取url参数(参数名) {
   const search = location.search; // 返回类似于 ?a=10&b=20&c=30
   const obj = new URLSearchParams(search);
@@ -231,25 +228,15 @@ if (naive.编辑器样式设置.增强的行内样式) {
   naive.工具栏面板监听器 = new DOM监听器(工具栏面板监听器选项);
 }
 if (window.require) {
-  if (naive.siyuan.user.userPaymentSum) {
-    主题界面.注册顶栏按钮(
-      "打开服务器设置窗口",
-      "iconPublish",
-      窗口配置器.打开服务器设置窗口
-    );
-  } else {
-    主题界面.注册顶栏按钮("打开服务器设置窗口", "iconPublish", () =>
-      window.alert("仅思源订阅用户可用发布设置功能")
-    );
-  }
+ 
   主题界面.注册顶栏按钮(
-    "打开编辑器设置",
-    "iconBrush",
-    窗口配置器.打开样式设置窗口
+    {提示:"打开编辑器设置",
+    图标:"iconBrush",
+    回调函数:窗口配置器.打开样式设置窗口}
   );
   主题界面.注册顶栏按钮(
-    "打开插件设置",
-    "iconBrush",
-    窗口配置器.打开插件设置窗口
+    {提示:"打开插件设置",
+    图标:"iconBrush",
+    回调函数:窗口配置器.打开插件设置窗口}
   );
 }
