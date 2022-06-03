@@ -1,5 +1,4 @@
-import {主题插件} from "../../script/app/plugin.js"
-export  class  styleEnhancer extends  主题插件  {
+class  styleEnhancer extends  naive.plugin  {
     constructor(option){
         super(option)
         console.log(this.app)
@@ -95,4 +94,3 @@ export  class  styleEnhancer extends  主题插件  {
         
     }
 }
-new styleEnhancer({name:"styleEnhancer"})

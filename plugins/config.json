@@ -1,7 +1,7 @@
 {
-    "corePlugins": true,
     "docEnhancer": true,
-    "condeEnhancer": true,
     "styleEnhancer": true,
-    "codeEnhancer": false
+    "codeEnhancer": false,
+    "test": true,
+    "configPages": true
 }

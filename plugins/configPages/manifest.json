@@ -1,0 +1,7 @@
+{
+    "name":"configPages",
+    "auth":"leolee9086",
+    "url":"",
+    "describe":"为主题外观等设置增加顶栏按钮",
+    "environment":["app"]
+}

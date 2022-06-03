@@ -19,10 +19,15 @@
         <el-header>插件设置</el-header>
         <el-main>
             <el-form :model="config" label-width="120px">
-                <template v-for="(开关值,插件名) in config" :key = 插件名>
-                    <el-form-item :label="插件名" width="100%">
+                <template v-for="(开关值,插件名) in config" :key = 插件名 >
+                    <el-form-item :label="插件名" v-if="插件名!=='configPages'" width="100%">
                         <el-col :span="20">{{插件描述[插件名]||"这个插件没有描述"}}</el-col>
                         <el-col :span="4"><el-switch v-model="config[插件名]" /></el-col>
+                    </el-form-item>
+                    <el-form-item :label="插件名" v-if="插件名=='configPages'" width="100%">
+                        <el-col :span="20">用于加载各个设置窗口</el-col>
+                        <el-col :span="4">核心插件</el-col>
+
                     </el-form-item>
                     <el-divider></el-divider>
 
@@ -78,6 +83,7 @@
             },
             保存() {
                 const formData = new FormData()
+                this.config.configPages=true
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], { type: 'text/json' })
                 formData.append('path', 'conf\\appearance\\themes\\naive\\plugins\\config.json')

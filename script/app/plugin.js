@@ -1,5 +1,6 @@
-import { 主题界面 } from "./ui/ui.js";
 import { blockHandler } from "../public/blockHandler.js"
+import { 窗口配置器 } from "./ui/page.js";
+
 export class 主题插件 {
   constructor(option) {
     this.name = option.name;
@@ -7,13 +8,24 @@ export class 主题插件 {
     console.log(`加载${this.name}插件`);
     this.app = naive;
     this.blockHandler=new blockHandler()
+    this.窗口配置器 = 窗口配置器
   }
   注册顶栏按钮(option) {
-    主题界面.注册顶栏按钮(option);
-  }
-  注册通用菜单项目(option) {
-    主题界面.注册通用菜单项目(option);
-  }
+    let {提示,图标,回调函数} =option
+    let button = document.createElement("div");
+    button.innerHTML = `<div class="toolbar__item toolbar__item--action b3-tooltips b3-tooltips__sw" aria-label="${提示}" id="minWindow">
+  <svg>
+      <use xlink:href="#${图标}"></use>
+  </svg>
+  </div>`;
+    button.setAttribute("class", "fn__flex");
+    let toolbar = document.getElementById("toolbar");
+    let windowControls = document.getElementById("windowControls");
+    setTimeout(() => toolbar.insertBefore(button, windowControls), 0);
+    console.log(button);
+    button.addEventListener("click", 回调函数.bind(this));
+    }
+
   注册块标菜单(option) {
     let 自定义块标菜单 = this.app.自定义块标菜单;
     let { 块类型, 菜单文字, 菜单图标, 回调函数 } = option;
@@ -24,7 +36,7 @@ export class 主题插件 {
     自定义块标菜单[块类型][菜单文字]["回调函数"] = 回调函数;
     自定义块标菜单[块类型][菜单文字]["菜单文字"] = 菜单文字;
     自定义块标菜单[块类型][菜单文字]["菜单图标"] = 菜单图标;
-    自定义块标菜单[块类型][菜单文字]["注册插件"] = this.name;
+    自定义块标菜单[块类型][菜单文字]["注册插件"] = this;
   }
   停用() {
     naive.停用插件(this);
@@ -46,15 +58,19 @@ export class 主题插件 {
     if (require) {
       const { BrowserWindow } = require("@electron/remote");
       // 新建窗口(Electron 环境)
+      url= this.url格式化(url)
       let newWin = new BrowserWindow(windowParams);
-      newWin.loadURL(url);
-      newWin.name = "name";
+      console.log(url)
+
+       newWin.loadURL(url.href);
+     // newWin.name = "name";
+      console.log(url)
     }
     else{
         window.open(url)
     }
   }
-  //来自dark+主题
+  //来自dark+主题 https://github.com/Zuoqiu-Yingyi/siyuan-theme-dark-plus
   正则(){
       return{
              // 正则表达式
@@ -66,4 +82,25 @@ export class 主题插件 {
              inboxid: /^\d{13}$/, // 收集箱 ID 正则表达式
       }
   }
+  //来自dark+主题 https://github.com/Zuoqiu-Yingyi/siyuan-theme-dark-plus
+  url格式化 (url, ssl = true) {
+    switch (true) { // 格式化 URL
+        case url.startsWith('assets/'):
+        case url.startsWith('widgets/'):
+        case url.startsWith('emojies/'):
+        case url.startsWith('appearance/'):
+        case url.startsWith('export/'):
+            return new URL(`${window.location.origin}/${url}`);
+        case url.startsWith('//'):
+            return new URL(`${ssl ? 'https' : 'http'}:${url}`);
+        case url.startsWith('/'):
+            return new URL(`${window.location.origin}${url}`);
+        case url.startsWith('http://'):
+        case url.startsWith('https://'):
+            return new URL(url);
+        default:
+            return new URL(`${ssl ? 'https' : 'http'}://${url}`);
+    }
+  }
 }
+export {主题插件 as plugin} 

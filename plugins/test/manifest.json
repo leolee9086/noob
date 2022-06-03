@@ -1,6 +1,6 @@
 {
-    "name":"styleEnhancer",
-    "environment":["app","browser"],
+    "name":"test",
+    "environment":["server"],
     "auth":"leolee9086",
     "url":"",
     "describe":"增加更多的行内样式"

@@ -1,4 +1,4 @@
-class 思源api {
+ class 思源api {
     constructor(option){
         if(option){
         this.思源伺服地址 = option.思源伺服ip||'127.0.0.1'

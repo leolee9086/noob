@@ -1,5 +1,4 @@
-import {主题插件} from "../../script/app/plugin.js"
-class  docEnhancer extends  主题插件  {
+class  docEnhancer extends  naive.plugin  {
     constructor(option){
         super(option)
         console.log(this)
@@ -46,4 +45,3 @@ class  docEnhancer extends  主题插件  {
         块标菜单.setAttribute("class","b3-menu fn__none")
     }
 }
-new docEnhancer({name:"docEnhancer"})

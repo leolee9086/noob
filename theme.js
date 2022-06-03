@@ -12,6 +12,7 @@ naive.加载js = function (
   if (defer) script.setAttribute("defer", true);
   script.setAttribute("src", src);
   document.head.appendChild(script);
+  return script
 };
 naive.加载css = function (
   src = "daylight",sort = 1
@@ -22,6 +23,7 @@ naive.加载css = function (
   link.setAttribute("class", "naiveStyle");
   link.setAttribute("sort", sort||1);
   document.head.appendChild(link);
+  return link
 };
 
 //从siyuan对象加载必要的设置

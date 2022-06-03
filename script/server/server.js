@@ -10,8 +10,8 @@ module.exports = {
     const api = require("../public/siYuanApi");
     const nodered = require("node-red");
     const http = require("http");
-
     this.渲染器 = null;
+
     const fs = require("fs");
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
@@ -37,6 +37,8 @@ module.exports = {
 
     const express1 = require("express");
     const app = express1();
+    let res4 = await fetch("/appearance/themes/naive/plugins/config.json");
+    naive.serverEndPluginConfig = await res4.json();
 
     //app.use(express1.text());  //body-parser 解析json格式数据
     //  app.use(xmlparser());  //body-parser 解析json格式数据
@@ -49,6 +51,10 @@ module.exports = {
     );
     console.log(express1.json);
     const port = realoption.发布端口;
+    global.publishserver = app.listen(port, () => {
+      console.log(`custom app listening on port ${port}`);
+    });
+
     let 空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
@@ -66,7 +72,26 @@ module.exports = {
         console.log(e, 888);
       }
     }
+    console.log(app);
 
+    for (let 插件名 in naive.serverEndPluginConfig) {
+      try{
+      if(naive.serverEndPluginConfig[插件名]){
+      
+        await naive.加载插件(插件名, "server");
+        let 插件 = naive.plugins[插件名];
+        console.log(插件.router)
+        if (插件) {
+          
+          let method = 插件.method;
+          method=='get'?app.get(插件.router, (req, res) => 插件.func(req, res)):null;
+
+        }
+      }
+      }catch(e){
+        console.log(e)
+      }
+    }
     app.get("/appearance/*", (req, res) => {
       console.log(req);
       this.转发请求(req, res);
@@ -135,9 +160,7 @@ module.exports = {
       res.send({ id: data.id });
     });
 
-    global.publishserver = app.listen(port, () => {
-      console.log(`custom app listening on port ${port}`);
-    });
+  
     nodered.init(global.publishserver, settings);
     app.use(settings.httpAdminRoot, nodered.httpAdmin);
     app.use(settings.httpNodeRoot, nodered.httpNode);
@@ -183,14 +206,12 @@ module.exports = {
     let realblockid = "",
       realoption = this.realoption;
 
-    if (req.params&&req.params.blockid) {
-      realblockid = req.params.blockid 
-    } 
-    else if (req.query) {
+    if (req.params && req.params.blockid) {
+      realblockid = req.params.blockid;
+    } else if (req.query) {
       realblockid =
         req.query.id || req.query.blockid || realoption.首页.思源文档id;
-    } 
-    else {
+    } else {
       console.log("渲染首页");
       this.渲染器.渲染首页().then((content1) => res.end(content1));
       return;
