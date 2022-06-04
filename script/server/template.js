@@ -25,6 +25,7 @@ module.exports = class {
     this.单块分享 = option.单块分享;
     this.思源伺服ip =this.思源伺服地址+':'+this.思源伺服端口;
     const api  =  require("../public/siYuanApi");
+    this.单块样式 = true;
 
     this.获取发布脚本内容();
     this.获取发布脚注内容();
@@ -163,7 +164,14 @@ module.exports = class {
     let content = res1.data.content;
     let docid = res1.data.id
     let 头图和标题 = await this.渲染页面标题和背景图(blockid);
-
+    let 块属性 = await this.获取块属性(blockid)
+    let 主题 = ''
+    if(块属性&&块属性['custom-publishTheme']){
+      主题=块属性['custom-publishTheme']
+      if(!主题.indexOf("url:")==0){
+        主题=  `/appearance/themes/${主题}/theme.css`
+      }
+    }
     let tempdiv = document.createElement("div");
     tempdiv.innerHTML = content;
     tempdiv =await this.刷新嵌入块(tempdiv,docid);
@@ -171,10 +179,10 @@ module.exports = class {
     tempdiv = this.parseblockref(tempdiv);
     content = tempdiv.innerHTML;
     if (头图和标题) {
-      return this.渲染模板(content, 头图和标题);
+      return this.渲染模板(content, 头图和标题,主题);
     }
 
-    return this.渲染模板(content);
+    return this.渲染模板(content,主题);
   }
   async siyuandata(url, data) {
     let resData = null;
@@ -190,6 +198,20 @@ module.exports = class {
         resData = response.json();
       });
     return resData;
+  }
+  async 获取块属性(blockid){
+    let obj = {}
+    let attrs = await 思源api.以sql向思源请求块数据(
+      `${this.思源伺服地址}:${this.思源伺服端口}`,
+      "",
+      `select * from attributes where block_id = '${blockid}'`
+    );
+    attrs.forEach((attr) =>
+      attr ? (obj[attr.name] = attr.value) : null
+    );
+  
+  return obj;
+
   }
   async 渲染页面标题和背景图(blockid) {
     let {
@@ -278,7 +300,7 @@ module.exports = class {
     嵌入块.innerHTML = 嵌入块内容 + 嵌入块.innerHTML;
     return 嵌入块.innerHTML;
   }
-  渲染模板(content, 头图) {
+  渲染模板(content, 头图,主题) {
     let 工具栏脚本 = "";
     if (!this.有限分享 && this.允许搜索) {
       工具栏脚本 = ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
@@ -289,6 +311,7 @@ module.exports = class {
 
       `;
     }
+    let 发布主题 =  主题?主题:this.发布主题
     return `<!DOCTYPE html>
     <html><head>
     <meta charset="utf-8">
@@ -300,7 +323,7 @@ module.exports = class {
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${this.基础样式}">
-    <link rel="stylesheet" type="text/css" id="themeStyle" href="${this.发布主题}">
+    <link rel="stylesheet" type="text/css" id="themeStyle" href="${发布主题}">
     <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
 
     <style>

@@ -5,26 +5,20 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
-    let path = require("path");
     const 渲染器类 = require("./template");
     const api = require("../public/siYuanApi");
     const nodered = require("node-red");
-    const http = require("http");
-    this.渲染器 = null;
-
     const fs = require("fs");
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
-    console.log(cusoption);
-    let realoption = this.生成默认设置(cusoption, workspaceDir, userId);
+    let realoption = naive.生成默认设置(cusoption, workspaceDir, userId);
+    this.渲染器 = null;
     this.realoption = realoption;
     console.log(cusoption);
     console.log(workspaceDir);
-
     console.log(realoption, 15);
     思源api = new api(realoption);
     渲染器 = new 渲染器类(realoption);
-
     this.渲染器 = 渲染器;
     const bodyParser = require("body-parser");
     //引入nodered
@@ -49,10 +43,9 @@ module.exports = {
         extended: true,
       })
     );
-    console.log(express1.json);
     const port = realoption.发布端口;
     global.publishserver = app.listen(port, () => {
-      console.log(`custom app listening on port ${port}`);
+      console.log(`publish app listening on port ${port}`);
     });
 
     let 空页面 = "";
@@ -77,12 +70,10 @@ module.exports = {
     for (let 插件名 in naive.serverEndPluginConfig) {
       try{
       if(naive.serverEndPluginConfig[插件名]){
-      
         await naive.加载插件(插件名, "server");
         let 插件 = naive.plugins[插件名];
         console.log(插件.router)
         if (插件) {
-          
           let method = 插件.method;
           method=='get'?app.get(插件.router, (req, res) => 插件.func(req, res)):null;
 
@@ -159,16 +150,15 @@ module.exports = {
       this.更新缓存(id, content, workspaceDir);
       res.send({ id: data.id });
     });
-
-  
     nodered.init(global.publishserver, settings);
     app.use(settings.httpAdminRoot, nodered.httpAdmin);
     app.use(settings.httpNodeRoot, nodered.httpNode);
-
     nodered.start();
     console.log(global.publishserver);
+    naive.publishserver=publishserver
     return publishserver;
   },
+
   解析路径: async function (path, realoption) {
     let pathArray = path.replace(".sy", "").split("/");
     pathArray = pathArray.slice(1, pathArray.length);
@@ -181,7 +171,6 @@ module.exports = {
         "",
         `select * from attributes where root_id = '${element}'`
       );
-      console.log(attrs, "aaa");
       attrs.forEach((attr) =>
         attr ? (obj[element][attr.name] = attr.value) : null
       );
@@ -231,13 +220,7 @@ module.exports = {
       if (realoption.单块分享) {
         realdocid = realblockid;
       }
-      //   let 路径数据 = await this.解析路径(块信息数组[0].path,realoption);
       let flag = await this.判定id权限(realdocid);
-      //  for (doc in 路径数据) {
-      //  console.log(路径数据[doc],"ddd")
-      // 路径数据[doc]["custom-publish"] ? (flag = true) : null;
-      // }
-      //  console.log(路径数据,'ccc');
       console.log(realoption, "kkk");
       if (!realoption.有限分享) {
         flag = true;
@@ -285,7 +268,6 @@ module.exports = {
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
     console.log(req.url, req.body);
-
     var options = {
       method: req.method,
       hostname: this.realoption.思源伺服地址,
@@ -318,7 +300,6 @@ module.exports = {
         });
       });
       // 将接收到的客户端请求数据发送到目标服务器;
-
       request1.write(postbodyBuffer);
       request1.end();
     });
@@ -381,7 +362,6 @@ module.exports = {
         路径数据[doc]["custom-publish"] ? (flag = true) : null;
       }
     }
-
     return flag;
   },
   请求数据: async function (url, apitoken, data) {

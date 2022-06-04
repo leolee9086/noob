@@ -69,7 +69,7 @@
         },
         methods: {
             重置() {
-                fetch('.././config/style.json').then((response) => response.json()).then(json => {
+                fetch('./style.json').then((response) => response.json()).then(json => {
                     this.config = Vue.reactive(json)
                 })
             },
@@ -77,7 +77,7 @@
                 const formData = new FormData()
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], { type: 'text/json' })
-                formData.append('path', 'conf\\appearance\\themes\\naive\\config\\style.json')
+                formData.append('path', 'conf\\appearance\\themes\\naive\\plugins\\styleEnhancer\\style.json')
                 formData.append('modTime', Date.now())
                 formData.append('file', blob)
                 let url = '/api/file/putFile'
@@ -101,7 +101,7 @@
     const readJson = function () {
         console.log(this)
         let vm = this
-        fetch('.././config/style.json').then((response) => response.json()).then(json => {
+        fetch('./style.json').then((response) => response.json()).then(json => {
             customfig = Vue.reactive(json)
             const vm = app.mount('#app')
         })

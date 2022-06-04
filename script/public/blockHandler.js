@@ -17,7 +17,6 @@ export class blockHandler{
     }
     setBlockAttributes(id,属性对象){
         for(let 属性名 in 属性对象){
-            
         }
     }
 }

@@ -5,11 +5,25 @@ class  styleEnhancer extends  naive.plugin  {
         this.加载行内样式()
         this.行内样式={}
         this.app.事件总线.on("工具栏面板显示",(面板)=>this.添加行内样式元素(面板))
+        let 外观设置图标 = {
+          提示: "打开外观设置窗口",
+          图标: "iconBrush",
+          回调函数:()=>this.加载窗口("/appearance/themes/naive/plugins/styleEnhancer/styleconfig.html",this.窗口设置),
+        };
+        this.注册顶栏按钮(外观设置图标);
+        this.加载编辑器主题()
+    }
+    async 加载编辑器主题(){
+      let res = await fetch("/appearance/themes/naive/plugins/styleEnhancer/style.json");
+      this.编辑器样式设置 = await res.json();
+      this.加载css(
+        `/appearance/themes/${this.编辑器样式设置.编辑器样式}/theme.css`
+      );
+
     }
     async 加载行内样式(){
         let res1 = await fetch("/appearance/themes/naive/config/fontStyles.json");
         this.行内样式 = await res1.json();
-
     }
     async 添加行内样式元素(面板){
         await this.加载行内样式()

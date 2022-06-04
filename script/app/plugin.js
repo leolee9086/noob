@@ -28,7 +28,7 @@ export class 主题插件 {
 
   注册块标菜单(option) {
     let 自定义块标菜单 = this.app.自定义块标菜单;
-    let { 块类型, 菜单文字, 菜单图标, 回调函数 } = option;
+    let { 块类型, 菜单文字, 菜单图标, 回调函数,显示判断函数 } = option;
     自定义块标菜单[块类型] ? null : (自定义块标菜单[块类型] = {});
     自定义块标菜单[块类型][菜单文字]
       ? null
@@ -37,6 +37,11 @@ export class 主题插件 {
     自定义块标菜单[块类型][菜单文字]["菜单文字"] = 菜单文字;
     自定义块标菜单[块类型][菜单文字]["菜单图标"] = 菜单图标;
     自定义块标菜单[块类型][菜单文字]["注册插件"] = this;
+    自定义块标菜单[块类型][菜单文字]["显示判断函数"] = 显示判断函数;
+
+  }
+  注册快捷键(快捷键字符串,回调函数){
+    this.app.全局快捷键监听器.on(快捷键字符串,回调函数)
   }
   停用() {
     naive.停用插件(this);
@@ -54,17 +59,26 @@ export class 主题插件 {
   加载js(option) {
     return naive.加载js(option);
   }
-  加载窗口(url, windowParams, closeCallback) {
+  加载窗口(url, windowParams,closeCallback) {
     if (require) {
+    //  console.log(this.app)
+     // let name =windowParams.name?windowParams.name:url
+     // naive.子窗口[name] ?()=>{naive.子窗口[name].close()}:null
       const { BrowserWindow } = require("@electron/remote");
       // 新建窗口(Electron 环境)
       url= this.url格式化(url)
       let newWin = new BrowserWindow(windowParams);
-      console.log(url)
+      newWin.loadURL(url.href);
+     // newWin.name = name;
+      newWin.onClose = 
+     // naive.子窗口[name] = newWin
+      newWin.on('closed', () => {
+        closeCallback?setTimeout(async () => closeCallback(newWin), 0):null
+       // naive.子窗口[newWin.name] = null
+        newWin = null;
+        console.log(naive)
+      })
 
-       newWin.loadURL(url.href);
-     // newWin.name = "name";
-      console.log(url)
     }
     else{
         window.open(url)

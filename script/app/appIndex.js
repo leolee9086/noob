@@ -2,22 +2,17 @@ import { 加载图标 } from "./ui/icon.js";
 import { 窗口配置器 } from "./ui/page.js";
 import { DOM监听器 } from "../public/DOMwatcher.js";
 import { 主题插件 } from "./plugin.js";
-import { 事件总线 } from "../public/eventBus.js";
 import { 主题界面 } from "./ui/ui.js";
 import { 共享数据总线 } from "../public/eventChannel.js";
 import { 快捷键监听器 } from "../public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
 
-naive.事件总线 = new 事件总线();
-naive.eventBus = naive.事件总线;
 naive.全局快捷键监听器 = new 快捷键监听器(document);
 naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
 naive.编辑器队列 = [];
 naive.竖线菜单设置 = [];
 naive.自定义块标菜单 = [];
-let res = await fetch("/appearance/themes/naive/config/style.json");
-naive.编辑器样式设置 = await res.json();
 let res3 = await fetch("/appearance/themes/naive/config/keymap.json");
 naive.快捷键设置 = await res3.json();
 for (let 功能 in naive.快捷键设置) {
@@ -25,9 +20,7 @@ for (let 功能 in naive.快捷键设置) {
     naive.全局快捷键监听器.on(naive.快捷键设置[功能], naive[功能]);
   }
 }
-naive.加载css(
-  `/appearance/themes/${naive.编辑器样式设置.编辑器样式}/theme.css`
-);
+
 //插件机制
 naive.plugin = 主题插件;
 
@@ -93,9 +86,9 @@ function 工具面板监听器回调(mutationsList, observer) {
     if (mutation.target) {
       console.log(mutation.target);
       if (mutation.target.getAttribute("class") == "protyle-util") {
-        naive.事件总线.emitt("工具栏面板显示", mutation.target);
+        naive.事件总线.emit("工具栏面板显示", mutation.target);
       } else {
-        naive.事件总线.emitt("工具栏面板隐藏", mutation.target);
+        naive.事件总线.emit("工具栏面板隐藏", mutation.target);
       }
     }
   }
@@ -111,10 +104,10 @@ function 通用菜单监听器回调(mutationsList, observer) {
     if (mutation.target) {
       if (mutation.target.getAttribute("class") == "b3-menu") {
         console.log("通用菜单显示");
-        naive.事件总线.emitt("通用菜单显示", mutation.target);
+        naive.事件总线.emit("通用菜单显示", mutation.target);
         判定通用菜单(mutation.target);
       } else {
-        naive.事件总线.emitt("通用菜单隐藏", mutation.target);
+        naive.事件总线.emit("通用菜单隐藏", mutation.target);
       }
     }
   }
@@ -130,7 +123,7 @@ function 判定通用菜单(通用菜单) {
     ".b3-menu__item.b3-menu__item--readonly"
   );
   if (readonly && readonly.innerText.indexOf("创建于") >= 0) {
-    naive.事件总线.emitt("块标菜单显示", {
+    naive.事件总线.emit("块标菜单显示", {
       类型: naive.当前块类型,
       id: naive.当前块id,
       菜单:通用菜单
@@ -148,10 +141,15 @@ function 插入自定义块标菜单项目(块标菜单数据) {
     let readonly = 块标菜单数据.菜单.querySelector(
       ".b3-menu__item.b3-menu__item--readonly"
     );
-    let item =          生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目])
-    let flag =  块标菜单数据.菜单.innerHTML.indexOf(item.innerHTML)>=0?false:true
+    let item =  生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目])
+    let flag =    块标菜单数据.菜单.innerHTML.indexOf(item.innerHTML)>=0?false:true
+    if(自定义块标菜单[当前块类型][菜单项目]["显示判断函数"]){
+      flag=flag&&自定义块标菜单[当前块类型][菜单项目]["显示判断函数"].bind(自定义块标菜单[当前块类型][菜单项目]["注册插件"])()
+      console.log(flag)
+      }
+    
     console.log(flag)
-    flag? 块标菜单数据.菜单.insertBefore(
+    flag&&item? 块标菜单数据.菜单.insertBefore(
           生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]),
           readonly
         )
@@ -159,7 +157,6 @@ function 插入自定义块标菜单项目(块标菜单数据) {
   }
 }
 const 生成列表菜单项目 = function (菜单项目) {
-  let 自定义块标菜单 = naive.自定义块标菜单;
 
   let button = document.createElement("button");
   button.className = "b3-menu__item diy";
@@ -169,6 +166,8 @@ const 生成列表菜单项目 = function (菜单项目) {
   button.setAttribute("data-node-id", naive.当前块id);
   button.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="${菜单项目.菜单图标}"></use></svg><span class="b3-menu__label">${菜单项目.菜单文字}</span>`;
   return button;
+  
+  
 };
 
 
@@ -190,7 +189,7 @@ function 获取id与类型(target) {
     if (target.getAttribute("data-node-id") !== naive.当前块id) {
       naive.当前块id = target.getAttribute("data-node-id");
       console.log(naive.当前块id);
-      naive.事件总线.emitt("当前块id改变", naive.当前块id);
+      naive.事件总线.emit("当前块id改变", naive.当前块id);
       if (target.getAttribute("data-type")) {
         naive.当前块类型 = target.getAttribute("data-type");
       }
@@ -199,5 +198,12 @@ function 获取id与类型(target) {
   } else {
     target = target.parentElement;
     获取id与类型(target);
+  }
+}
+naive.事件总线.on("当前块id改变",获取块数组)
+function 获取块数组(){
+  naive.当前块元素数组 = document.querySelectorAll(`div.protyle-wysiwyg div[data-node-id='${naive.当前块id}'`)
+  if(!naive.当前块元素数组){
+    naive.当前块元素数组 =document.querySelectorAll(`div.protyle-wysiwyg[data-node-id='${naive.当前块id}'`)
   }
 }
