@@ -1,7 +1,7 @@
 //判定是否在app内运行
 import {生成默认设置} from "./public/configer.js"
-import { 事件总线 } from "../public/eventBus.js";
-
+import { 事件总线 } from "./public/eventBus.js";
+import { kernalApiList } from "./public/kernalApi.js";
 naive.util={}
 naive.子窗口 = {}
 naive.当前块元素数组=[]
@@ -38,6 +38,12 @@ naive.加载插件=async function(插件名,环境){
 
 naive.加载js({src: `${naive.根目录}/script/app/appIndex.js`, type: "module"})
 naive.设置 = 生成默认设置({},naive.workspaceDir,"")
+naive.kernalApi=new kernalApiList()
+naive.核心api = naive.kernalApi
+let version = await naive.核心api.获取软件版本({})
+console.log(version)
+console.log(naive.newApi)
+
 console.log(naive)
 if(naive.isApp){
   //加载后台服务
@@ -46,10 +52,16 @@ if(naive.isApp){
 naive.util.获取json =async function(路径){
   let json= {}
   if(window.require){
-     json = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
+     naive.fs = require('fs')
+     try{
+     json = JSON.parse(naive.fs.readFileSync(路径, "utf-8"));}
+     catch(e){
+       console.log("获取文件失败",e)
+     }
   }
   else{
     let res = await fetch(路径)
     json = await res.json()
   }
 }
+console.log(await naive.util.获取json('/'))
