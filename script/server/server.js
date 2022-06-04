@@ -307,6 +307,26 @@ module.exports = {
   },
   async 转发JSON请求(req, res) {
     console.log(req.url, req.body);
+    if(req.url.indexOf("account")>=0){
+      res.end("不可访问账户api")
+      return
+    } 
+    if(req.url.indexOf("setting")>=0){
+      res.end("不可访问设置api")
+      return
+    }
+    if(req.url.indexOf("setting")>=0){
+      res.end("不可访问设置api")
+      return
+    }
+    if(req.url.indexOf("sync")>=0){
+      res.end("不可访问同步api")
+      return
+    }
+    if(req.url.indexOf("backup")>=0){
+      res.end("不可访问备份api")
+      return
+    }
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
     console.log(req.url, req.body);
