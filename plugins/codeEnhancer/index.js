@@ -66,11 +66,8 @@ class  codeEnhancer extends  naive.plugin  {
       formData.append('path', 'conf\\appearance\\themes\\naive\\plugins\\codeEnhancer\\inNoteStyles.json')
       formData.append('modTime', Date.now())
       formData.append('file', blob)
-      let url = '/api/file/putFile'
-      fetch(url, {
-          body: formData,
-          method: "POST",
-      })
+      let data1 = await this.核心api.putFile(formData)
+      console.log(data1)
     }
     
     保存块到样式文件(){
@@ -113,18 +110,8 @@ class  codeEnhancer extends  naive.plugin  {
         let data = {
           stmt: `select * from blocks where id = '${块id}'`,
         };
-        let resData = null;
-        await fetch("/api/query/sql", {
-          body: JSON.stringify(data),
-          method: "POST",
-          headers: {
-            Authorization: `Token `,
-          },
-        }).then(function (response) {
-          resData = response.json();
-        });
-        console.log(await resData)
-        块数据 =(await resData)["data"][0];
+        let resData = await this.核心api.sql(data)
+        块数据 = resData[0];
         if(块数据){
         let css = 块数据.content
         this.加载笔记内css(css,块id)}

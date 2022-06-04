@@ -1,0 +1,7 @@
+{
+    "name":"listEnhancer",
+    "auth":"leolee9086",
+    "url":"",
+    "describe":"为列表增加部分功能",
+    "environment":["app","browser"]
+}

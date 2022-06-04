@@ -7,7 +7,6 @@ naive.子窗口 = {}
 naive.当前块元素数组=[]
 naive.事件总线 = new 事件总线();
 naive.eventBus = naive.事件总线;
-
 naive.isApp=window.require?true:false
 naive.加载插件=async function(插件名,环境){
   try {
@@ -35,7 +34,6 @@ naive.加载插件=async function(插件名,环境){
     console.log("加载插件", 插件名, "失败", e);
   }
 }
-
 naive.加载js({src: `${naive.根目录}/script/app/appIndex.js`, type: "module"})
 naive.设置 = 生成默认设置({},naive.workspaceDir,"")
 naive.kernalApi=new kernalApiList()
@@ -43,7 +41,6 @@ naive.核心api = naive.kernalApi
 let version = await naive.核心api.获取软件版本({})
 console.log(version)
 console.log(naive.newApi)
-
 console.log(naive)
 if(naive.isApp){
   //加载后台服务

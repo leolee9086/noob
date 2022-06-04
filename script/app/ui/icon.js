@@ -1,4 +1,4 @@
- function 加载图标(){ document.body.insertAdjacentHTML('afterbegin',`<svg 
+function 加载图标(){ document.body.insertAdjacentHTML('afterbegin',`<svg 
 aria-hidden="true" 
 style="position: 
 absolute; 
@@ -6,6 +6,7 @@ width: 0;
 height: 0; 
 overflow: hidden;" 
 version="1.1" 
+id="naiveIcon"
 xmlns="http://www.w3.org/2000/svg" 
 xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
@@ -28,4 +29,15 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 </defs>
 </svg>`)
 }
+function 注册图标(图标设置){
+    let naive图标元素 = document.querySelector("#naiveIcon")
+    naive图标元素.innerHTML+=`
+    <defs>
+        <symbol id="${图标设置.id}" viewBox="0 0 1024 1024">
+            ${图标设置.content||图标设置.element.innerHTML}
+        </symbol>
+    </defs>
+    `
+}
 export {加载图标 as 加载图标}
+export {注册图标 as 注册图标}

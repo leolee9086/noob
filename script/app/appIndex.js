@@ -1,4 +1,6 @@
 import { 加载图标 } from "./ui/icon.js";
+import { 注册图标 } from "./ui/icon.js";
+
 import { 窗口配置器 } from "./ui/page.js";
 import { DOM监听器 } from "../public/DOMwatcher.js";
 import { 主题插件 } from "./plugin.js";
@@ -6,13 +8,16 @@ import { 主题界面 } from "./ui/ui.js";
 import { 共享数据总线 } from "../public/eventChannel.js";
 import { 快捷键监听器 } from "../public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
+加载图标();
 
 naive.全局快捷键监听器 = new 快捷键监听器(document);
 naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
 naive.编辑器队列 = [];
+naive.注册图标 = 注册图标
 naive.竖线菜单设置 = [];
 naive.自定义块标菜单 = [];
+naive.自定义头图菜单 = [];
 let res3 = await fetch("/appearance/themes/naive/config/keymap.json");
 naive.快捷键设置 = await res3.json();
 for (let 功能 in naive.快捷键设置) {
@@ -42,7 +47,6 @@ for (let 插件名 in naive.frontEndPluginConfig) {
 naive.editor = {};
 naive.editor.footerWidget = "cc-template";
 
-加载图标();
 console.log(naive);
 
 function 获取url参数(参数名) {
@@ -126,7 +130,7 @@ function 判定通用菜单(通用菜单) {
     naive.事件总线.emit("块标菜单显示", {
       类型: naive.当前块类型,
       id: naive.当前块id,
-      菜单:通用菜单
+      菜单: 通用菜单,
     });
   }
 }
@@ -141,15 +145,21 @@ function 插入自定义块标菜单项目(块标菜单数据) {
     let readonly = 块标菜单数据.菜单.querySelector(
       ".b3-menu__item.b3-menu__item--readonly"
     );
-    let item =  生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目])
-    let flag =    块标菜单数据.菜单.innerHTML.indexOf(item.innerHTML)>=0?false:true
-    if(自定义块标菜单[当前块类型][菜单项目]["显示判断函数"]){
-      flag=flag&&自定义块标菜单[当前块类型][菜单项目]["显示判断函数"].bind(自定义块标菜单[当前块类型][菜单项目]["注册插件"])()
-      console.log(flag)
-      }
-    
-    console.log(flag)
-    flag&&item? 块标菜单数据.菜单.insertBefore(
+    let item = 生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]);
+    let flag =
+      块标菜单数据.菜单.innerHTML.indexOf(item.innerHTML) >= 0 ? false : true;
+    if (自定义块标菜单[当前块类型][菜单项目]["显示判断函数"]) {
+      flag =
+        flag &&
+        自定义块标菜单[当前块类型][菜单项目]["显示判断函数"].bind(
+          自定义块标菜单[当前块类型][菜单项目]["注册插件"]
+        )();
+      console.log(flag);
+    }
+
+    console.log(flag);
+    flag && item
+      ? 块标菜单数据.菜单.insertBefore(
           生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]),
           readonly
         )
@@ -160,24 +170,35 @@ const 生成列表菜单项目 = function (菜单项目) {
   let button = document.createElement("button");
   button.className = "b3-menu__item diy";
   console.log(菜单项目);
-  button.onclick = (() => 菜单项目.回调函数.call(菜单项目.注册插件,naive.当前块id));
+  button.onclick = () =>
+    菜单项目.回调函数.call(菜单项目.注册插件, naive.当前块id);
   button.setAttribute("data-node-id", naive.当前块id);
   button.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="${菜单项目.菜单图标}"></use></svg><span class="b3-menu__label">${菜单项目.菜单文字}</span>`;
   return button;
 };
-
-
-
-
-//获取当前块id用
-document.addEventListener("mousedown", 判定并获取块id);
-function 判定并获取块id(event) {
-  if (event && event.target) {
-    let target = event.target;
-    获取id与类型(target);
+//监听头图变化
+let 头图按钮监听器选项 = {
+  监听目标: ".protyle-background__img",
+  监听器回调: 头图按钮监听器回调,
+};
+function 头图按钮监听器回调(mutationsList, observer) {
+  for (let mutation of mutationsList) {
+    if (mutation.target) {
+      console.log(mutation.target);
+    }
   }
 }
-function 获取id与类型(target) {
+naive.头图按钮监听器 = new DOM监听器(头图按钮监听器选项);
+
+//获取当前块id用
+naive.判定并获取块id = function (event) {
+  if (event && event.target) {
+    let target = event.target;
+    naive.获取id与类型(target);
+    naive.获取文档id(target);
+  }
+};
+naive.获取id与类型 = function (target) {
   if (!target) {
     return;
   }
@@ -193,13 +214,80 @@ function 获取id与类型(target) {
     return;
   } else {
     target = target.parentElement;
-    获取id与类型(target);
+    naive.获取id与类型(target);
   }
-}
-naive.事件总线.on("当前块id改变",获取块数组)
-function 获取块数组(){
-  naive.当前块元素数组 = document.querySelectorAll(`div.protyle-wysiwyg div[data-node-id='${naive.当前块id}'`)
-  if(!naive.当前块元素数组){
-    naive.当前块元素数组 =document.querySelectorAll(`div.protyle-wysiwyg[data-node-id='${naive.当前块id}'`)
+};
+naive.获取文档id = function (target) {
+  if (!target) {
+    return;
   }
-}
+  if (
+    target.getAttribute("data-node-id") &&
+    (target.getAttribute("data-type") == "NodeDocument" ||
+      target.getAttribute("class") == "protyle-background")
+  ) {
+    if (target.getAttribute("data-node-id") !== naive.当前文档id) {
+      naive.当前文档id = target.getAttribute("data-node-id");
+      console.log(naive.当前文档id);
+      naive.事件总线.emit("当前文档id", naive.当前块id);
+    }
+    return;
+  } else {
+    target = target.parentElement;
+    naive.获取文档id(target);
+  }
+};
+
+naive.获取块数组 = function () {
+  naive.当前块元素数组 = document.querySelectorAll(
+    `div.protyle-wysiwyg div[data-node-id='${naive.当前块id}'`
+  );
+  if (!naive.当前块元素数组) {
+    naive.当前块元素数组 = document.querySelectorAll(
+      `div.protyle-wysiwyg[data-node-id='${naive.当前块id}'`
+    );
+  }
+};
+naive.事件总线.on("当前块id改变", naive.获取块数组);
+//事件回调
+naive.判定并获取目标 = function (event) {
+  let target = event.target;
+  console.log(event.target);
+
+  if (event.target.className == "protyle-background") {
+    naive.事件总线.emit("鼠标聚焦到头图", event.target);
+  }
+};
+
+naive.插入头图按钮 = function (头图元素, 按钮项目) {
+  console.log(按钮项目)
+  let 头图按钮组 = 头图元素.querySelector(".protyle-icons");
+  let span = 头图按钮组.querySelector(
+    `[data-type = 'custom-${按钮项目.type || 按钮项目.类型}']`
+  );
+  if (span) {
+    return;
+  } else {
+    span = document.createElement("span");
+    span.setAttribute("class", "protyle-icon b3-tooltips b3-tooltips__sw ");
+    span.setAttribute("data-type", `custom-${按钮项目.type || 按钮项目.类型}`);
+    span.setAttribute("aria-label", 按钮项目.label);
+    span.setAttribute("style", "relative");
+    span.addEventListener("click", 按钮项目.回调函数);
+    span.innerHTML = `<svg><use xlink:href="${按钮项目.图标}"></use></svg>`;
+    let 随机按钮 = 头图元素.querySelector(
+      "[aria-label='上下拖动图片以调整位置']"
+    );
+    头图按钮组.insertBefore(span, 随机按钮);
+  }
+};
+naive.添加头图按钮 = function (头图元素) {
+   for (let 按钮配置 in naive.自定义头图菜单){
+     let 按钮项目=naive.自定义头图菜单[按钮配置]
+    naive.插入头图按钮(头图元素, 按钮项目);
+  }
+};
+
+naive.事件总线.on("鼠标聚焦到头图", naive.添加头图按钮);
+document.addEventListener("mousedown", naive.判定并获取块id);
+document.addEventListener("mouseover", naive.判定并获取目标);

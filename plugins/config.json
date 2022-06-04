@@ -3,5 +3,7 @@
     "styleEnhancer": true,
     "codeEnhancer": true,
     "test": true,
-    "configPages": true
+    "configPages": true,
+    "listEnhancer": true,
+    "moreBackground": true
 }

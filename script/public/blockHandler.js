@@ -1,6 +1,7 @@
 export class blockHandler{
     constructor() {
-        this.思源api = naive.思源api
+        this.思源api = naive.kernalApi
+
     }
     getCurrentBlock(){
         let 当前块元素 =  document.querySelector(".protyle-wysiwyg--select")
@@ -19,4 +20,5 @@ export class blockHandler{
         for(let 属性名 in 属性对象){
         }
     }
+    
 }

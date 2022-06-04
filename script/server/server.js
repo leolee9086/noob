@@ -11,7 +11,7 @@ module.exports = {
     const fs = require("fs");
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
-    let realoption = naive.生成默认设置(cusoption, workspaceDir, userId);
+    let realoption = this.生成默认设置(cusoption, workspaceDir, userId);
     this.渲染器 = null;
     this.realoption = realoption;
     console.log(cusoption);

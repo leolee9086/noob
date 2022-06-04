@@ -2,11 +2,14 @@ export class  kernalApiList{
     constructor(option={
         思源伺服ip:"127.0.0.1",
         思源伺服端口:"6806",
-        思源伺服协议:"http"
+        思源伺服协议:"http",
+		apitoken:""
+
     }){
     let 思源伺服ip =  option.思源伺服ip||"127.0.0.1"
     let 思源伺服端口 =  option.思源伺服端口||"6806"
     let 思源伺服协议 =  option.思源伺服协议||"http"
+	this.apitoken =  option.apitoken||""
     this.思源伺服地址 = 思源伺服协议+ "://"+思源伺服ip+":"+思源伺服端口
     this.set("GET", "/api/system/bootProgress", "bootProgress","获取启动进度")
 	this.set("POST", "/api/system/bootProgress", "bootProgress")
@@ -131,7 +134,7 @@ export class  kernalApiList{
     //属性相关
 	this.set("POST", "/api/attr/getBookmarkLabels",  'getBookmarkLabels')
 	this.set("POST", "/api/attr/resetBlockAttrs", 'resetBlockAttrs')
-	this.set("POST", "/api/attr/setBlockAttrs",'setBlockAttrs')
+	this.set("POST", "/api/attr/setBlockAttrs",'setBlockAttrs','设置块属性')
 	this.set("POST", "/api/attr/getBlockAttrs", 'getBlockAttrs')
     //云端相关
 	this.set("POST", "/api/cloud/getCloudSpace",  'getCloudSpace')
@@ -233,11 +236,16 @@ export class  kernalApiList{
     生成方法(方法,路径){
         return async function(data,apitoken=""){
             let resData  = null
-            await fetch(this.思源伺服地址+路径,{
-                body: JSON.stringify(data),
+			if (data instanceof FormData) {
+				data = data;
+			} else {
+				data = JSON.stringify(data);
+			}            
+			await fetch(this.思源伺服地址+路径,{
+                body: data,
                 method:方法,
                 headers:{
-                    'Authorization': 'Token '+ apitoken,
+                    'Authorization': 'Token '+ this.apitoken,
                     'user-agent': 'Mozilla Mobile/4.0 MDN Example',
                 },
             }).then(function(response){resData= response.json()})
