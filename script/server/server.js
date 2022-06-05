@@ -48,7 +48,7 @@ module.exports = {
       console.log(`publish app listening on port ${port}`);
     });
 
-    let 空页面 = "";
+    this.空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
       6
@@ -56,11 +56,11 @@ module.exports = {
     if (realoption.空页面内容.indexOf("path:") == 0) {
       console.log(realoption.空页面内容, 7);
       try {
-        空页面 = await fs.promises.readFile(
+        this.空页面 = await fs.promises.readFile(
           realoption.空页面内容.slice(5, realoption.空页面内容.length),
           "utf-8"
         );
-        console.log(空页面, 5);
+        console.log(this.空页面, 5);
       } catch (e) {
         console.log(e, 888);
       }
@@ -68,19 +68,23 @@ module.exports = {
     console.log(app);
 
     for (let 插件名 in naive.serverEndPluginConfig) {
-      try{
-      if(naive.serverEndPluginConfig[插件名]){
-        await naive.加载插件(插件名, "server");
-        let 插件 = naive.plugins[插件名];
-        console.log(插件.router)
-        if (插件) {
-          let method = 插件.method;
-          method=='get'?app.get(插件.router, (req, res) => 插件.func(req, res)):null;
-
+      try {
+        if (naive.serverEndPluginConfig[插件名]) {
+          await naive.加载插件(插件名, "server");
+          let 插件 = naive.plugins[插件名];
+          console.log(插件.router);
+          if (插件) {
+            let methods = 插件.methods;
+            methods.forEach((method) => {
+              if (插件[method]) {
+                let func = 插件[method].bind(插件);
+                app[method](插件.router, (req, res) => func(req, res));
+              }
+            });
+          }
         }
-      }
-      }catch(e){
-        console.log(e)
+      } catch (e) {
+        console.log(e);
       }
     }
     app.get("/appearance/*", (req, res) => {
@@ -112,6 +116,12 @@ module.exports = {
       }
     });
     app.post("/api/search/fullTextSearchBlock", (req, res) => {
+      if (realoption.允许搜索 && !realoption.有限分享) {
+        console.log(req.body);
+        this.转发JSON请求(req, res, true);
+      }
+    });
+    app.post("/api/search/searchEmbedBlock", (req, res) => {
       if (realoption.允许搜索 && !realoption.有限分享) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
@@ -155,7 +165,7 @@ module.exports = {
     app.use(settings.httpNodeRoot, nodered.httpNode);
     nodered.start();
     console.log(global.publishserver);
-    naive.publishserver=publishserver
+    naive.publishserver = publishserver;
     return publishserver;
   },
 
@@ -251,14 +261,16 @@ module.exports = {
       } else {
         res.end(
           this.渲染器.渲染模板(
-            空页面 || realoption.空页面内容 || "<div>块不存在或未分享</div>"
+            this.空页面 ||
+              realoption.空页面内容 ||
+              "<div>块不存在或未分享</div>"
           )
         );
       }
     } else {
       res.end(
         this.渲染器.渲染模板(
-          空页面 || realoption.空页面内容 || `<div>块不存在</div>`
+          this.空页面 || realoption.空页面内容 || `<div>块不存在</div>`
         )
       );
     }
@@ -307,29 +319,29 @@ module.exports = {
   },
   async 转发JSON请求(req, res) {
     console.log(req.url, req.body);
-    if(req.url.indexOf("account")>=0){
-      res.end("不可访问账户api")
-      return
-    } 
-    if(req.url.indexOf("setting")>=0){
-      res.end("不可访问设置api")
-      return
+    if (req.url.indexOf("account") >= 0) {
+      res.end("不可访问账户api");
+      return;
     }
-    if(req.url.indexOf("setting")>=0){
-      res.end("不可访问设置api")
-      return
+    if (req.url.indexOf("setting") >= 0) {
+      res.end("不可访问设置api");
+      return;
     }
-    if(req.url.indexOf("sync")>=0){
-      res.end("不可访问同步api")
-      return
+    if (req.url.indexOf("setting") >= 0) {
+      res.end("不可访问设置api");
+      return;
     }
-    if(req.url.indexOf("backup")>=0){
-      res.end("不可访问备份api")
-      return
+    if (req.url.indexOf("sync") >= 0) {
+      res.end("不可访问同步api");
+      return;
+    }
+    if (req.url.indexOf("backup") >= 0) {
+      res.end("不可访问备份api");
+      return;
     }
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
-    console.log(req.url, req.body);
+    //    console.log(req.url, req.body);
     resData = {};
     let syres = {};
     apitoken = "";
@@ -339,31 +351,66 @@ module.exports = {
       ":" +
       this.realoption.思源伺服端口 +
       req.url;
-    let flag = false;
     syres = await this.请求数据(url, apitoken, req.body);
-    if (syres && syres.data) {
-      if (this.realoption.有限分享) {
-        flag = await this.判定数据权限(req.url, req.body, syres.data);
-      } else {
-        flag = true;
-      }
-    }
-    console.log(syres);
-    if (flag) {
-      res.end(JSON.stringify(syres));
-    } else {
-      res.status(404).end("check your auth");
-    }
+    res.end(JSON.stringify(syres));
   },
-  async 判定数据权限(请求url, 请求数据, 响应数据) {
+  async 判定数据权限(请求url, 请求数据, 思源响应数据) {
     if (this.realoption.暴露api) {
       return true;
-    }
-    if (
+    } else if (
       this.realoption.允许搜索 &&
       请求url == "/api/search/fullTextSearchBlock"
     ) {
-      return true;
+      if (this.realoption.有限分享) {
+        let data = 思源响应数据;
+        if (data && data[0]) {
+          for (let i in data) {
+            let el = data[i];
+            let id = el.id;
+            let flag = await this.判定id权限(id);
+            if (!flag) {
+              el = null;
+            }
+          }
+        }
+        return true;
+      }
+    } else if (
+      this.realoption.允许搜索 &&
+      请求url == "/api/search/searchEmbedBlock"
+    ) {
+      if (this.realoption.有限分享) {
+        let data = 思源响应数据.blocks;
+        if (data && data[0]) {
+          for (let i in data) {
+            let el = data[i];
+            let id = el.id;
+            let flag = await this.判定id权限(id);
+            if (!flag) {
+              el = null;
+            }
+          }
+        }
+        return true;
+      }
+    } else if (
+      this.realoption.允许搜索 &&
+      请求url == "/api/search/listDocsByPath"
+    ) {
+      if (this.realoption.有限分享) {
+        let data = 思源响应数据.files;
+        if (data && data[0]) {
+          for (let i in data) {
+            let el = data[i];
+            let id = el.id;
+            let flag = await this.判定id权限(id);
+            if (!flag) {
+              el = null;
+            }
+          }
+        }
+        return true;
+      }
     } else return false;
   },
   async 判定id权限(块id) {

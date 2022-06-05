@@ -300,6 +300,27 @@ module.exports = class {
     嵌入块.innerHTML = 嵌入块内容 + 嵌入块.innerHTML;
     return 嵌入块.innerHTML;
   }
+   async  请求数据 (url, apitoken, data) {
+    let resData = null;
+    let str = JSON.stringify(data);
+    try {
+      await fetch(url, {
+        body: str,
+        method: "POST",
+        headers: {
+          //          'Content-Type': 'text/plain;charset=UTF-8',
+
+          Authorization: "Token " + apitoken,
+        },
+      }).then(function (response) {
+        resData = response.json();
+      });
+      return resData;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   渲染模板(content, 头图,主题) {
     let 工具栏脚本 = "";
     if (!this.有限分享 && this.允许搜索) {
