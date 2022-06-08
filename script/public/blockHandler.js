@@ -20,5 +20,4 @@ export class blockHandler{
         for(let 属性名 in 属性对象){
         }
     }
-    
 }

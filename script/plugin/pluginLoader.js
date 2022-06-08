@@ -85,13 +85,13 @@ export async function 加载插件(插件名,环境){
         let pluginclass =await import(`${naive.插件文件夹url}/${插件名}/index.js`)
         naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
       } catch (e) {
-        console.log("加载插件", 插件名, "失败", e);
+        console.error("加载插件", 插件名, "失败", e);
       }
     } else {
-      console.log("加载插件", 插件名, "失败", `非${环境}环境插件`);
+      console.error("加载插件", 插件名, "失败", `非${环境}环境插件`);
     }
   } catch (e) {
-    console.log("加载插件", 插件名, "失败", e);
+    console.error("加载插件", 插件名, "失败", e);
   }
 } 
 export async function  加载核心插件(插件名,环境){
@@ -105,12 +105,12 @@ export async function  加载核心插件(插件名,环境){
         let pluginclass =await import(`${this.核心插件文件夹url}/${插件名}/index.js`)
         this.corePlugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
       } catch (e) {
-        console.log("加载核心插件", 插件名, "失败", e);
+        console.error("加载核心插件", 插件名, "失败", e);
       }
     } else {
-      console.log("加载核心插件", 插件名, "失败", `非${环境}环境插件`);
+      console.error("加载核心插件", 插件名, "失败", `非${环境}环境插件`);
     }
   } catch (e) {
-    console.log("加载核心插件", 插件名, "失败", e);
+    console.error("加载核心插件", 插件名, "失败", e);
   }
 }

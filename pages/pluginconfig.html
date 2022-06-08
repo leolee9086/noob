@@ -48,6 +48,9 @@
     </el-container>
 </template>
 <script>
+        const 消息广播器 = new BroadcastChannel("configPages")
+        消息广播器.onmessage=(evt)=>{console.log(evt)}
+        消息广播器.postMessage("evt")
     let customfig = {}
     async function 向思源请求数据(url, apitoken, data) {
         let resData = null

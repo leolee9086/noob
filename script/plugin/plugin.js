@@ -16,8 +16,15 @@ export class 主题插件 {
     this.publishoption=naive.publishoption
     this.baseURL= `${naive.插件文件夹URL}${this.name}/`
     this.basePath=`${naive.workspaceDir}\\conf\\appearance\\themes\\naive\\plugins\\${this.name}\\`
+    this.消息广播器 = new BroadcastChannel(this.name)
+    this.BroadcastChannel = this.消息广播器
+    console.log(this.BroadcastChannel)
+    if(this.onBroadcastMassage){
+     this.消息广播器.onmessage= this.onBroadcastMassage
+    }
   }
-
+  onBroadcastMassage(evt){
+  }
   注册顶栏按钮(option) {
     let {提示,图标,回调函数} =option
     let button = document.createElement("div");

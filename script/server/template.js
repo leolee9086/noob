@@ -15,9 +15,7 @@ module.exports = class {
     this.使用图床资源 = option.使用图床资源;
     this.有限分享 = option.有限分享;
     this.允许搜索 = option.允许搜索;
-
     this.发布端口 = option.发布端口;
-    console.log(this.发布端口, "发布端口");
     this.思源账号id = option.思源账号id;
     this.发布图标 = option.发布图标;
     this.workspace = option.workspace;
@@ -220,7 +218,6 @@ module.exports = class {
     let {
       头图元素,
     } = require(`${this.workspace}/conf/appearance/themes/naive/config/background.js`);
-
     let url2 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/block/getDocInfo`;
     let data2 = { id: blockid };
     let res2 = await this.siyuandata(url2, data2);
@@ -941,10 +938,10 @@ module.exports = class {
         
     </script>
     <script>
-        ${this.发布脚本内容}
+        ${this.发布脚本内容||""}
     </script>
 
-    ${工具栏脚本}
+    ${工具栏脚本||""}
     </body>
     </html>
     `;
