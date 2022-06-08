@@ -11,8 +11,12 @@ export class DOM监听器{
         this.自动刷新监听目标()
     }    
     判定监听目标(){
+
         if(typeof(this.监听目标)=='string'){
+
             this.监听目标序列 =  document.querySelectorAll(this.监听目标)
+            if((this.监听目标)=="document")
+            {this.监听目标序列=[document]}
         }
         else if(this.是否DOM(this.监听目标)){
             this.监听目标序列 = [this.监听目标]

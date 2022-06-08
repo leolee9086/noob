@@ -1,7 +1,0 @@
-{
-    "name":"test",
-    "environment":["server"],
-    "auth":"leolee9086",
-    "url":"",
-    "describe":"测试发布用插件"
-}

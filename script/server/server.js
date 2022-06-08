@@ -14,12 +14,14 @@ module.exports = {
     let realoption = this.生成默认设置(cusoption, workspaceDir, userId);
     this.渲染器 = null;
     this.realoption = realoption;
+    naive.publishoption = realoption
     console.log(cusoption);
     console.log(workspaceDir);
     console.log(realoption, 15);
     思源api = new api(realoption);
     渲染器 = new 渲染器类(realoption);
     this.渲染器 = 渲染器;
+    naive.发布渲染器 =渲染器
     const bodyParser = require("body-parser");
     //引入nodered
     const settings = {
@@ -30,9 +32,10 @@ module.exports = {
     };
 
     const express1 = require("express");
+    naive.express = express1
     const app = express1();
-    let res4 = await fetch("/appearance/themes/naive/plugins/config.json");
-    naive.serverEndPluginConfig = await res4.json();
+    let res4 = await fs.readFileSync(`${workspaceDir}/${naive.插件文件夹路径}/config.json`);
+    naive.serverEndPluginConfig = JSON.parse(res4);
 
     //app.use(express1.text());  //body-parser 解析json格式数据
     //  app.use(xmlparser());  //body-parser 解析json格式数据
@@ -67,26 +70,7 @@ module.exports = {
     }
     console.log(app);
 
-    for (let 插件名 in naive.serverEndPluginConfig) {
-      try {
-        if (naive.serverEndPluginConfig[插件名]) {
-          await naive.加载插件(插件名, "server");
-          let 插件 = naive.plugins[插件名];
-          console.log(插件.router);
-          if (插件) {
-            let methods = 插件.methods;
-            methods.forEach((method) => {
-              if (插件[method]) {
-                let func = 插件[method].bind(插件);
-                app[method](插件.router, (req, res) => func(req, res));
-              }
-            });
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
+ 
     app.get("/appearance/*", (req, res) => {
       console.log(req);
       this.转发请求(req, res);
@@ -166,6 +150,34 @@ module.exports = {
     nodered.start();
     console.log(global.publishserver);
     naive.publishserver = publishserver;
+    for (let 插件名 in naive.serverEndPluginConfig) {
+      try {
+        if (naive.serverEndPluginConfig[插件名]) {
+          await naive.加载插件(插件名, "server");
+          let 插件 = naive.plugins[插件名];
+          console.log(插件.router);
+          if (插件) {
+            let methods = 插件.methods;
+            methods.forEach((method) => {
+              if(method=="use"){
+                if(插件.use){
+                  let func =插件.use.bind(插件)
+                  app.use(插件.router,func)
+                  console.log("publish use",插件.router,func)
+                }
+              }
+              else if (插件[method]) {
+                let func = 插件[method].bind(插件);
+                app[method](插件.router, (req, res) => func(req, res));
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    console.log(app)
     return publishserver;
   },
 

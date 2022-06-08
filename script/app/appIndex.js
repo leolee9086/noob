@@ -1,24 +1,4 @@
-import { 加载图标 } from "./ui/icon.js";
-import { 注册图标 } from "./ui/icon.js";
-
-import { 窗口配置器 } from "./ui/page.js";
-import { DOM监听器 } from "../public/DOMwatcher.js";
-import { 主题插件 } from "./plugin.js";
-import { 主题界面 } from "./ui/ui.js";
-import { 共享数据总线 } from "../public/eventChannel.js";
-import { 快捷键监听器 } from "../public/keymap.js";
-import { 添加行内样式 } from "./util/font.js";
-加载图标();
-
-naive.全局快捷键监听器 = new 快捷键监听器(document);
-naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
-naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
-naive.编辑器队列 = [];
-naive.注册图标 = 注册图标
-naive.竖线菜单设置 = [];
-naive.自定义块标菜单 = [];
-naive.自定义头图菜单 = [];
-let res3 = await fetch("/appearance/themes/naive/config/keymap.json");
+let res3 = await fetch(`${naive.configURL}/keymap.json`);
 naive.快捷键设置 = await res3.json();
 for (let 功能 in naive.快捷键设置) {
   if (naive[功能]) {
@@ -27,9 +7,8 @@ for (let 功能 in naive.快捷键设置) {
 }
 
 //插件机制
-naive.plugin = 主题插件;
 
-let res4 = await fetch("/appearance/themes/naive/plugins/config.json");
+let res4 = await fetch(`${naive.插件文件夹url}/config.json`);
 naive.frontEndPluginConfig = await res4.json();
 naive.停用插件 = function (插件) {
   naive.frontEndPluginConfig[插件.name] = null;
@@ -88,7 +67,6 @@ const winlist = {
 function 工具面板监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
-      console.log(mutation.target);
       if (mutation.target.getAttribute("class") == "protyle-util") {
         naive.事件总线.emit("工具栏面板显示", mutation.target);
       } else {
@@ -189,6 +167,34 @@ function 头图按钮监听器回调(mutationsList, observer) {
   }
 }
 naive.头图按钮监听器 = new DOM监听器(头图按钮监听器选项);
+//监听html块变化
+let html块监听选项 = {
+  监听目标: `[data-type="NodeHTMLBlock"]`,
+  监听器回调: html块监听器回调,
+};
+function html块监听器回调 (mutationsList, observer){
+  for (let mutation of mutationsList) {
+    if (mutation.target) {
+      console.log(mutation.target);
+      console.log(mutation.target.shadowRoot)
+      mutation.target.shadowRoot.innerHTML=""
+    }
+  }
+}
+naive.头图按钮监听器 = new DOM监听器(html块监听选项);
+//监听文档变化
+let 文档块监听选项 = {
+  监听目标: ".protyle-wysiwyg.protyle-wysiwyg--attr",
+  监听器回调: 文档块监听回调,
+};
+function 文档块监听回调 (mutationsList, observer){
+  for (let mutation of mutationsList) {
+    if (mutation.target) {
+      console.log(mutation.target);
+    }
+  }
+}
+naive.文档块监听器 = new DOM监听器(文档块监听选项);
 
 //获取当前块id用
 naive.判定并获取块id = function (event) {
@@ -283,11 +289,11 @@ naive.插入头图按钮 = function (头图元素, 按钮项目) {
 };
 naive.添加头图按钮 = function (头图元素) {
    for (let 按钮配置 in naive.自定义头图菜单){
+     if(按钮配置&&naive){
      let 按钮项目=naive.自定义头图菜单[按钮配置]
-    naive.插入头图按钮(头图元素, 按钮项目);
+    naive.插入头图按钮(头图元素, 按钮项目);}
   }
 };
-
 naive.事件总线.on("鼠标聚焦到头图", naive.添加头图按钮);
 document.addEventListener("mousedown", naive.判定并获取块id);
 document.addEventListener("mouseover", naive.判定并获取目标);

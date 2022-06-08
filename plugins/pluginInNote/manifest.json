@@ -1,7 +1,0 @@
-{
-    "name":"pluginInNote",
-    "auth":"leolee9086",
-    "url":"",
-    "describe":"为代码块增加部分功能",
-    "environment":["app","browser"]
-}

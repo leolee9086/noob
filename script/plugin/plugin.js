@@ -1,16 +1,24 @@
 import { blockHandler } from "../public/blockHandler.js"
-import { 窗口配置器 } from "./ui/page.js";
+import { 窗口配置器 } from "../app/ui/page.js";
 export class 主题插件 {
   constructor(option) {
     this.name = option.name;
     naive.plugins[this.name] = this;
-    console.log(`加载${this.name}插件`);
+    console.log(`${this.name}插件启用`);
     this.app = naive;
     this.blockHandler=new blockHandler()
     this.窗口配置器 = 窗口配置器
     this.kernalApi = naive.kernalApi
     this.核心api = naive.核心api
+    this.express = naive.express
+    this.publishSever= naive.publishSever
+    this.发布渲染器 =naive.发布渲染器
+    this.publishoption=naive.publishoption
+    this.baseURL= `/appearance/themes/naive/plugins/${this.name}/`
+    this.basePath=`${naive.workspaceDir}\\conf\\appearance\\themes\\naive\\plugins\\${this.name}\\`
+
   }
+
   注册顶栏按钮(option) {
     let {提示,图标,回调函数} =option
     let button = document.createElement("div");
@@ -50,8 +58,9 @@ export class 主题插件 {
   注册快捷键(快捷键字符串,回调函数){
     this.app.全局快捷键监听器.on(快捷键字符串,回调函数)
   }
-  停用() {
+  停用(){
     naive.停用插件(this);
+
   }
   运行环境() {
     return naive.isApp;
