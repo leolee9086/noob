@@ -5,9 +5,7 @@ for (let 功能 in naive.快捷键设置) {
     naive.全局快捷键监听器.on(naive.快捷键设置[功能], naive[功能]);
   }
 }
-
 //插件机制
-
 let res4 = await fetch(`${naive.插件文件夹url}/config.json`);
 naive.frontEndPluginConfig = await res4.json();
 naive.停用插件 = function (插件) {
@@ -79,7 +77,8 @@ let 工具栏面板监听器选项 = {
   监听目标: ".protyle-util",
   监听器回调: 工具面板监听器回调,
 };
-naive.工具栏面板监听器 = new DOM监听器(工具栏面板监听器选项);
+naive.工具栏面板监听器 = new naive.DOM监听器(工具栏面板监听器选项);
+
 //块标菜单监听器
 function 通用菜单监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
@@ -98,7 +97,7 @@ let 通用菜单监听器选项 = {
   监听目标: "#commonMenu",
   监听器回调: 通用菜单监听器回调,
 };
-naive.通用菜单监听器回调 = new DOM监听器(通用菜单监听器选项);
+naive.通用菜单监听器回调 = new naive.DOM监听器(通用菜单监听器选项);
 //判定通用菜单情形
 function 判定通用菜单(通用菜单) {
   let readonly = 通用菜单.querySelector(
@@ -166,7 +165,7 @@ function 头图按钮监听器回调(mutationsList, observer) {
     }
   }
 }
-naive.头图按钮监听器 = new DOM监听器(头图按钮监听器选项);
+naive.头图按钮监听器 = new naive.DOM监听器(头图按钮监听器选项);
 //监听html块变化
 let html块监听选项 = {
   监听目标: `[data-type="NodeHTMLBlock"]`,
@@ -181,7 +180,7 @@ function html块监听器回调 (mutationsList, observer){
     }
   }
 }
-naive.头图按钮监听器 = new DOM监听器(html块监听选项);
+naive.头图按钮监听器 = new naive.DOM监听器(html块监听选项);
 //监听文档变化
 let 文档块监听选项 = {
   监听目标: ".protyle-wysiwyg.protyle-wysiwyg--attr",
@@ -194,7 +193,7 @@ function 文档块监听回调 (mutationsList, observer){
     }
   }
 }
-naive.文档块监听器 = new DOM监听器(文档块监听选项);
+naive.文档块监听器 = new naive.DOM监听器(文档块监听选项);
 
 //获取当前块id用
 naive.判定并获取块id = function (event) {

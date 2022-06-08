@@ -21,7 +21,9 @@
             <el-form :model="config" label-width="120px">
                 <template v-for="(开关值,插件名) in config" :key = 插件名 >
                     <el-form-item :label="插件名" v-if="插件名!=='configPages'" width="100%">
-                        <el-col :span="20">{{插件描述[插件名]||"这个插件没有描述"}}</el-col>
+                        <el-col :span="20">
+                            <el-link :href="`/widgets/naivePlugins/${插件名}/`">{{插件描述[插件名]||"这个插件没有描述"}}</el-link>
+                        </el-col>
                         <el-col :span="4"><el-switch v-model="config[插件名]" /></el-col>
                     </el-form-item>
                     <el-form-item :label="插件名" v-if="插件名=='configPages'" width="100%">
@@ -67,7 +69,7 @@
         mounted() {
             this.config = customfig
             for(let 插件名 in this.config){
-                fetch(`.././plugins/${插件名}/manifest.json`).then((response) => response.json()).then(json => {
+                fetch(`/widgets/naivePlugins/${插件名}/plugin.json`).then((response) => response.json()).then(json => {
                     console.log(json)
                     this.插件描述[插件名]=json.describe
                     console.log(this.插件描述)
@@ -76,7 +78,7 @@
         },
         methods: {
             重置() {
-                fetch('.././plugins/config.json').then((response) => response.json()).then(json => {
+                fetch('\\widgets\\naivePlugins\\config.json').then((response) => response.json()).then(json => {
                     this.config = Vue.reactive(json)
                 })
             },
@@ -85,7 +87,7 @@
                 this.config.configPages=true
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], { type: 'text/json' })
-                formData.append('path', 'conf\\appearance\\themes\\naive\\plugins\\config.json')
+                formData.append('path', 'data\\widgets\\naivePlugins\\config.json')
                 formData.append('modTime', Date.now())
                 formData.append('file', blob)
                 let url = '/api/file/putFile'
@@ -105,17 +107,14 @@
         }
     })
     app.use(ElementPlus);
-
     const readJson = function () {
         console.log(this)
         let vm = this
-        fetch('.././plugins/config.json').then((response) => response.json()).then(json => {
+        fetch('\\widgets\\naivePlugins\\config.json').then((response) => response.json()).then(json => {
             customfig = Vue.reactive(json)
             const vm = app.mount('#app')
         })
     }
     readJson()
-
 </script>
-
 </html>

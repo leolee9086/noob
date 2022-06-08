@@ -1,3 +1,4 @@
+//加载插件配置在服务器环境下运行
 export function 加载插件配置(){
     const fs = require("fs")
     const 插件设置内容 = fs.readFileSync(
@@ -93,3 +94,23 @@ export async function 加载插件(插件名,环境){
     console.log("加载插件", 插件名, "失败", e);
   }
 } 
+export async function  加载核心插件(插件名,环境){
+  try {
+    let manifest = await fetch(
+      `${this.核心插件文件夹url}/${插件名}/plugin.json`
+    );
+    let menifestJSON = await manifest.json();
+    if (menifestJSON && menifestJSON.environment.indexOf(环境)>=0) {
+      try {
+        let pluginclass =await import(`${this.核心插件文件夹url}/${插件名}/index.js`)
+        this.corePlugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
+      } catch (e) {
+        console.log("加载核心插件", 插件名, "失败", e);
+      }
+    } else {
+      console.log("加载核心插件", 插件名, "失败", `非${环境}环境插件`);
+    }
+  } catch (e) {
+    console.log("加载核心插件", 插件名, "失败", e);
+  }
+}

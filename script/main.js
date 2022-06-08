@@ -6,33 +6,31 @@ import { 加载插件 } from "./plugin/pluginLoader.js";
 import { 加载图标 } from "./ui/icon.js";
 import { 注册图标 } from "./ui/icon.js";
 import { 窗口配置器 } from "./ui/page.js";
-import { DOM监听器 } from "../public/DOMwatcher.js";
-import { 主题插件 } from "../plugin/plugin.js";
+import { DOM监听器 } from "./public/DOMwatcher.js";
 import { 主题界面 } from "./ui/ui.js";
-import { 共享数据总线 } from "../public/eventChannel.js";
-import { 快捷键监听器 } from "../public/keymap.js";
+import { 共享数据总线 } from "./public/eventChannel.js";
+import { 快捷键监听器 } from "./public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
+import {dom模板} from "./public/domTemplate.js"
 //插件相关
+naive.dom模板 = dom模板
 naive.加载插件=加载插件
 naive.plugins = {};
-naive.plugin = 主题插件;
 naive.插件文件夹url ="/widgets/naivePlugins";
 naive.插件文件夹路径 =  `/data/widgets/naivePlugins`
-naive.核心插件URL ="/appearance/themes/naive/script/plugin/corePlugins"
-
+naive.核心插件文件夹url ="/appearance/themes/naive/script/plugin/corePlugins"
+//API相关
 naive.util={}
-naive.子窗口配置 = {}
-naive.当前块元素数组=[]
-naive.事件总线 = new 事件总线();
-naive.eventBus = naive.事件总线;
-naive.isApp=window.require?true:false
-naive.加载js({src: `${naive.根目录}/script/app/appIndex.js`, type: "module"})
-naive.设置 = 生成默认设置({},naive.workspaceDir,"")
 naive.kernalApi=new kernalApiList()
 naive.核心api = naive.kernalApi
+
+//配置相关
+naive.子窗口配置 = {}
+naive.当前块元素数组=[]
+naive.eventBus = naive.事件总线;
+naive.isApp=window.require?true:false
+naive.设置 = 生成默认设置({},naive.workspaceDir,"")
 naive.加载图标= 加载图标
-naive.加载图标()
-naive.全局快捷键监听器 = new 快捷键监听器(document);
 naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
 naive.编辑器队列 = [];
@@ -50,6 +48,12 @@ if(naive.isApp){
   //加载后台服务
   naive.加载js({src: `${naive.根目录}/script/server/severIndex.js`, type: "module"})
 }
+naive.加载js({src: `${naive.根目录}/script/app/appIndex.js`, type: "module"})
+//加载功能
+naive.加载图标()
+naive.事件总线 = new 事件总线();
+naive.全局快捷键监听器 = new 快捷键监听器(document);
+naive.DOM监听器=DOM监听器
 naive.util.获取json =async function(路径){
   let json= {}
   if(window.require){
@@ -64,4 +68,7 @@ naive.util.获取json =async function(路径){
     let res = await fetch(路径)
     json = await res.json()
   }
+}
+export default  {
+  
 }

@@ -1,5 +1,5 @@
 import { blockHandler } from "../public/blockHandler.js"
-import { 窗口配置器 } from "../app/ui/page.js";
+import { 窗口配置器 } from "../ui/page.js";
 export class 主题插件 {
   constructor(option) {
     this.name = option.name;
@@ -14,19 +14,14 @@ export class 主题插件 {
     this.publishSever= naive.publishSever
     this.发布渲染器 =naive.发布渲染器
     this.publishoption=naive.publishoption
-    this.baseURL= `/appearance/themes/naive/plugins/${this.name}/`
+    this.baseURL= `${naive.插件文件夹URL}${this.name}/`
     this.basePath=`${naive.workspaceDir}\\conf\\appearance\\themes\\naive\\plugins\\${this.name}\\`
-
   }
 
   注册顶栏按钮(option) {
     let {提示,图标,回调函数} =option
     let button = document.createElement("div");
-    button.innerHTML = `<div class="toolbar__item toolbar__item--action b3-tooltips b3-tooltips__sw" aria-label="${提示}" id="minWindow">
-  <svg>
-      <use xlink:href="#${图标}"></use>
-  </svg>
-  </div>`;
+    button.innerHTML = naive.dom模板.顶栏按钮(提示,图标)
     button.setAttribute("class", "fn__flex");
     let toolbar = document.getElementById("toolbar");
     let windowControls = document.getElementById("windowControls");
