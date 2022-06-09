@@ -144,6 +144,8 @@ module.exports = {
       this.更新缓存(id, content, workspaceDir);
       res.send({ id: data.id });
     });
+    //为发布端提供插件支持
+    app.use("/pulgins",express1.static(`${workspaceDir}/data/widgets/naivePlugins/`))
     nodered.init(global.publishserver, settings);
     app.use(settings.httpAdminRoot, nodered.httpAdmin);
     app.use(settings.httpNodeRoot, nodered.httpNode);
@@ -154,6 +156,8 @@ module.exports = {
       try {
         if (naive.serverEndPluginConfig[插件名]) {
           await naive.加载插件(插件名, "server");
+          await naive.加载插件(插件名, "publish");
+
           let 插件 = naive.plugins[插件名];
           if (插件) {
             console.log(插件.router);

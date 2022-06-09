@@ -82,7 +82,7 @@ export async function 加载插件(插件名,环境){
       `${naive.插件文件夹url}/${插件名}/plugin.json`
     );
     let menifestJSON = await manifest.json();
-    if (menifestJSON && menifestJSON.environment.indexOf(环境)>=0) {
+    if (menifestJSON && menifestJSON.environment.indexOf(环境)>=0&&环境!=="publish") {
       try {
         let pluginclass =await import(`${naive.插件文件夹url}/${插件名}/index.js`)
         naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
@@ -90,6 +90,11 @@ export async function 加载插件(插件名,环境){
         console.error("加载插件", 插件名, "失败", e);
       }
     } 
+    if(menifestJSON && menifestJSON.environment.indexOf(环境)>=0&&环境 =="publish"){
+      let res = (await fetch(`${naive.插件文件夹url}/${插件名}/index.js`))
+      naive.publishPlugins[插件名] = await res.text()
+      console.log(naive.publishPlugins[插件名])
+    }
   } catch (e) {
     console.error("加载插件", 插件名, "失败", e);
   }

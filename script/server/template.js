@@ -330,6 +330,12 @@ module.exports=  class 模板渲染器 {
       `;
     }
     let 发布主题 =  主题?主题:this.发布主题
+    let 发布插件 =  ""
+    for(let 插件名 in naive.publishPlugins){
+      if(naive.publishPlugins[插件名]){
+        发布插件+=`<script type='module' src='/pulgins/${插件名}/index.js'></script>`
+      }
+    }
     return `<!DOCTYPE html>
     <html><head>
     <meta charset="utf-8">
@@ -942,6 +948,7 @@ module.exports=  class 模板渲染器 {
     </script>
 
     ${工具栏脚本||""}
+    ${发布插件}
     </body>
     </html>
     `;

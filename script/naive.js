@@ -25,11 +25,11 @@ export default class naive {
     this.根目录 = `/appearance/themes/${this.themeName}`;
     this.核心插件文件夹url = `/appearance/themes/${this.themeName}/script/plugin/corePlugins/`;
     this.插件文件夹url = `/appearance/themes/${this.themeName}/script/plugin/corePlugins/`;
-
     this.核心插件列表 = {
       configPages: ["app"],
     };
     this.corePlugins = {};
+    this.publishPlugins = {}
     this.初始化核心插件();
     this.plugin = 主题插件;
     window.addEventListener("keyup", (event) => this.判断键盘目标(event));
