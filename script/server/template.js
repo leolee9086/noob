@@ -1,4 +1,4 @@
-module.exports = class {
+module.exports=  class 模板渲染器 {
   constructor(option) {
     console.log(option);
     this.发布地址 = option.发布地址;

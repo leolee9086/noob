@@ -35,7 +35,6 @@ naive.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
 naive.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
 naive.编辑器队列 = [];
 naive.注册图标 = 注册图标
-naive.竖线菜单设置 = [];
 naive.自定义块标菜单 = [];
 naive.自定义头图菜单 = [];
 naive.configURL=" /appearance/themes/naive/config"

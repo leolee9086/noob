@@ -155,8 +155,9 @@ module.exports = {
         if (naive.serverEndPluginConfig[插件名]) {
           await naive.加载插件(插件名, "server");
           let 插件 = naive.plugins[插件名];
-          console.log(插件.router);
           if (插件) {
+            console.log(插件.router);
+
             let methods = 插件.methods;
             methods.forEach((method) => {
               if(method=="use"){

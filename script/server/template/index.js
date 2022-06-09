@@ -1,8 +1,4 @@
-export class template {
-    constructor(option){
-
-    }
-    渲染模板(content, 头图,主题) {
+export function   渲染模板(content, 头图,主题) {
         let 工具栏脚本 = "";
         if (!this.有限分享 && this.允许搜索) {
           工具栏脚本 = ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
@@ -622,5 +618,5 @@ export class template {
         </html>
         `;
       }
-    }
+    
     

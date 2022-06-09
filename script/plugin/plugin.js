@@ -14,7 +14,7 @@ export class 主题插件 {
     this.publishSever= naive.publishSever
     this.发布渲染器 =naive.发布渲染器
     this.publishoption=naive.publishoption
-    this.baseURL= `${naive.插件文件夹URL}${this.name}/`
+    this.baseURL= `${naive.插件文件夹url}/${this.name}/`
     this.basePath=`${naive.workspaceDir}\\conf\\appearance\\themes\\naive\\plugins\\${this.name}\\`
     this.消息广播器 = new BroadcastChannel(this.name)
     this.BroadcastChannel = this.消息广播器
@@ -36,7 +36,25 @@ export class 主题插件 {
     console.log(button);
     button.addEventListener("click", 回调函数.bind(this));
     }
+    注册竖线菜单项目(数据值, 菜单图标, 菜单文字, 回调函数, 唤起词列表) {
+      naive.竖线菜单设置.菜单项目列表.push({
+        数据值: 数据值,
+        菜单图标: 菜单图标,
+        菜单文字: 菜单文字,
+        回调函数: 回调函数,
+        唤起词列表: 唤起词列表,
+        注册插件:this
 
+      });
+      唤起词列表.forEach((唤起词) => {
+        let 唤起词最大长度 = Math.max(
+          唤起词.length,
+          naive.竖线菜单设置.唤起词最大长度
+        );
+        // console.log(唤起词最大长度)
+        naive.竖线菜单设置["唤起词最大长度"] = 唤起词最大长度;
+      });
+    }
   注册块标菜单(option) {
     let 自定义块标菜单 = this.app.自定义块标菜单;
     let { 块类型, 菜单文字, 菜单图标, 回调函数,显示判断函数 } = option;
