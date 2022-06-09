@@ -10,12 +10,14 @@ export class 主题插件 {
     naive.plugins[this.name] = this;
     console.log(`${this.name}插件启用`);
     this.app = naive;
+    this.workspaceDir=naive.workspaceDir
     this.blockHandler = new blockHandler();
     this.窗口配置器 = 窗口配置器;
     this.kernalApi = naive.kernalApi;
     this.核心api = naive.核心api;
     this.express = naive.express;
-    this.publishSever = naive.publishSever;
+    this.expressApp = naive.expressApp;
+    this.publishServer = naive.publishServer;
     this.发布渲染器 = naive.发布渲染器;
     this.publishoption = naive.publishoption;
     this.baseURL = `${naive.插件文件夹url}/${this.name}/`;

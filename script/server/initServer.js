@@ -7,7 +7,7 @@ module.exports = {
     }
     const 渲染器类 = require("./template");
     const api = require("../public/siYuanApi");
-    const nodered = require("node-red");
+  //  const nodered = require("node-red");
     const fs = require("fs");
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
@@ -32,8 +32,10 @@ module.exports = {
     };
 
     const express1 = require("express");
-    naive.express = express1
     const app = express1();
+    naive.expressApp = app
+    naive.express = express1
+
     let res4 = await fs.readFileSync(`${workspaceDir}/${naive.插件文件夹路径}/config.json`);
     naive.serverEndPluginConfig = JSON.parse(res4);
 
@@ -47,7 +49,7 @@ module.exports = {
       })
     );
     const port = realoption.发布端口;
-    global.publishserver = app.listen(port, () => {
+    const publishServer = app.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
     });
 
@@ -70,16 +72,12 @@ module.exports = {
     }
     console.log(app);
 
- 
+    //允许访问外观设置文件夹内容
     app.get("/appearance/*", (req, res) => {
       console.log(req);
       this.转发请求(req, res);
     });
-    app.get("/stage/*", (req, res) => {
-      console.log(req);
-      this.转发请求(req, res);
-    });
-
+    //暴露附件文件夹时允许访问附件路径
     app.get("/assets/*", (req, res) => {
       if (realoption.暴露附件) {
         this.转发请求(req, res);
@@ -87,30 +85,34 @@ module.exports = {
         res.sendStatus(404);
       }
     });
-
+    //允许搜索时,能够访问文档树
     app.post("/api/notebook/lsNotebooks", (req, res) => {
-      if (realoption.允许搜索 && !realoption.有限分享) {
+      if (realoption.允许搜索) {
         this.转发JSON请求(req, res);
       }
     });
+    //允许搜索时,能够列出所有文档
     app.post("/api/filetree/listDocsByPath", (req, res) => {
-      if (realoption.允许搜索 && !realoption.有限分享) {
+      if (realoption.允许搜索) {
         this.转发JSON请求(req, res, true);
         console.log(req.body, 1);
       }
     });
+    //允许搜索时,能够搜索所有文档,这里需要加上鉴权
     app.post("/api/search/fullTextSearchBlock", (req, res) => {
       if (realoption.允许搜索 && !realoption.有限分享) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
     });
+    //允许搜索时,能够嵌入所有块,这里需要加入鉴权
     app.post("/api/search/searchEmbedBlock", (req, res) => {
       if (realoption.允许搜索 && !realoption.有限分享) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
     });
+    //暴露api时,能够访问大部分api
     app.post("/api/*", (req, res) => {
       if (realoption.暴露api) {
         console.log(req);
@@ -118,12 +120,13 @@ module.exports = {
       } else {
         res.sendStatus(404);
       }
-    });
-
+    }); 
+    //emojis文件夹默认能够访问
     app.get("/emojis/*", (req, res) => {
       console.log(req);
       this.转发请求(req, res);
     });
+    //只有暴露挂件选项开启时,能够访问挂件
     app.get("/widgets/*", (req, res) => {
       console.log(realoption);
       if (realoption.暴露挂件) {
@@ -133,11 +136,11 @@ module.exports = {
         res.sendStatus(404);
       }
     });
+    //静态路径伺服块id
     app.get("/block/:blockid", (req, res) => this.返回块内容(req, res));
     app.get("/block/", (req, res) => this.返回块内容(req, res));
-
     app.get("/", (req, res) => this.返回块内容(req, res));
-
+    //允许客户端刷新缓存内容
     app.post("/api/updatecache", async (req, res) => {
       let data = req.postbody.data;
       let id = data.id;
@@ -146,12 +149,12 @@ module.exports = {
     });
     //为发布端提供插件支持
     app.use("/pulgins",express1.static(`${workspaceDir}/data/widgets/naivePlugins/`))
-    nodered.init(global.publishserver, settings);
-    app.use(settings.httpAdminRoot, nodered.httpAdmin);
-    app.use(settings.httpNodeRoot, nodered.httpNode);
-    nodered.start();
-    console.log(global.publishserver);
-    naive.publishserver = publishserver;
+    //nodered支持,应该转为插件
+   // nodered.init(global.publishserver, settings);
+   // app.use(settings.httpAdminRoot, nodered.httpAdmin);
+   // app.use(settings.httpNodeRoot, nodered.httpNode);
+   // nodered.start();
+    naive.publishServer = publishServer;
     for (let 插件名 in naive.serverEndPluginConfig) {
       try {
         if (naive.serverEndPluginConfig[插件名]) {
@@ -183,7 +186,7 @@ module.exports = {
       }
     }
     console.log(app)
-    return publishserver;
+    return publishServer;
   },
 
   解析路径: async function (path, realoption) {

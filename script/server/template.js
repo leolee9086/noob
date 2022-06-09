@@ -946,7 +946,6 @@ module.exports=  class 模板渲染器 {
     <script>
         ${this.发布脚本内容||""}
     </script>
-
     ${工具栏脚本||""}
     ${发布插件}
     </body>
