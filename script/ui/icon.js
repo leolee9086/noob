@@ -31,13 +31,15 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 }
 function 注册图标(图标设置){
     let naive图标元素 = document.querySelector("#naiveIcon")
+    let viewBox = 图标设置.viewBox||"0 0 1024 1024"
     naive图标元素.innerHTML+=`
     <defs>
-        <symbol id="${图标设置.id}" viewBox="0 0 1024 1024">
+        <symbol id="${图标设置.id}" viewBox="${viewBox}">
             ${图标设置.content||图标设置.element.innerHTML}
         </symbol>
     </defs>
     `
+
 }
 export {加载图标 as 加载图标}
 export {注册图标 as 注册图标}

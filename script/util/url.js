@@ -1,13 +1,12 @@
-export default function () {
-  return {
-    打开urlid: function () {
-      let url参数 = 解析url参数(window.location.href);
-      if (url参数) {
-        let id = url参数.id;
-        if (id) {
-          窗口内打开思源块(id);
-        }
-      }
-    },
-  };
+export function resolve(url,base){
+  var directlink = function(url){
+    var a = document.createElement('a');
+    a.href = url;
+    return a.href;
+    };
+    return directlink('') === '' ? function(url){
+        var div = document.createElement('div');
+        div.innerHTML = '<a href="' + url.replace(/"/g, '%22') + '"/>';
+        return div.firstChild.href;
+    } : directlink;
 }

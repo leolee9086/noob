@@ -1,12 +1,5 @@
-let res3 = await fetch(`${naive.configURL}/keymap.json`);
-naive.快捷键设置 = await res3.json();
-for (let 功能 in naive.快捷键设置) {
-  if (naive[功能]) {
-    naive.全局快捷键监听器.on(naive.快捷键设置[功能], naive[功能]);
-  }
-}
 //插件机制
-let res4 = await fetch(`${naive.插件文件夹url}/config.json`);
+let res4 = await fetch(`${naive.插件文件夹url}config.json`);
 naive.frontEndPluginConfig = await res4.json();
 naive.停用插件 = function (插件) {
   naive.frontEndPluginConfig[插件.name] = null;
@@ -19,10 +12,9 @@ for (let 插件名 in naive.frontEndPluginConfig) {
     } else {
       await naive.加载插件(插件名, "app");
     }
+    await naive.加载插件(插件名, "CustomBlock");
   }
 }
-naive.editor = {};
-naive.editor.footerWidget = "cc-template";
 
 console.log(naive);
 
@@ -51,9 +43,9 @@ const 打开到url块id = function () {
     打开块id(窗口块id);
   }
 };
-const 延时跳转 = function () {
+function 延时跳转() {
   setTimeout(打开到url块id, 1000);
-};
+}
 window.addEventListener("load", 延时跳转());
 const workspaceDir = window.siyuan.config.system.workspaceDir;
 const userId = window.siyuan.user.userId;
@@ -113,35 +105,44 @@ function 判定通用菜单(通用菜单) {
 }
 naive.事件总线.on("块标菜单显示", 插入自定义块标菜单项目);
 function 插入自定义块标菜单项目(块标菜单数据) {
+  console.log(块标菜单数据);
   let 自定义块标菜单 = naive.自定义块标菜单;
   console.log(自定义块标菜单);
 
   let 当前块类型 = 块标菜单数据.类型;
-  for (let 菜单项目 in 自定义块标菜单[当前块类型]) {
-    console.log(菜单项目);
-    let readonly = 块标菜单数据.菜单.querySelector(
-      ".b3-menu__item.b3-menu__item--readonly"
-    );
-    let item = 生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]);
-    let flag =
-      块标菜单数据.菜单.innerHTML.indexOf(item.innerHTML) >= 0 ? false : true;
-    if (自定义块标菜单[当前块类型][菜单项目]["显示判断函数"]) {
-      flag =
-        flag &&
-        自定义块标菜单[当前块类型][菜单项目]["显示判断函数"].bind(
-          自定义块标菜单[当前块类型][菜单项目]["注册插件"]
-        )();
-      console.log(flag);
-    }
 
-    console.log(flag);
-    flag && item
-      ? 块标菜单数据.菜单.insertBefore(
-          生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]),
-          readonly
-        )
-      : null;
+  for (let 菜单项目 in 自定义块标菜单[当前块类型]) {
+    注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜单, 当前块类型);
   }
+  for (let 菜单项目1 in 自定义块标菜单.all) {
+    当前块类型 = "all";
+    注入菜单项目(菜单项目1, 块标菜单数据, 自定义块标菜单, 当前块类型);
+  }
+}
+function 注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜单, 当前块类型) {
+  console.log(菜单项目);
+  let readonly = 块标菜单数据.菜单.querySelector(
+    ".b3-menu__item.b3-menu__item--readonly"
+  );
+  let item = 生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]);
+  let flag =
+    块标菜单数据.菜单.innerHTML.indexOf(item.innerHTML) >= 0 ? false : true;
+  if (自定义块标菜单[当前块类型][菜单项目]["显示判断函数"]) {
+    flag =
+      flag &&
+      自定义块标菜单[当前块类型][菜单项目]["显示判断函数"].bind(
+        自定义块标菜单[当前块类型][菜单项目]["注册插件"]
+      )();
+    console.log(flag);
+  }
+
+  console.log(flag);
+  flag && item
+    ? 块标菜单数据.菜单.insertBefore(
+        生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]),
+        readonly
+      )
+    : null;
 }
 const 生成列表菜单项目 = function (菜单项目) {
   let button = document.createElement("button");
@@ -168,25 +169,68 @@ function 头图按钮监听器回调(mutationsList, observer) {
 naive.头图按钮监听器 = new naive.DOM监听器(头图按钮监听器选项);
 //监听html块变化
 let html块监听选项 = {
-  监听目标: `[data-type="NodeHTMLBlock"]`,
+  监听目标: `protyle-html`,
   监听器回调: html块监听器回调,
 };
-function html块监听器回调 (mutationsList, observer){
+function html块监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
       console.log(mutation.target);
-      console.log(mutation.target.shadowRoot)
-      mutation.target.shadowRoot.innerHTML=""
+      console.log(mutation.target.shadowRoot);
+      if (mutation.target.shadowRoot) {
+        hackHTMLBlock(mutation.target);
+      }
     }
   }
 }
-naive.头图按钮监听器 = new naive.DOM监听器(html块监听选项);
+naive.html块监听器 = new naive.DOM监听器(html块监听选项);
+window.addEventListener("load",()=>setTimeout(hackHTMLBlockAll,2000));
+
+function hackHTMLBlock(htmlel) {
+  for (let hacker in naive.customHTML){
+    console.log(hacker)
+    let parent=htmlel.parentElement.parentElement
+    console.log(parent.getAttribute("custom-type"))
+
+    if(hacker== parent.getAttribute("custom-type")){   
+      console.log(hacker)
+
+      if(htmlel.parentElement.querySelector(hacker)){
+
+        let cusel=  htmlel.parentElement.querySelector(hacker)
+        cusel.setAttribute("data-content",htmlel.getAttribute("data-content"))
+      }
+      else{
+
+        let customhtml=document.createElement(hacker)
+        htmlel.style.display="none"
+        customhtml.setAttribute("data-content",htmlel.getAttribute("data-content"))
+        htmlel.parentElement.insertBefore(customhtml,htmlel)
+      }
+    }
+  }
+}
+function hackHTMLBlockAll() {
+  let htmls = document.querySelectorAll('[data-type="NodeHTMLBlock"]');
+  console.log(htmls)
+
+  if(htmls[0]){
+    htmls.forEach(htmlel=>{
+        if(htmlel.querySelector("protyle-html")){
+        hackHTMLBlock(htmlel.querySelector("protyle-html"));
+      }
+      })
+    
+  }
+ 
+}
+hackHTMLBlockAll()
 //监听文档变化
 let 文档块监听选项 = {
   监听目标: ".protyle-wysiwyg.protyle-wysiwyg--attr",
   监听器回调: 文档块监听回调,
 };
-function 文档块监听回调 (mutationsList, observer){
+function 文档块监听回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
       console.log(mutation.target);
@@ -257,7 +301,7 @@ naive.事件总线.on("当前块id改变", naive.获取块数组);
 //事件回调
 naive.判定并获取目标 = function (event) {
   let target = event.target;
-  console.log(event.target);
+  // console.log(event.target);
 
   if (event.target.className == "protyle-background") {
     naive.事件总线.emit("鼠标聚焦到头图", event.target);
@@ -265,7 +309,7 @@ naive.判定并获取目标 = function (event) {
 };
 
 naive.插入头图按钮 = function (头图元素, 按钮项目) {
-  console.log(按钮项目)
+  console.log(按钮项目);
   let 头图按钮组 = 头图元素.querySelector(".protyle-icons");
   let span = 头图按钮组.querySelector(
     `[data-type = 'custom-${按钮项目.type || 按钮项目.类型}']`
@@ -287,10 +331,11 @@ naive.插入头图按钮 = function (头图元素, 按钮项目) {
   }
 };
 naive.添加头图按钮 = function (头图元素) {
-   for (let 按钮配置 in naive.自定义头图菜单){
-     if(按钮配置&&naive){
-     let 按钮项目=naive.自定义头图菜单[按钮配置]
-    naive.插入头图按钮(头图元素, 按钮项目);}
+  for (let 按钮配置 in naive.自定义头图菜单) {
+    if (按钮配置 && naive) {
+      let 按钮项目 = naive.自定义头图菜单[按钮配置];
+      naive.插入头图按钮(头图元素, 按钮项目);
+    }
   }
 };
 naive.事件总线.on("鼠标聚焦到头图", naive.添加头图按钮);

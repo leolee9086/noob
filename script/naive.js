@@ -6,35 +6,96 @@ import { 加载核心插件 } from "./plugin/pluginLoader.js";
 import { 加载图标 } from "./ui/icon.js";
 import { 注册图标 } from "./ui/icon.js";
 import { 窗口配置器 } from "./ui/page.js";
-import { DOM监听器 } from "./public/DOMwatcher.js";
 import { 主题插件 } from "./plugin/plugin.js";
 import { 主题界面 } from "./ui/ui.js";
 import { 共享数据总线 } from "./public/eventChannel.js";
 import { 快捷键监听器 } from "./public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
 import { dom模板 } from "./public/domTemplate.js";
+import { DOM监听器 } from "./public/DOMwatcher.js";
+
 export default class naive {
   constructor(themeName) {
     this.themeName = themeName;
+    this.editor = {};
+    this.editor.footerWidget = "cc-template";
+    this.configURL = " /appearance/themes/naive/config";
+    this.插件文件夹路径 = `/data/widgets/naivePlugins`;
+    this.核心插件文件夹url =
+      "/appearance/themes/naive/script/plugin/corePlugins";
+    this.根目录 = `/appearance/themes/${this.themeName}`;
+    this.核心插件文件夹url = `/appearance/themes/${this.themeName}/script/plugin/corePlugins/`;
+    this.插件文件夹url = "/widgets/naivePlugins/";
+    this.竖线菜单设置 = { 菜单项目列表: [], 唤起词最大长度: 0 };
+    this.核心插件列表 = {
+      configPages: ["app"],
+    };
+    this.HTMLElement = window.HTMLElement
+
+    this.自定义HTML={}
+    this.customHTML=this.自定义HTML
+    this.corePlugins = {};
+    this.publishPlugins = {};
+    this.util = {};
+    this.kernalApi = new kernalApiList();
+    this.核心api = this.kernalApi;
+    this.DOM监听器 = DOM监听器;
+    this.事件总线 = new 事件总线();
+    this.加载图标 = 加载图标;
+    this.全局快捷键监听器 = new 快捷键监听器(document);
+    this.加载图标();
+    this.窗口设置 = {};
     if (window.siyuan) {
       this.workspaceDir = window.siyuan.config.system.workspaceDir;
       this.siyuan = window.siyuan;
     }
+    this.子窗口配置 = {};
+    this.当前块元素数组 = [];
+    this.eventBus = this.事件总线;
+    this.isApp = window.require ? true : false;
+    this.设置 = 生成默认设置({}, this.workspaceDir, "");
+    this.加载图标 = 加载图标;
+    this.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
+    this.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
+    this.编辑器队列 = [];
+    this.注册图标 = 注册图标;
+    this.自定义块标菜单 = [];
+    this.自定义头图菜单 = [];
+    this.加载插件 = 加载插件;
+    this.plugins = {};
+
+    this.dom模板 = dom模板;
     this.加载核心插件 = 加载核心插件;
-    this.竖线菜单设置 = { 菜单项目列表: [], 唤起词最大长度: 0 };
-    this.根目录 = `/appearance/themes/${this.themeName}`;
-    this.核心插件文件夹url = `/appearance/themes/${this.themeName}/script/plugin/corePlugins/`;
-    this.插件文件夹url = `/appearance/themes/${this.themeName}/script/plugin/corePlugins/`;
-    this.核心插件列表 = {
-      configPages: ["app"],
-    };
-    this.corePlugins = {};
-    this.publishPlugins = {}
-    this.plugins=[]
+
     this.初始化核心插件();
     this.plugin = 主题插件;
     window.addEventListener("keyup", (event) => this.判断键盘目标(event));
+    this.加载快捷键设置();
   }
+  async 加载快捷键设置() {
+    let res3 = await fetch(`${this.configURL}/keymap.json`);
+    this.快捷键设置 = await res3.json();
+    for (let 功能 in this.快捷键设置) {
+      if (this[功能]) {
+        this.全局快捷键监听器.on(this.快捷键设置[功能], this[功能]);
+      }
+    }
+  }
+  async 获取json(路径) {
+    let json = {};
+    if (window.require) {
+      naive.fs = require("fs");
+      try {
+        json = JSON.parse(naive.fs.readFileSync(路径, "utf-8"));
+      } catch (e) {
+        console.log("获取文件失败", e);
+      }
+    } else {
+      let res = await fetch(路径);
+      json = await res.json();
+    }
+  }
+ 
   填充菜单内容(菜单容器元素, 菜单项目列表) {
     菜单项目列表.forEach((菜单项目) =>
       菜单项目 ? 菜单容器元素.appendChild(this.生成竖线菜单项(菜单项目)) : null
@@ -171,6 +232,11 @@ export default class naive {
       console.log("自", 路径, "加载", 模块名);
     }
   }
+  log(...rest) {
+    return console.log(
+      this.log.caller,...rest
+    );
+  }
   判断键盘目标(event) {
     console.log(event);
     let target = event.target;
@@ -181,22 +247,21 @@ export default class naive {
     if (this.判定触发键(event)) {
       this.渲染竖线菜单(event, el, node);
     }
-    if(document.querySelector("#customMenu")){
-      this.切换激活菜单项(document.querySelector("#customMenu"),event)
+    if (document.querySelector("#customMenu")) {
+      this.切换激活菜单项(document.querySelector("#customMenu"), event);
     }
   }
-  切换激活菜单项(el,event){
-    if(!el.querySelector(".b3-menu__item--current")){
-      el.firstElementChild.classList.add("b3-menu__item--current")
+  切换激活菜单项(el, event) {
+    if (!el.querySelector(".b3-menu__item--current")) {
+      el.firstElementChild.classList.add("b3-menu__item--current");
     }
-    
   }
   判定触发键(event) {
     if (
       event.key == "|" ||
       ("Process" && event.shiftKey && event.code == "Backslash")
     ) {
-      return true
+      return true;
     }
   }
   bindURL(url, baseURL) {

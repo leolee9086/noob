@@ -36,7 +36,9 @@ naive.加载css = function (src = "daylight", sort = 1) {
 //加载模块函数中如果第三个函数为真则相对主题文件夹加载
 //否则相对naive.js的位置加载
 //如果有第四个base参数则相对base加载
-naive.加载模块("./script/main.js", "test",true);
+//naive.加载模块("./script/main.js", "test",true);
 //加载界面脚本
 naive.加载js({ src: `${naive.根目录}/script/main.js`, type: "module" });
 }
+ 
+  

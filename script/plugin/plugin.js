@@ -28,15 +28,16 @@ export class 主题插件 {
     this.注册块标菜单 = 注册块标菜单
     this.注册竖线菜单项目 = 注册竖线菜单项目
     this.注册图标= this.app.注册图标
-    console.log(this.BroadcastChannel);
     //用于与插件设置页面通讯
     if (this.onBroadcastMassage) {
-      this.消息广播器.onmessage = this.onBroadcastMassage;
+      this.消息广播器.onmessage =(msg)=>this.onBroadcastMassage(msg);
     }
   }
+  
   注册图标(option) {
     this.app.注册图标(option);
   }
+ 
   注册头图按钮(option) {
     this.app.自定义头图菜单[option.type] = option;
   }

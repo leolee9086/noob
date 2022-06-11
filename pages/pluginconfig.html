@@ -90,7 +90,7 @@
                 this.config.configPages=true
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], { type: 'text/json' })
-                formData.append('path', 'data\\widgets\\naivePlugins\\config.json')
+                formData.append('path', '\\data\\widgets\\naivePlugins\\config.json')
                 formData.append('modTime', Date.now())
                 formData.append('file', blob)
                 let url = '/api/file/putFile'

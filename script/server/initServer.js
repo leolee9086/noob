@@ -7,11 +7,10 @@ module.exports = {
     }
     const 渲染器类 = require("./template");
     const api = require("../public/siYuanApi");
-  //  const nodered = require("node-red");
     const fs = require("fs");
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
-    let realoption = this.生成默认设置(cusoption, workspaceDir, userId);
+    let realoption = naive.生成默认设置(cusoption, workspaceDir, userId);
     this.渲染器 = null;
     this.realoption = realoption;
     naive.publishoption = realoption
@@ -23,14 +22,6 @@ module.exports = {
     this.渲染器 = 渲染器;
     naive.发布渲染器 =渲染器
     const bodyParser = require("body-parser");
-    //引入nodered
-    const settings = {
-      httpAdminRoot: "/red",
-      httpNodeRoot: "/red/api",
-      functionGloabalContext: {},
-      userDir: `${workspaceDir}/data/assets/nodered`,
-    };
-
     const express1 = require("express");
     const app = express1();
     naive.expressApp = app
@@ -38,9 +29,6 @@ module.exports = {
 
     let res4 = await fs.readFileSync(`${workspaceDir}/${naive.插件文件夹路径}/config.json`);
     naive.serverEndPluginConfig = JSON.parse(res4);
-
-    //app.use(express1.text());  //body-parser 解析json格式数据
-    //  app.use(xmlparser());  //body-parser 解析json格式数据
     app.use(bodyParser.json()); //body-parser 解析json格式数据
     app.use(
       bodyParser.urlencoded({
@@ -52,7 +40,6 @@ module.exports = {
     const publishServer = app.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
     });
-
     this.空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
@@ -149,11 +136,6 @@ module.exports = {
     });
     //为发布端提供插件支持
     app.use("/pulgins",express1.static(`${workspaceDir}/data/widgets/naivePlugins/`))
-    //nodered支持,应该转为插件
-   // nodered.init(global.publishserver, settings);
-   // app.use(settings.httpAdminRoot, nodered.httpAdmin);
-   // app.use(settings.httpNodeRoot, nodered.httpNode);
-   // nodered.start();
     naive.publishServer = publishServer;
     for (let 插件名 in naive.serverEndPluginConfig) {
       try {
@@ -162,21 +144,22 @@ module.exports = {
           await naive.加载插件(插件名, "publish");
 
           let 插件 = naive.plugins[插件名];
-          if (插件) {
-            console.log(插件.router);
+          if (插件&&插件.environment["server"]) {
+            let router = 插件.router||`/${插件名}`
 
             let methods = 插件.methods;
             methods.forEach((method) => {
               if(method=="use"){
                 if(插件.use){
                   let func =插件.use.bind(插件)
-                  app.use(插件.router,func)
-                  console.log("publish use",插件.router,func)
+                  app.use(router,func)
+                  console.log("publish use",router,func,"from",插件名)
                 }
               }
               else if (插件[method]) {
                 let func = 插件[method].bind(插件);
-                app[method](插件.router, (req, res) => func(req, res));
+                app[method](router, (req, res) => func(req, res));
+                console.log("publish use",router,func,"from",插件名)
               }
             });
           }
@@ -479,53 +462,5 @@ module.exports = {
     global.publishserver = null;
     this.渲染器 = null;
     console.log("服务终止");
-  },
-  生成默认设置: function (customoption, workspaceDir, userId) {
-    let 思源伺服端口 = 6806;
-    let 思源伺服地址 = "127.0.0.1";
-    let option = {
-      发布地址: 思源伺服地址,
-      思源伺服地址: 思源伺服地址,
-      思源伺服端口: 思源伺服端口,
-      基础样式: `http://${customoption.发布地址 || 思源伺服地址}:${
-        customoption.发布端口 || 思源伺服端口
-      }/stage/build/export/base.css`,
-      发布主题: `http://${customoption.发布地址 || 思源伺服地址}:${
-        customoption.发布端口 || 思源伺服端口
-      }/appearance/themes/${
-        window.siyuan.config.appearance.themeDark
-      }/theme.css`,
-      发布脚本: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\config\\naive.js`,
-      高亮样式: `http://${customoption.发布地址 || 思源伺服地址}:${
-        customoption.发布端口 || 思源伺服端口
-      }/stage/protyle/js/highlight.js/styles/github.min.css`,
-      空页面内容: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\config\\naive.html`,
-      首页: {
-        思源文档id: "20200812220555-lj3enxa",
-      },
-      有限分享: false,
-      即时分享: true,
-      使用图床资源: true,
-      发布端口: 80,
-      思源账号id: userId,
-      发布图标: "",
-      暴露api: false,
-      暴露挂件: false,
-      暴露附件: false,
-      脚注内容: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\script\\footer.html`,
-      单块分享: true,
-      允许搜索: false,
-    };
-    option.workspace = workspaceDir;
-    for (let prop in option) {
-      customoption[prop] !== ""
-        ? (option[prop] = customoption[prop])
-        : (option[prop] = option[prop]);
-    }
-    if (option.首页 && !option.首页.思源文档id) {
-      option.首页.思源文档id = "20200812220555-lj3enxa";
-    }
-    option.workspace = workspaceDir;
-    return JSON.parse(JSON.stringify(option));
   },
 };
