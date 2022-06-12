@@ -49,17 +49,20 @@ const toolbar = Vue.createApp({
 
     <el-col :span="10">
             <el-popover 
-            placement="bottom" width="60vw" trigger="focus">
+            placement="bottom" width="60vw" trigger="focus" v-model:visible="显示">
             <template #reference>
             <el-input 
             v-model="搜索关键词"
             @change="搜索($event)"
+            @keyup.enter="搜索($event)"
+            @input="搜索关键词=$event.value?$event.value:搜索关键词"
+
             class="w-50 m-2"
             placeholder="Type something"
         >           <template #prefix>
         <span class='menu_item_icon' >
 
-        <svg>
+        <svg @click="显示=!显示" @touchstop="显示=!显示">
         <use xlink:href="#iconSearch">
         </use>
         </svg>
@@ -100,11 +103,17 @@ const toolbar = Vue.createApp({
     return {
       笔记本列表: [],
       搜索关键词:"",
-      搜索结果:[]
+      搜索结果:[],
+      显示:false
     };
   },
   async mounted() {
     await this.生成文档树();
+  },
+  watch: {
+    搜索关键词(新值) {
+      this.搜索(新值);
+    }
   },
   methods: {
     搜索:async function(text){
@@ -117,7 +126,6 @@ const toolbar = Vue.createApp({
         let 返回信息 = await this.请求数据(url, "", data);
         console.log(返回信息)
         this.搜索结果 =返回信息.data
-      
     },
     loadNode: async function (node, resolve) {
       this.生成子文档树(node);

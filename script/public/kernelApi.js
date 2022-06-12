@@ -4,7 +4,7 @@ export class  kernelApiList{
         思源伺服端口:"6806",
         思源伺服协议:"http",
 		apitoken:""
-
+		
     }){
     let 思源伺服ip =  option.思源伺服ip||option.siYuanIp||"127.0.0.1"
     let 思源伺服端口 =  option.思源伺服端口||option.siYuanPort||"6806"

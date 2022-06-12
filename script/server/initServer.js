@@ -13,21 +13,23 @@ module.exports = {
     let realoption = naive.生成默认设置(cusoption, workspaceDir, userId);
     this.渲染器 = null;
     this.realoption = realoption;
-    naive.publishoption = realoption
+    naive.publishoption = realoption;
     console.log(cusoption);
     console.log(workspaceDir);
     console.log(realoption, 15);
     思源api = new api(realoption);
     渲染器 = new 渲染器类(realoption);
     this.渲染器 = 渲染器;
-    naive.发布渲染器 =渲染器
+    naive.发布渲染器 = 渲染器;
     const bodyParser = require("body-parser");
     const express1 = require("express");
     const app = express1();
-    naive.expressApp = app
-    naive.express = express1
+    naive.expressApp = app;
+    naive.express = express1;
 
-    let res4 = await fs.readFileSync(`${workspaceDir}/${naive.插件文件夹路径}/config.json`);
+    let res4 = await fs.readFileSync(
+      `${workspaceDir}/${naive.插件文件夹路径}/config.json`
+    );
     naive.serverEndPluginConfig = JSON.parse(res4);
     app.use(bodyParser.json()); //body-parser 解析json格式数据
     app.use(
@@ -107,17 +109,12 @@ module.exports = {
       } else {
         res.sendStatus(404);
       }
-    }); 
+    });
     //emojis文件夹默认能够访问
     app.get("/emojis/*", (req, res) => {
       console.log(req);
       this.转发请求(req, res);
     });
-       //emojis文件夹默认能够访问
-       app.get("/stage/*", (req, res) => {
-        console.log(req);
-        this.转发请求(req, res);
-      });
     //只有暴露挂件选项开启时,能够访问挂件
     app.get("/widgets/*", (req, res) => {
       console.log(realoption);
@@ -140,7 +137,15 @@ module.exports = {
       res.send({ id: data.id });
     });
     //为发布端提供插件支持
-    app.use("/pulgins",express1.static(`${workspaceDir}/data/widgets/naivePlugins/`))
+    app.use(
+      "/pulgins",
+      express1.static(`${workspaceDir}/data/widgets/naivePlugins/`)
+    );
+    //stage文件夹使用副本的方式访问
+    console.log(`${workspaceDir}/conf/appearance/themes/naive/publish/stage/`)
+    app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
+                            
+    
     naive.publishServer = publishServer;
     for (let 插件名 in naive.serverEndPluginConfig) {
       try {
@@ -149,22 +154,21 @@ module.exports = {
           await naive.加载插件(插件名, "publish");
 
           let 插件 = naive.plugins[插件名];
-          if (插件&&插件.environment["server"]) {
-            let router = 插件.router||`/${插件名}`
+          if (插件 && 插件.environment["server"]) {
+            let router = 插件.router || `/${插件名}`;
 
             let methods = 插件.methods;
             methods.forEach((method) => {
-              if(method=="use"){
-                if(插件.use){
-                  let func =插件.use.bind(插件)
-                  app.use(router,func)
-                  console.log("publish use",router,func,"from",插件名)
+              if (method == "use") {
+                if (插件.use) {
+                  let func = 插件.use.bind(插件);
+                  app.use(router, func);
+                  console.log("publish use", router, func, "from", 插件名);
                 }
-              }
-              else if (插件[method]) {
+              } else if (插件[method]) {
                 let func = 插件[method].bind(插件);
                 app[method](router, (req, res) => func(req, res));
-                console.log("publish use",router,func,"from",插件名)
+                console.log("publish use", router, func, "from", 插件名);
               }
             });
           }
@@ -173,7 +177,8 @@ module.exports = {
         console.log(e);
       }
     }
-    console.log(app)
+    console.log(app);
+
     return publishServer;
   },
 

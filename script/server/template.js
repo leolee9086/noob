@@ -214,6 +214,7 @@ module.exports = class 模板渲染器 {
     if (res2 && res2.data && res2.data.ial) {
       let ial = res2.data.ial;
       title = ial.title;
+      this.当前文档标题=title
       let icon = ial.icon;
       let image = ial["title-img"];
       titlediv = document.createElement("div");
@@ -229,7 +230,7 @@ module.exports = class 模板渲染器 {
       background.innerHTML = await 头图元素(
         blockid,
         image,
-        ial,
+        icon,
         this.workspace
       );
     }
@@ -315,8 +316,8 @@ module.exports = class 模板渲染器 {
       工具栏脚本 = ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
       <!-- 导入组件库 -->
       <script src="https://unpkg.com/element-plus"></script>
-      <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/toolbar.js"></script>
-      <script src="http://${this.发布地址}:${this.发布端口}/appearance/themes/naive/script/backlink.js"></script>
+      <script src="/stage/toolbar.js"></script>
+      <script src="/stage/backlink.js"></script>
 
       `;
     }
@@ -329,6 +330,10 @@ module.exports = class 模板渲染器 {
     }
     let {默认图标} = require('./template/defaultIcons.js')
     this.默认图标 = 默认图标
+    let 工具栏 = "";
+    if(this.允许搜索){
+      工具栏 = `   <div id="toolbar" class="toolbar fn__flex"></div>`
+    }
     return `<!DOCTYPE html>
     <html>
     ${this.发布文档头(发布主题)}
@@ -345,9 +350,10 @@ module.exports = class 模板渲染器 {
       left:10px
     " >    
     </div>
-    <div class="protyle-wysiwyg protyle-wysiwyg--attr" style="margin: 0 auto;max-width: 80vw" id="preview">
+    ${工具栏}
     ${头图}
-    <div id="toolbar" class="toolbar fn__flex">
+
+    <div class="protyle-wysiwyg protyle-wysiwyg--attr" style="margin: 0 auto;max-width: 80vw" id="preview">
 
     ${content}
     ${this.发布脚本内容 || ""}
@@ -414,88 +420,15 @@ module.exports = class 模板渲染器 {
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="stylesheet" type="text/css" id="themeStyle" href="/stage/default.css">
+  <title>${this.当前文档标题}</title>
+
   <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${this.基础样式}">
   <link rel="stylesheet" type="text/css" id="themeStyle" href="${主题}">
   <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
   <style>
-      body {
-        background-color: var(--b3-theme-background);
-        color: var(--b3-theme-on-background);
-        margin:0
-      }
-        .b3-typography, .protyle-wysiwyg, .protyle-title {font-size:21px !important}
-       .b3-typography code:not(.hljs), .protyle-wysiwyg code:not(.hljs) { font-variant-ligatures: normal 
-      
-      }
-  .li > .protyle-action {height:42px;line-height: 42px}
-  .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h1, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h2, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h3, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h4, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h5, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h6 {line-height:42px;}
-  .protyle-wysiwyg [data-node-id].li > .protyle-action:after {height: 21px;width: 21px;margin:-10.5px 0 0 -10.5px}
-  .protyle-wysiwyg [data-node-id].li > .protyle-action svg {height: 14px}
-  .protyle-wysiwyg [data-node-id] [spellcheck="false"] {min-height:34px}
-  .protyle-wysiwyg .li {min-height:42px}
-  .protyle-gutters button svg {height:34px}
-  .protyle-wysiwyg img.emoji, .b3-typography img.emoji {width:26px}
-  .protyle-wysiwyg .h1 img.emoji, .b3-typography h1 img.emoji {width:45px}
-  .protyle-wysiwyg .h2 img.emoji, .b3-typography h2 img.emoji {width:40px}
-  .protyle-wysiwyg .h3 img.emoji, .b3-typography h3 img.emoji {width:36px}
-  .protyle-wysiwyg .h4 img.emoji, .b3-typography h4 img.emoji {width:32px}
-  .protyle-wysiwyg .h5 img.emoji, .b3-typography h5 img.emoji {width:29px}
-  .protyle-wysiwyg .h6 img.emoji, .b3-typography h6 img.emoji {width:26px}
-  a[type='blockref']{color:var(--b3-protyle-inline-blockref-color)}
-  .protyle-background__icon img, .protyle-background__icon svg{
-    height: 80px;
-  width: 80px;
-  float: left;
-  border-radius: 4px;
-  display:block
-  }
-  .b3-list.b3-list--background ul,.b3-list.b3-list--background li{
-    display:flex;
-    padding:0
-  }
-  .b3-list.b3-list--background svg{
-    height:14px;
-    width:14px
-  }
-  #toolbar{
-    height:50px;
-    width:100vw;
-    max-height:50px;
-    padding-top:20px;
-    background-color:var(--b3-themes-surface)
-  }
-  :root {
-    --el-color-primary: var(--b3-themes-bcakground);
-  }
-  .menu_item_icon{
-    width:30px;
-    height:30px;
-    vertical-align:center;
-
-  }
-  .menu_item_icon svg{
-    width:30px;
-    height:30px;
-    max-width:100%;
-    max-height:100%;
-    vertical-align:center;
-  }
-  .menu_item{
-    height:100%;
-    
-  }
-  .list_item_icon image,.list_item_icon img,.list_item_icon svg{
-    width:18px;
-    height:18px;
-    max-width:100%;
-    max-height:100%;
-    vertical-align:center;
-  }
-  
-
   </style>
   <link id="protyleHljsStyle" rel="stylesheet" type="text/css" href="${this.高亮样式}">
- 
   </head>`;
   }
   
