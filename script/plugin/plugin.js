@@ -8,7 +8,6 @@ export class 主题插件 {
   constructor(option) {
     this.name = option.name;
     naive.plugins[this.name] = this;
-    console.log(`${this.name}插件启用`);
     this.app = naive;
     this.workspaceDir=naive.workspaceDir
     this.blockHandler = new blockHandler();
@@ -28,16 +27,19 @@ export class 主题插件 {
     this.注册块标菜单 = 注册块标菜单
     this.注册竖线菜单项目 = 注册竖线菜单项目
     this.注册图标= this.app.注册图标
+    this.registIcon = this.注册图标
     //用于与插件设置页面通讯
     if (this.onBroadcastMassage) {
       this.消息广播器.onmessage =(msg)=>this.onBroadcastMassage(msg);
     }
   }
-  
+  初始化设置(){
+
+  }
+  //界面api
   注册图标(option) {
     this.app.注册图标(option);
   }
- 
   注册头图按钮(option) {
     this.app.自定义头图菜单[option.type] = option;
   }

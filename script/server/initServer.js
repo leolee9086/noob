@@ -113,6 +113,11 @@ module.exports = {
       console.log(req);
       this.转发请求(req, res);
     });
+       //emojis文件夹默认能够访问
+       app.get("/stage/*", (req, res) => {
+        console.log(req);
+        this.转发请求(req, res);
+      });
     //只有暴露挂件选项开启时,能够访问挂件
     app.get("/widgets/*", (req, res) => {
       console.log(realoption);

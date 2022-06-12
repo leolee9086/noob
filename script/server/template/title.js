@@ -4,7 +4,7 @@ module.exports = {
     if (icon) {
       let {
         图标,
-      } = require(`${workspace}/conf/appearance/themes/naive/config/icon.js`);
+      } = require(`./icon.js`);
       图标内容 = await 图标(icon);
       console.log(await 图标(icon));
       if (图标内容.indexOf("<svg") !== 0) {
