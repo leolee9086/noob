@@ -53,6 +53,7 @@ export default class naive {
     this.当前块元素数组 = [];
     this.eventBus = this.事件总线;
     this.isApp = window.require ? true : false;
+    this.生成默认设置=生成默认设置
     this.设置 = 生成默认设置({}, this.workspaceDir, "");
     this.加载图标 = 加载图标;
     this.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;

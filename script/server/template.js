@@ -332,7 +332,7 @@ module.exports = class 模板渲染器 {
     this.默认图标 = 默认图标
     let 工具栏 = "";
     if(this.允许搜索){
-      工具栏 = `   <div id="toolbar" class="toolbar fn__flex"></div>`
+      工具栏 = `<div id="toolbar" class="toolbar fn__flex"></div>`
     }
     return `<!DOCTYPE html>
     <html>
@@ -351,7 +351,7 @@ module.exports = class 模板渲染器 {
     " >    
     </div>
     ${工具栏}
-    ${头图}
+    ${头图||""}
 
     <div class="protyle-wysiwyg protyle-wysiwyg--attr" style="margin: 0 auto;max-width: 80vw" id="preview">
 
@@ -422,7 +422,7 @@ module.exports = class 模板渲染器 {
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <link rel="stylesheet" type="text/css" id="themeStyle" href="/stage/default.css">
   <title>${this.当前文档标题}</title>
-
+  <script src="/appearance/emojis/twitter-emoji.js?v=1.0.0" async="" id="emojiScript"></script>
   <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${this.基础样式}">
   <link rel="stylesheet" type="text/css" id="themeStyle" href="${主题}">
   <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />

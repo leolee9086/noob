@@ -8,6 +8,8 @@ module.exports = {
     const 渲染器类 = require("./template");
     const api = require("../public/siYuanApi");
     const fs = require("fs");
+    const compression = require('compression')
+
     const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
     let realoption = naive.生成默认设置(cusoption, workspaceDir, userId);
@@ -26,6 +28,7 @@ module.exports = {
     const app = express1();
     naive.expressApp = app;
     naive.express = express1;
+    app.use(compression());
 
     let res4 = await fs.readFileSync(
       `${workspaceDir}/${naive.插件文件夹路径}/config.json`
@@ -62,10 +65,10 @@ module.exports = {
     console.log(app);
 
     //允许访问外观设置文件夹内容
-    app.get("/appearance/*", (req, res) => {
-      console.log(req);
-      this.转发请求(req, res);
-    });
+    app.use("/appearance", express1.static(`${workspaceDir}/conf/appearance/`));
+
+    //stage文件夹使用副本的方式访问
+    app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
     //暴露附件文件夹时允许访问附件路径
     app.get("/assets/*", (req, res) => {
       if (realoption.暴露附件) {
@@ -142,7 +145,6 @@ module.exports = {
       express1.static(`${workspaceDir}/data/widgets/naivePlugins/`)
     );
     //stage文件夹使用副本的方式访问
-    console.log(`${workspaceDir}/conf/appearance/themes/naive/publish/stage/`)
     app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
                             
     
