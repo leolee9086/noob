@@ -12,7 +12,7 @@ export class 主题插件 {
     this.workspaceDir=naive.workspaceDir
     this.blockHandler = new blockHandler();
     this.窗口配置器 = 窗口配置器;
-    this.kernalApi = naive.kernalApi;
+    this.kernelApi = naive.kernelApi;
     this.核心api = naive.核心api;
     this.express = naive.express;
     this.expressApp = naive.expressApp;

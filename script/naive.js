@@ -1,6 +1,6 @@
 import { 生成默认设置 } from "./public/configer.js";
 import { 事件总线 } from "./public/eventBus.js";
-import { kernalApiList } from "./public/kernalApi.js";
+import { kernelApiList } from "./public/kernelApi.js";
 import { 加载插件 } from "./plugin/pluginLoader.js";
 import { 加载核心插件 } from "./plugin/pluginLoader.js";
 import { 加载图标 } from "./ui/icon.js";
@@ -37,8 +37,8 @@ export default class naive {
     this.corePlugins = {};
     this.publishPlugins = {};
     this.util = {};
-    this.kernalApi = new kernalApiList();
-    this.核心api = this.kernalApi;
+    this.kernelApi = new kernelApiList();
+    this.核心api = this.kernelApi;
     this.DOM监听器 = DOM监听器;
     this.事件总线 = new 事件总线();
     this.加载图标 = 加载图标;

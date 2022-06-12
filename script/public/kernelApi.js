@@ -1,4 +1,4 @@
-export class  kernalApiList{
+export class  kernelApiList{
     constructor(option={
         思源伺服ip:"127.0.0.1",
         思源伺服端口:"6806",
@@ -11,6 +11,8 @@ export class  kernalApiList{
     let 思源伺服协议 =  option.思源伺服协议||option.siYuanScheme||"http"
 	this.apitoken =  option.apitoken||""
     this.思源伺服地址 = 思源伺服协议+ "://"+思源伺服ip+":"+思源伺服端口
+	if(option.siYuanServiceURL){this.思源伺服地址=option.siYuanServiceURL}
+	if(option.思源伺服地址){this.思源伺服地址=option.思源伺服地址}
     this.set("GET", "/api/system/bootProgress", "bootProgress","获取启动进度")
 	this.set("POST", "/api/system/bootProgress", "bootProgress")
 	this.set("GET", "/api/system/version", "version","获取软件版本")
