@@ -361,15 +361,15 @@ module.exports = class 模板渲染器 {
 
     </div>
     <div id="backlinks"></div>
-   <script src="https://assets.b3logfile.com/siyuan/1622718220689/assets/highlight.min-20220504013958-m3rgses.js"  id="protyleHljsScript"></script>
+   <script src="/stage/protyle/js/highlight.js/highlight.min.js"  id="protyleHljsScript"></script>
     <script src="http://${this.发布地址}:${
       this.发布端口
     }/stage/protyle/js/highlight.js/third-languages.js?v=1.0.0" id="protyleHljsThirdScript"></script>
     <script src="http://${this.发布地址}:${
       this.发布端口
     }/appearance/icons/material/icon.js?2.0.3"></script>
-    <script src="https://assets.b3logfile.com/siyuan/1622718220689/assets/protyle-method-20220504012713-cove4xh.js"></script>
-    <script defer src="https://assets.b3logfile.com/siyuan/1622718220689/assets/lute.min-20220504013013-8luncbc.js"></script>    
+    <script src="/stage/build/export/protyle-method.js"></script>
+    <script defer src="stage/protyle/js/lute/lute.min.js"></script>    
     <script >
         window.siyuan = {
           config: {
@@ -423,6 +423,7 @@ module.exports = class 模板渲染器 {
   <link rel="stylesheet" type="text/css" id="themeStyle" href="/stage/default.css">
   <title>${this.当前文档标题}</title>
   <script src="/appearance/emojis/twitter-emoji.js?v=1.0.0" async="" id="emojiScript"></script>
+  <script src="/appearance/icons/material/icon.js?v=1.0.6" async="" id="iconScript"></script>
   <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${this.基础样式}">
   <link rel="stylesheet" type="text/css" id="themeStyle" href="${主题}">
   <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />

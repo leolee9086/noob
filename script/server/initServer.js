@@ -70,13 +70,16 @@ module.exports = {
     //stage文件夹使用副本的方式访问
     app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
     //暴露附件文件夹时允许访问附件路径
-    app.get("/assets/*", (req, res) => {
+    if(realoption.暴露附件){
+    app.use("/assets", express1.static(`${workspaceDir}/data/assets/`));
+      }
+    /*app.get("/assets/*", (req, res) => {
       if (realoption.暴露附件) {
         this.转发请求(req, res);
       } else {
         res.sendStatus(404);
       }
-    });
+    });*/
     //允许搜索时,能够访问文档树
     app.post("/api/notebook/lsNotebooks", (req, res) => {
       if (realoption.允许搜索) {
@@ -114,20 +117,14 @@ module.exports = {
       }
     });
     //emojis文件夹默认能够访问
-    app.get("/emojis/*", (req, res) => {
-      console.log(req);
-      this.转发请求(req, res);
-    });
+    app.use("/emojis", express1.static(`${workspaceDir}/conf/appearance/emojis`));
+
     //只有暴露挂件选项开启时,能够访问挂件
-    app.get("/widgets/*", (req, res) => {
-      console.log(realoption);
-      if (realoption.暴露挂件) {
-        console.log(req);
-        this.转发请求(req, res);
-      } else {
-        res.sendStatus(404);
-      }
-    });
+    if (realoption.暴露挂件){
+      app.use("/widgets", express1.static(`${workspaceDir}/data/widgets/`));
+
+    }
+    
     //静态路径伺服块id
     app.get("/block/:blockid", (req, res) => this.返回块内容(req, res));
     app.get("/block/", (req, res) => this.返回块内容(req, res));

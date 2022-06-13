@@ -25,7 +25,11 @@ const toolbar = Vue.createApp({
                 <el-tree :icon="null" 	 @node-click='(node)=>node?生成子文档树(node):null'		 :data="笔记本列表">
                     <template #default="{ data}"  >
                     <span>
-                        <span class="list_item_icon" v-if='data.icon' v-html='data.icon'></span>
+                        <span class="list_item_icon" >
+                        <svg class="custom-icon">
+                          <use :xlink:href="data.icon?'#icon-'+data.icon:'#icon-1f4c4'"></use>
+                        </svg>
+                        </span>
                         
                         <el-link :href='"/block/"+data.id'  v-if="data.box">
                         {{data.name}}
@@ -132,16 +136,16 @@ const toolbar = Vue.createApp({
     },
     生成图标: async function (icon) {
       let iconurl = `/appearance/emojis/${icon}.svg`;
-      let res = await fetch(iconurl);
-      let text = await res.text();
-      if (text) {
-        图标内容 = text;
-        if (图标内容 && 图标内容.indexOf("<svg") !== 0) {
-          图标内容 = `<img src="/emojis/${icon}"></img>`;
-        }
-      }
-
-      return 图标内容;
+    //  let res = await fetch(iconurl);
+     // let text = await res.text();
+     // if (text) {
+     //   图标内容 = text;
+       // if (图标内容 && 图标内容.indexOf("<svg") !== 0) {
+        //  图标内容 = `<img src="/emojis/${icon}"></img>`;
+      //  }
+    //  }
+    //  let 图标内容 = `<svg class="custom-icon"><use xlink:href="#${icon?"icon-"+icon:"iconFile"}"></use></svg>`;
+      return icon;
     },
     生成文档树: async function () {
       let 笔记本列表 = await this.请求笔记本列表();

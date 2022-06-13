@@ -33,12 +33,18 @@ module.exports = {
             `;
     if (!image&&图标内容) {
       background = `
-                <div class="protyle-background__iconw" >
-                <div class="protyle-background__icon" data-menu="true" data-type="open-emoji">
-                ${图标内容}
-                </div>
-              </div>
-                `;
+      <div class="protyle-background" data-node-id="${docid}" style="max-height:40px !important">
+      <div class="protyle-background__img">
+       ${imagehtml}
+  
+    </div>
+    <div class="protyle-background__iconw" >
+<div class="protyle-background__icon" data-menu="true" data-type="open-emoji">
+${图标内容}
+</div>
+</div>
+    </div>
+          `;
     }
     if (!image&&!图标内容) {
       background = `
