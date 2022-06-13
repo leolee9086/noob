@@ -10,9 +10,10 @@ module.exports = {
     const fs = require("fs");
     const compression = require('compression')
 
-    const cusoptionpath = `${workspaceDir}/conf/appearance/themes/naive/config/publish.json`;
+    const cusoptionpath = `${workspaceDir}/${naive.插件文件夹路径}/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
-    let realoption = naive.生成默认设置(cusoption, workspaceDir, userId);
+    let realoption = naive.生成默认设置(cusoption, workspaceDir, userId,naive.插件文件夹路径);
+    naive.设置 = realoption;
     this.渲染器 = null;
     this.realoption = realoption;
     naive.publishoption = realoption;
@@ -137,9 +138,10 @@ module.exports = {
       res.send({ id: data.id });
     });
     //为发布端提供插件支持
+    console.log(naive.插件文件夹url)
     app.use(
-      "/pulgins",
-      express1.static(`${workspaceDir}/data/widgets/naivePlugins/`)
+      "/plugins",
+      express1.static(`${workspaceDir}/data/${naive.插件文件夹url}`)
     );
     //stage文件夹使用副本的方式访问
     app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));

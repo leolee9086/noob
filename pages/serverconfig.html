@@ -132,7 +132,7 @@
         },
         methods: {
             重置() {
-                fetch('.././config/publish.json').then((response) => response.json()).then(json => {
+                fetch('/widgets/naivePlugins/publish.json').then((response) => response.json()).then(json => {
                     this.config = Vue.reactive(json)
                 })
             },
@@ -145,7 +145,7 @@
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], {type: 'text/json'})
 
-                formData.append('path', 'conf\\appearance\\themes\\naive\\config\\publish.json')
+                formData.append('path', 'data\\widgets\\naivePlugins\\publish.json')
                 formData.append('modTime', Date.now())
                 formData.append('file', blob)
                 let url = '/api/file/putFile'
@@ -169,7 +169,7 @@
     const readJson = function () {
         console.log(this)
         let vm = this
-        fetch('.././config/publish.json').then((response) => response.json()).then(json => {
+        fetch('/widgets/naivePlugins/publish.json').then((response) => response.json()).then(json => {
             customfig = Vue.reactive(json)
             const vm = app.mount('#app')
         })

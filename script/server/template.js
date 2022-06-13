@@ -316,8 +316,8 @@ module.exports = class 模板渲染器 {
       工具栏脚本 = ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
       <!-- 导入组件库 -->
       <script src="https://unpkg.com/element-plus"></script>
-      <script src="/stage/toolbar.js"></script>
-      <script src="/stage/backlink.js"></script>
+      <script src="/plugins/toolbar.js"></script>
+      <script src="/plugins/backlink.js"></script>
 
       `;
     }
@@ -325,7 +325,7 @@ module.exports = class 模板渲染器 {
     let 发布插件 = "";
     for (let 插件名 in naive.publishPlugins) {
       if (naive.publishPlugins[插件名]) {
-        发布插件 += `<script type='module' src='/pulgins/${插件名}/index.js'></script>`;
+        发布插件 += `<script type='module' src='/plugins/${插件名}/index.js'></script>`;
       }
     }
     let {默认图标} = require('./template/defaultIcons.js')
@@ -362,47 +362,42 @@ module.exports = class 模板渲染器 {
     </div>
     <div id="backlinks"></div>
    <script src="/stage/protyle/js/highlight.js/highlight.min.js"  id="protyleHljsScript"></script>
-    <script src="http://${this.发布地址}:${
-      this.发布端口
-    }/stage/protyle/js/highlight.js/third-languages.js?v=1.0.0" id="protyleHljsThirdScript"></script>
-    <script src="http://${this.发布地址}:${
-      this.发布端口
-    }/appearance/icons/material/icon.js?2.0.3"></script>
+    <script src="/stage/protyle/js/highlight.js/third-languages.js?v=1.0.0" id="protyleHljsThirdScript"></script>
+    <script src="/appearance/icons/material/icon.js?2.0.3"></script>
     <script src="/stage/build/export/protyle-method.js"></script>
-    <script defer src="stage/protyle/js/lute/lute.min.js"></script>    
+    <script defer src="/stage/protyle/js/lute/lute.min.js"></script>    
     <script >
-        window.siyuan = {
-          config: {
-            appearance: { mode: 0, codeBlockThemeDark: "base16/dracula", codeBlockThemeLight: "github" },
-            editor: { 
-              codeLineWrap: true,
-              codeLigatures: "true",
-              plantUMLServePath: "https://www.plantuml.com/plantuml/svg/~1",
-              codeSyntaxHighlightLineNum: false,
-            }
-          },
-          languages: {copy:"复制"}
-        };
-        const previewElement = document.getElementById('preview');
-        Protyle.codeRender(previewElement);
-        Protyle.highlightRender(previewElement, "stage/protyle");
-        Protyle.mathRender(previewElement, "stage/protyle", false);
-        Protyle.mermaidRender(previewElement, "stage/protyle");
-        Protyle.flowchartRender(previewElement, "stage/protyle");
-        Protyle.graphvizRender(previewElement, "stage/protyle");
-        Protyle.chartRender(previewElement, "stage/protyle");
-        Protyle.mindmapRender(previewElement, "stage/protyle");
-        Protyle.abcRender(previewElement, "stage/protyle");
-        Protyle.plantumlRender(previewElement, "stage/protyle");
-        Protyle.mediaRender(previewElement);
-        document.querySelectorAll(".protyle-action__copy").forEach((item) => {
-          item.addEventListener("click", (event) => {
-                navigator.clipboard.writeText(item.parentElement.nextElementSibling.textContent.trimEnd());
-                item.setAttribute("aria-label", "已复制");
-                event.preventDefault();
-                event.stopPropagation();
-          })
-        });
+    window.siyuan = {
+      config: {
+        appearance: { mode: 0, codeBlockThemeDark: "base16/dracula", codeBlockThemeLight: "github" },
+        editor: { 
+          codeLineWrap: true,
+          codeLigatures: true,
+          plantUMLServePath: "https://www.plantuml.com/plantuml/svg/~1",
+          codeSyntaxHighlightLineNum: false,
+        }
+      },
+      languages: {copy:"复制"}
+    };
+    const previewElement = document.getElementById('preview');
+    Protyle.highlightRender(previewElement, "/stage/protyle");
+    Protyle.mathRender(previewElement, "/stage/protyle", false);
+    Protyle.mermaidRender(previewElement, "/stage/protyle");
+    Protyle.flowchartRender(previewElement, "/stage/protyle");
+    Protyle.graphvizRender(previewElement, "/stage/protyle");
+    Protyle.chartRender(previewElement, "/stage/protyle");
+    Protyle.mindmapRender(previewElement, "/stage/protyle");
+    Protyle.abcRender(previewElement, "/stage/protyle");
+    Protyle.plantumlRender(previewElement, "/stage/protyle");
+    Protyle.mediaRender(previewElement);
+    document.querySelectorAll(".protyle-action__copy").forEach((item) => {
+      item.addEventListener("click", (event) => {
+            navigator.clipboard.writeText(item.parentElement.nextElementSibling.textContent.trimEnd());
+            event.preventDefault();
+            event.stopPropagation();
+      })
+    });
+    
         
     </script>
     ${工具栏脚本 || ""}

@@ -4,7 +4,6 @@ naive.frontEndPluginConfig = await res4.json();
 naive.停用插件 = function (插件) {
   naive.frontEndPluginConfig[插件.name] = null;
 };
-console.log(naive);
 for (let 插件名 in naive.frontEndPluginConfig) {
   if (naive.frontEndPluginConfig[插件名]) {
     if (!window.require) {
@@ -16,7 +15,6 @@ for (let 插件名 in naive.frontEndPluginConfig) {
   }
 }
 
-console.log(naive);
 
 function 获取url参数(参数名) {
   const search = location.search; // 返回类似于 ?a=10&b=20&c=30
@@ -39,7 +37,6 @@ function 打开块id(块id) {
 const 打开到url块id = function () {
   let 窗口块id = 获取url参数("blockid") || 获取url参数("id");
   if (窗口块id) {
-    console.log("跳转到", 窗口块id);
     打开块id(窗口块id);
   }
 };
@@ -76,7 +73,6 @@ function 通用菜单监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
       if (mutation.target.getAttribute("class") == "b3-menu") {
-        console.log("通用菜单显示");
         naive.事件总线.emit("通用菜单显示", mutation.target);
         判定通用菜单(mutation.target);
       } else {
@@ -105,9 +101,7 @@ function 判定通用菜单(通用菜单) {
 }
 naive.事件总线.on("块标菜单显示", 插入自定义块标菜单项目);
 function 插入自定义块标菜单项目(块标菜单数据) {
-  console.log(块标菜单数据);
   let 自定义块标菜单 = naive.自定义块标菜单;
-  console.log(自定义块标菜单);
 
   let 当前块类型 = 块标菜单数据.类型;
 
@@ -120,7 +114,6 @@ function 插入自定义块标菜单项目(块标菜单数据) {
   }
 }
 function 注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜单, 当前块类型) {
-  console.log(菜单项目);
   let readonly = 块标菜单数据.菜单.querySelector(
     ".b3-menu__item.b3-menu__item--readonly"
   );
@@ -133,10 +126,8 @@ function 注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜
       自定义块标菜单[当前块类型][菜单项目]["显示判断函数"].bind(
         自定义块标菜单[当前块类型][菜单项目]["注册插件"]
       )();
-    console.log(flag);
   }
 
-  console.log(flag);
   flag && item
     ? 块标菜单数据.菜单.insertBefore(
         生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]),
@@ -147,7 +138,6 @@ function 注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜
 const 生成列表菜单项目 = function (菜单项目) {
   let button = document.createElement("button");
   button.className = "b3-menu__item diy";
-  console.log(菜单项目);
   button.onclick = () =>
     菜单项目.回调函数.call(菜单项目.注册插件, naive.当前块id);
   button.setAttribute("data-node-id", naive.当前块id);
@@ -162,7 +152,6 @@ let 头图按钮监听器选项 = {
 function 头图按钮监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
-      console.log(mutation.target);
     }
   }
 }
@@ -175,8 +164,6 @@ let html块监听选项 = {
 function html块监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
-      console.log(mutation.target);
-      console.log(mutation.target.shadowRoot);
       if (mutation.target.shadowRoot) {
         hackHTMLBlock(mutation.target);
       }
@@ -188,20 +175,13 @@ window.addEventListener("load",()=>setTimeout(hackHTMLBlockAll,2000));
 
 function hackHTMLBlock(htmlel) {
   for (let hacker in naive.customHTML){
-    console.log(hacker)
     let parent=htmlel.parentElement.parentElement
-    console.log(parent.getAttribute("custom-type"))
-
     if(hacker== parent.getAttribute("custom-type")){   
-      console.log(hacker)
-
       if(htmlel.parentElement.querySelector(hacker)){
-
         let cusel=  htmlel.parentElement.querySelector(hacker)
         cusel.setAttribute("data-content",htmlel.getAttribute("data-content"))
       }
       else{
-
         let customhtml=document.createElement(hacker)
         htmlel.style.display="none"
         customhtml.setAttribute("data-content",htmlel.getAttribute("data-content"))
@@ -212,8 +192,6 @@ function hackHTMLBlock(htmlel) {
 }
 function hackHTMLBlockAll() {
   let htmls = document.querySelectorAll('[data-type="NodeHTMLBlock"]');
-  console.log(htmls)
-
   if(htmls[0]){
     htmls.forEach(htmlel=>{
         if(htmlel.querySelector("protyle-html")){
@@ -233,7 +211,6 @@ let 文档块监听选项 = {
 function 文档块监听回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
-      console.log(mutation.target);
     }
   }
 }
@@ -254,7 +231,6 @@ naive.获取id与类型 = function (target) {
   if (target.getAttribute("data-node-id")) {
     if (target.getAttribute("data-node-id") !== naive.当前块id) {
       naive.当前块id = target.getAttribute("data-node-id");
-      console.log(naive.当前块id);
       naive.事件总线.emit("当前块id改变", naive.当前块id);
       if (target.getAttribute("data-type")) {
         naive.当前块类型 = target.getAttribute("data-type");
@@ -277,7 +253,6 @@ naive.获取文档id = function (target) {
   ) {
     if (target.getAttribute("data-node-id") !== naive.当前文档id) {
       naive.当前文档id = target.getAttribute("data-node-id");
-      console.log(naive.当前文档id);
       naive.事件总线.emit("当前文档id", naive.当前块id);
     }
     return;
@@ -301,15 +276,12 @@ naive.事件总线.on("当前块id改变", naive.获取块数组);
 //事件回调
 naive.判定并获取目标 = function (event) {
   let target = event.target;
-  // console.log(event.target);
-
   if (event.target.className == "protyle-background") {
     naive.事件总线.emit("鼠标聚焦到头图", event.target);
   }
 };
 
 naive.插入头图按钮 = function (头图元素, 按钮项目) {
-  console.log(按钮项目);
   let 头图按钮组 = 头图元素.querySelector(".protyle-icons");
   let span = 头图按钮组.querySelector(
     `[data-type = 'custom-${按钮项目.type || 按钮项目.类型}']`

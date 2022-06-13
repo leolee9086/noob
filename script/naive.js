@@ -54,7 +54,8 @@ export default class naive {
     this.eventBus = this.事件总线;
     this.isApp = window.require ? true : false;
     this.生成默认设置=生成默认设置
-    this.设置 = 生成默认设置({}, this.workspaceDir, "");
+    
+    this.设置 = 生成默认设置({}, this.workspaceDir, "",this.插件文件夹url);
     this.加载图标 = 加载图标;
     this.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
     this.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
@@ -64,10 +65,8 @@ export default class naive {
     this.自定义头图菜单 = [];
     this.加载插件 = 加载插件;
     this.plugins = {};
-
     this.dom模板 = dom模板;
     this.加载核心插件 = 加载核心插件;
-
     this.初始化核心插件();
     this.plugin = 主题插件;
     window.addEventListener("keyup", (event) => this.判断键盘目标(event));
