@@ -70,6 +70,8 @@ module.exports = {
 
     //stage文件夹使用副本的方式访问
     app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
+    app.use("/static", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/public/static/`));
+
     //暴露附件文件夹时允许访问附件路径
     if(realoption.暴露附件){
     app.use("/assets", express1.static(`${workspaceDir}/data/assets/`));

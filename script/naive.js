@@ -16,6 +16,10 @@ import { DOM监听器 } from "./public/DOMwatcher.js";
 
 export default class naive {
   constructor(themeName) {
+    if(window.require){
+    this.fs = require("fs");
+    this.path = require("path");
+}
     this.themeName = themeName;
     this.editor = {};
     this.editor.footerWidget = "cc-template";
@@ -84,7 +88,7 @@ export default class naive {
   async 获取json(路径) {
     let json = {};
     if (window.require) {
-      naive.fs = require("fs");
+      this.fs = require("fs");
       try {
         json = JSON.parse(naive.fs.readFileSync(路径, "utf-8"));
       } catch (e) {

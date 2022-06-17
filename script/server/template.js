@@ -313,9 +313,9 @@ module.exports = class 模板渲染器 {
   渲染模板(content, 头图, 主题) {
     let 工具栏脚本 = "";
     if (!this.有限分享 && this.允许搜索) {
-      工具栏脚本 = ` <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.js"></script>
+      工具栏脚本 = ` <script src="/static/vue/vue.global.js"></script>
       <!-- 导入组件库 -->
-      <script src="https://unpkg.com/element-plus"></script>
+      <script src="/static/element-plus/index.full.js"></script>
       <script src="/plugins/toolbar.js"></script>
       <script src="/plugins/backlink.js"></script>
 
@@ -421,7 +421,7 @@ module.exports = class 模板渲染器 {
   <script src="/appearance/icons/material/icon.js?v=1.0.6" async="" id="iconScript"></script>
   <link rel="stylesheet" type="text/css" id="themeDefaultStyle" href="${this.基础样式}">
   <link rel="stylesheet" type="text/css" id="themeStyle" href="${主题}">
-  <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+  <link rel="stylesheet" href="/static/element-plus/index.css" />
   <style>
   </style>
   <link id="protyleHljsStyle" rel="stylesheet" type="text/css" href="${this.高亮样式}">
