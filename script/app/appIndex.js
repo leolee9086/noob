@@ -15,7 +15,6 @@ for (let 插件名 in naive.frontEndPluginConfig) {
   }
 }
 
-
 function 获取url参数(参数名) {
   const search = location.search; // 返回类似于 ?a=10&b=20&c=30
   const obj = new URLSearchParams(search);
@@ -171,38 +170,38 @@ function html块监听器回调(mutationsList, observer) {
   }
 }
 naive.html块监听器 = new naive.DOM监听器(html块监听选项);
-window.addEventListener("load",()=>setTimeout(hackHTMLBlockAll,2000));
+window.addEventListener("load", () => setTimeout(hackHTMLBlockAll, 2000));
 
 function hackHTMLBlock(htmlel) {
-  for (let hacker in naive.customHTML){
-    let parent=htmlel.parentElement.parentElement
-    if(hacker== parent.getAttribute("custom-type")){   
-      if(htmlel.parentElement.querySelector(hacker)){
-        let cusel=  htmlel.parentElement.querySelector(hacker)
-        cusel.setAttribute("data-content",htmlel.getAttribute("data-content"))
-      }
-      else{
-        let customhtml=document.createElement(hacker)
-        htmlel.style.display="none"
-        customhtml.setAttribute("data-content",htmlel.getAttribute("data-content"))
-        htmlel.parentElement.insertBefore(customhtml,htmlel)
+  for (let hacker in naive.customHTML) {
+    let parent = htmlel.parentElement.parentElement;
+    if (hacker == parent.getAttribute("custom-type")) {
+      if (htmlel.parentElement.querySelector(hacker)) {
+        let cusel = htmlel.parentElement.querySelector(hacker);
+        cusel.setAttribute("data-content", htmlel.getAttribute("data-content"));
+      } else {
+        let customhtml = document.createElement(hacker);
+        htmlel.style.display = "none";
+        customhtml.setAttribute(
+          "data-content",
+          htmlel.getAttribute("data-content")
+        );
+        htmlel.parentElement.insertBefore(customhtml, htmlel);
       }
     }
   }
 }
 function hackHTMLBlockAll() {
   let htmls = document.querySelectorAll('[data-type="NodeHTMLBlock"]');
-  if(htmls[0]){
-    htmls.forEach(htmlel=>{
-        if(htmlel.querySelector("protyle-html")){
+  if (htmls[0]) {
+    htmls.forEach((htmlel) => {
+      if (htmlel.querySelector("protyle-html")) {
         hackHTMLBlock(htmlel.querySelector("protyle-html"));
       }
-      })
-    
+    });
   }
- 
 }
-hackHTMLBlockAll()
+hackHTMLBlockAll();
 //监听文档变化
 let 文档块监听选项 = {
   监听目标: ".protyle-wysiwyg.protyle-wysiwyg--attr",
@@ -215,6 +214,67 @@ function 文档块监听回调(mutationsList, observer) {
   }
 }
 naive.文档块监听器 = new naive.DOM监听器(文档块监听选项);
+//监听导出按钮变化
+let 导出按钮监听选项 = {
+  监听目标: ".protyle-preview",
+  监听器回调: 导出按钮监听回调,
+};
+function 导出按钮监听回调(mutationsList, observer) {
+  for (let mutation of mutationsList) {
+    console.log(mutation.target);
+
+    if (mutation.target) {
+      let 导出按钮组 = mutation.target.querySelector(
+        ".protyle-preview__action"
+      );
+      console.log(mutation.target);
+      let 导出按钮 = 生成导出栏项目({
+        按钮提示: "导出长图",
+        按钮图标: "iconExport",
+        按钮文字: "导出长图",
+        回调函数: function (event) {
+          console.log(event.currentTarget);
+          event.stopPropagation();
+          let previewer = event.currentTarget.parentElement.nextElementSibling;
+          console.log(previewer);
+          if (previewer) {
+            //let html2canvas =naive.html2canvas
+            previewer.setAttribute("style", ` overflow:auto;min-height:${previewer.scrollHeight+200}px;background-color:var(--b3-theme-background);line-height:1.625;font-size:16px !important;font-family:var(--b3-theme-font-family);color:var(--b3-theme-color);`);
+            previewer.parentElement.setAttribute("style", ` overflow:visible;background-color:var(--b3-theme-background);`);
+
+            naive.domtoimage.toJpeg(previewer).then(function (dataUrl) {
+              let link = document.createElement('a');
+              link.download = 'test.jpeg';
+              link.href = dataUrl;
+              link.click();
+              previewer.setAttribute("style", "");
+              previewer.parentElement.setAttribute("style", "");
+            });
+
+          }
+        },
+      });
+      if (
+        导出按钮组 &&
+        !导出按钮组.querySelector(".b3-tooltips.b3-tooltips__w.custom")
+      ) {
+        导出按钮组.appendChild(导出按钮);
+      }
+    }
+  }
+}
+function 生成导出栏项目(按钮配置) {
+  let 导出按钮 = document.createElement("button");
+  导出按钮.dataset.type = "custom-export";
+  导出按钮.setAttribute("class", "b3-tooltips b3-tooltips__w custom");
+  导出按钮.setAttribute("type", "button");
+
+  导出按钮.setAttribute("aria-label", 按钮配置.label || 按钮配置.按钮提示);
+  导出按钮.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="#${按钮配置.按钮图标}"></use></svg><span class="b3-menu__label">${按钮配置.按钮文字}</span>`;
+  导出按钮.addEventListener("click", (event) => 按钮配置.回调函数(event));
+  return 导出按钮;
+}
+naive.导出按钮监听器 = new naive.DOM监听器(导出按钮监听选项);
 
 //获取当前块id用
 naive.判定并获取块id = function (event) {

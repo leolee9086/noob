@@ -39,6 +39,7 @@ naive.加载css = function (src = "daylight", sort = 1) {
 //naive.加载模块("./script/main.js", "test",true);
 //加载界面脚本
 naive.加载js({ src: `${naive.根目录}/script/main.js`, type: "module" });
+
 }
- 
+
   

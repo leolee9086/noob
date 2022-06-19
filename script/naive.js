@@ -13,13 +13,18 @@ import { 快捷键监听器 } from "./public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
 import { dom模板 } from "./public/domTemplate.js";
 import { DOM监听器 } from "./public/DOMwatcher.js";
+import html2canvas from './public/static/html2canvas.esm.js';
 
 export default class naive {
   constructor(themeName) {
     if(window.require){
     this.fs = require("fs");
     this.path = require("path");
+    this.domtoimage=require("f:/siyuan/conf/appearance/themes/naive/script/public/static/domtoimage");
+
 }
+    this.html2canvas=html2canvas;
+
     this.themeName = themeName;
     this.editor = {};
     this.editor.footerWidget = "cc-template";

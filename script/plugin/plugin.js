@@ -20,7 +20,7 @@ export class 主题插件 {
     this.发布渲染器 = naive.发布渲染器;
     this.publishoption = naive.publishoption;
     this.baseURL = `${naive.插件文件夹url}/${this.name}/`;
-    this.basePath = `${naive.workspaceDir}\\conf\\appearance\\themes\\naive\\plugins\\${this.name}\\`;
+    this.basePath = `${naive.workspaceDir}\\data\\widgets\\naivePlugins\\${this.name}\\`;
     this.消息广播器 = new BroadcastChannel(this.name);
     this.BroadcastChannel = this.消息广播器;
     this.注册顶栏按钮 =  注册顶栏按钮
@@ -35,6 +35,18 @@ export class 主题插件 {
   }
   初始化设置(){
 
+  }
+  baserequire(rowpath) {
+    if(window.require){
+    let path =require('path');
+    let filePath = path.join(this.basePath, rowpath);
+    try{
+      require(filePath)
+    }catch(e){
+      filePath=path.join(this.basePath, `/node_modules/${rowpath}/`);
+    }
+    return require(filePath);
+    }
   }
   //界面api
   注册图标(option) {
