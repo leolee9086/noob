@@ -21,7 +21,7 @@ export class blockHandler{
             name :块元素.getAttribute('name')
         }
     }
-    async 设置块属性(id,属性对象){
+    async 以id设置块属性(id,属性对象){
         let 拷贝属性对象 = {}
         for(let 属性名 in 属性对象){
             if(this.默认属性列表.includes(属性名)){
@@ -31,6 +31,10 @@ export class blockHandler{
                 拷贝属性对象[属性名]= 属性对象[属性名]
             }
         }
-        await this.思源api.设置块属性(id,拷贝属性对象)
+        await this.思源api.以id设置块属性(id,拷贝属性对象)
+    }
+    async 设置属性(属性对象){
+        let id = this.id 
+        await this.以id设置块属性(id,属性对象)
     }
 }

@@ -26,8 +26,6 @@ module.exports = {
     naive.发布渲染器 = 渲染器;
     const bodyParser = require("body-parser");
     const express1 = require("express");
-    naive.sharp = require("sharp");
-    naive.svg2img = require('svg2img');
 
     const app = express1();
     naive.expressApp = app;
