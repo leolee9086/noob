@@ -9,7 +9,6 @@ module.exports = {
     const api = require("../public/siYuanApi");
     const fs = require("fs");
     const compression = require('compression')
-
     const cusoptionpath = `${workspaceDir}/${naive.插件文件夹路径}/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
     let realoption = naive.生成默认设置(cusoption, workspaceDir, userId,naive.插件文件夹路径);
@@ -29,8 +28,8 @@ module.exports = {
     const app = express1();
     naive.expressApp = app;
     naive.express = express1;
+    //启用gzip压缩
     app.use(compression());
-
     let res4 = await fs.readFileSync(
       `${workspaceDir}/${naive.插件文件夹路径}/config.json`
     );
