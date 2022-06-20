@@ -1,5 +1,5 @@
 //加载插件配置在服务器环境下运行
-import {驼峰转换} from '../util/name.js';
+import { 驼峰转换 } from "../util/name.js";
 export function 加载插件配置(环境数组) {
   const fs = require("fs");
   const 插件设置内容 = fs.readFileSync(
@@ -27,6 +27,11 @@ export function 加载插件配置(环境数组) {
   }
   插件设置文本 = JSON.stringify(插件设置, undefined, 4);
   保存插件设置(插件设置文本);
+  for (let 插件名 in 插件设置) {
+    if (插件设置[插件名] != undefined) {
+      监听插件(插件名);
+    }
+  }
 
   function 保存插件设置(插件设置文本) {
     console.log("当前插件设置:", 插件设置文本);
@@ -68,7 +73,22 @@ export function 加载插件配置(环境数组) {
     }
   }
 }
-
+export function 监听插件(插件名) {
+  let 插件文件夹 = `${naive.插件文件夹url}/${插件名}`;
+  naive.sf.watch(插件文件夹, { recursive: true }, 重载插件(插件名));
+}
+export async function 重载插件(插件名) {
+  let manifest = await fetch(`${naive.插件文件夹url}/${插件名}/plugin.json`);
+  let menifestJSON = await manifest.json();
+  let 插件环境配置 = menifestJSON.environment;
+  if (插件环境配置 == "publish") {
+    await 加载插件(插件名, 插件环境配置);
+  } else {
+    for (let 环境名 in 插件环境配置) {
+      加载插件(插件名, 环境名);
+    }
+  }
+}
 export async function 加载插件(插件名, 环境) {
   if (插件名 == "configPages") {
     return;
@@ -76,24 +96,27 @@ export async function 加载插件(插件名, 环境) {
   try {
     let manifest = await fetch(`${naive.插件文件夹url}/${插件名}/plugin.json`);
     let menifestJSON = await manifest.json();
-    console.log(插件名)
-    console.log(menifestJSON)
+    console.log(插件名);
+    console.log(menifestJSON);
     if (
       menifestJSON &&
       menifestJSON.environment.indexOf(环境) >= 0 &&
-      环境 !== "publish"&&环境 !== "CustomBlock"
+      环境 !== "publish" &&
+      环境 !== "CustomBlock"
     ) {
       try {
-        console.log(插件名)
+        console.log(插件名);
 
-         let pluginclass =await import(`${naive.插件文件夹url}/${插件名}/index.js`)
-         console.log(pluginclass)
-         naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
-        if( naive.plugins[插件名].environment){
-          naive.plugins[插件名].environment[环境]=true
-        }else{
-          naive.plugins[插件名].environment={}
-          naive.plugins[插件名].environment[环境]=true
+        let pluginclass = await import(
+          `${naive.插件文件夹url}/${插件名}/index.js`
+        );
+        console.log(pluginclass);
+        naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
+        if (naive.plugins[插件名].environment) {
+          naive.plugins[插件名].environment[环境] = true;
+        } else {
+          naive.plugins[插件名].environment = {};
+          naive.plugins[插件名].environment[环境] = true;
         }
       } catch (e) {
         console.error("加载插件", 插件名, "失败", e);
@@ -110,13 +133,15 @@ export async function 加载插件(插件名, 环境) {
     }
     if (
       menifestJSON &&
-      menifestJSON.environment=="CustomBlock"&&环境=="CustomBlock"
+      menifestJSON.environment == "CustomBlock" &&
+      环境 == "CustomBlock"
     ) {
-      
-      let pluginclass =await import(`${naive.插件文件夹url}/${插件名}/index.js`)
+      let pluginclass = await import(
+        `${naive.插件文件夹url}/${插件名}/index.js`
+      );
       customElements.define(驼峰转换(插件名), pluginclass[插件名]);
-      naive.customHTML[驼峰转换(插件名)]=pluginclass[插件名]
-      console.log("定义自定义HTML",驼峰转换(插件名))
+      naive.customHTML[驼峰转换(插件名)] = pluginclass[插件名];
+      console.log("定义自定义HTML", 驼峰转换(插件名));
     }
   } catch (e) {
     console.error("加载插件", 插件名, "失败", e);
