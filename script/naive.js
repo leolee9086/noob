@@ -17,11 +17,15 @@ import html2canvas from './public/static/html2canvas.esm.js';
 
 export default class naive {
   constructor(themeName) {
+    if (window.siyuan) {
+      this.workspaceDir = window.siyuan.config.system.workspaceDir;
+      this.siyuan = window.siyuan;
+    }
+
     if(window.require){
     this.fs = require("fs");
     this.path = require("path");
-    this.domtoimage=require("f:/siyuan/conf/appearance/themes/naive/script/public/static/domtoimage");
-
+    this.domtoimage=require(this.workspaceDir+"/conf/appearance/themes/naive/script/public/static/domtoimage");
 }
     this.html2canvas=html2canvas;
 
@@ -54,10 +58,6 @@ export default class naive {
     this.全局快捷键监听器 = new 快捷键监听器(document);
     this.加载图标();
     this.窗口设置 = {};
-    if (window.siyuan) {
-      this.workspaceDir = window.siyuan.config.system.workspaceDir;
-      this.siyuan = window.siyuan;
-    }
     this.子窗口配置 = {};
     this.当前块元素数组 = [];
     this.eventBus = this.事件总线;
@@ -72,6 +72,7 @@ export default class naive {
     this.注册图标 = 注册图标;
     this.自定义块标菜单 = [];
     this.自定义头图菜单 = [];
+    this.自定义导出按钮= {}
     this.加载插件 = 加载插件;
     this.plugins = {};
     this.dom模板 = dom模板;

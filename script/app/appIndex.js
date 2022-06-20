@@ -215,6 +215,40 @@ function 文档块监听回调(mutationsList, observer) {
 }
 naive.文档块监听器 = new naive.DOM监听器(文档块监听选项);
 //监听导出按钮变化
+naive.自定义导出按钮["导出长图"] = {
+  按钮提示: "导出长图",
+  按钮图标: "iconExport",
+  按钮文字: "导出长图",
+  回调函数: function (event) {
+    console.log(event.currentTarget);
+    event.stopPropagation();
+    let previewer = event.currentTarget.parentElement.nextElementSibling;
+    console.log(previewer);
+    if (previewer) {
+      //let html2canvas =naive.html2canvas
+      previewer.setAttribute(
+        "style",
+        ` overflow:auto;min-height:${
+          previewer.scrollHeight + 200
+        }px;background-color:var(--b3-theme-background);line-height:1.625;font-size:16px !important;font-family:var(--b3-theme-font-family);color:var(--b3-theme-color);`
+      );
+      previewer.parentElement.setAttribute(
+        "style",
+        ` overflow:visible;background-color:var(--b3-theme-background);`
+      );
+
+      naive.domtoimage.toJpeg(previewer).then(function (dataUrl) {
+        let link = document.createElement("a");
+        link.download = "test.jpeg";
+        link.href = dataUrl;
+        link.click();
+        previewer.setAttribute("style", "");
+        previewer.parentElement.setAttribute("style", "");
+      });
+    }
+  },
+};
+
 let 导出按钮监听选项 = {
   监听目标: ".protyle-preview",
   监听器回调: 导出按钮监听回调,
@@ -222,43 +256,22 @@ let 导出按钮监听选项 = {
 function 导出按钮监听回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     console.log(mutation.target);
-
     if (mutation.target) {
       let 导出按钮组 = mutation.target.querySelector(
         ".protyle-preview__action"
       );
       console.log(mutation.target);
-      let 导出按钮 = 生成导出栏项目({
-        按钮提示: "导出长图",
-        按钮图标: "iconExport",
-        按钮文字: "导出长图",
-        回调函数: function (event) {
-          console.log(event.currentTarget);
-          event.stopPropagation();
-          let previewer = event.currentTarget.parentElement.nextElementSibling;
-          console.log(previewer);
-          if (previewer) {
-            //let html2canvas =naive.html2canvas
-            previewer.setAttribute("style", ` overflow:auto;min-height:${previewer.scrollHeight+200}px;background-color:var(--b3-theme-background);line-height:1.625;font-size:16px !important;font-family:var(--b3-theme-font-family);color:var(--b3-theme-color);`);
-            previewer.parentElement.setAttribute("style", ` overflow:visible;background-color:var(--b3-theme-background);`);
-
-            naive.domtoimage.toJpeg(previewer).then(function (dataUrl) {
-              let link = document.createElement('a');
-              link.download = 'test.jpeg';
-              link.href = dataUrl;
-              link.click();
-              previewer.setAttribute("style", "");
-              previewer.parentElement.setAttribute("style", "");
-            });
-
-          }
-        },
-      });
-      if (
-        导出按钮组 &&
-        !导出按钮组.querySelector(".b3-tooltips.b3-tooltips__w.custom")
-      ) {
-        导出按钮组.appendChild(导出按钮);
+      for (let 导出按钮名称 in naive.自定义导出按钮) {
+        let 导出按钮项目 = naive.自定义导出按钮[导出按钮名称];
+        let 导出按钮 = 生成导出栏项目(导出按钮项目);
+        if (
+          导出按钮组 &&
+          !导出按钮组.querySelector(
+            `.b3-tooltips.b3-tooltips__w.custom[custom-type="${导出按钮项目.按钮文字}"]`
+          )
+        ) {
+          导出按钮组.appendChild(导出按钮);
+        }
       }
     }
   }
@@ -268,7 +281,7 @@ function 生成导出栏项目(按钮配置) {
   导出按钮.dataset.type = "custom-export";
   导出按钮.setAttribute("class", "b3-tooltips b3-tooltips__w custom");
   导出按钮.setAttribute("type", "button");
-
+  导出按钮.setAttribute("custom-type", 按钮配置.按钮文字);
   导出按钮.setAttribute("aria-label", 按钮配置.label || 按钮配置.按钮提示);
   导出按钮.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="#${按钮配置.按钮图标}"></use></svg><span class="b3-menu__label">${按钮配置.按钮文字}</span>`;
   导出按钮.addEventListener("click", (event) => 按钮配置.回调函数(event));
@@ -373,3 +386,26 @@ naive.添加头图按钮 = function (头图元素) {
 naive.事件总线.on("鼠标聚焦到头图", naive.添加头图按钮);
 document.addEventListener("mousedown", naive.判定并获取块id);
 document.addEventListener("mouseover", naive.判定并获取目标);
+
+
+
+function 注入全部导出按钮() {
+  let 导出按钮组序列 = document.querySelectorAll(".protyle-preview__action");
+  导出按钮组序列.forEach((导出按钮组) => {
+    for (let 导出按钮名称 in naive.自定义导出按钮) {
+      let 导出按钮项目 = naive.自定义导出按钮[导出按钮名称];
+      let 导出按钮 = 生成导出栏项目(导出按钮项目);
+      if (
+        导出按钮组 &&
+        !导出按钮组.querySelector(
+          `.b3-tooltips.b3-tooltips__w.custom[custom-type="${导出按钮项目.按钮文字}"]`
+        )
+      ) {
+        导出按钮组.appendChild(导出按钮);
+      }
+    }
+
+  });
+}
+
+setTimeout(注入全部导出按钮, 1000)
