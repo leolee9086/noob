@@ -9,7 +9,3 @@ if(naive.isApp){
   naive.加载js({src: `${naive.根目录}/script/server/severIndex.js`, type: "module"})
 }
 naive.加载js({src: `${naive.根目录}/script/app/appIndex.js`, type: "module"})
-//加载功能
-export default  {
-  
-}

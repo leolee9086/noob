@@ -17,17 +17,21 @@ import html2canvas from './public/static/html2canvas.esm.js';
 
 export default class naive {
   constructor(themeName) {
+    //挂载思源到naive
     if (window.siyuan) {
-      this.workspaceDir = window.siyuan.config.system.workspaceDir;
+      if(window.siyuan.config){
+      this.workspaceDir = window.siyuan.config.system.workspaceDir;}
       this.siyuan = window.siyuan;
     }
 
     if(window.require){
-    this.fs = require("fs");
-    this.path = require("path");
-    this.domtoimage=require(this.workspaceDir+"/conf/appearance/themes/naive/script/public/static/domtoimage");
-}
+        this.fs = require("fs");
+        this.path = require("path");
+        //用于截图等
+        this.domtoimage=require(this.workspaceDir+"/conf/appearance/themes/naive/script/public/static/domtoimage");
+    }
     this.html2canvas=html2canvas;
+    this.isApp = window.require ? true : false;
 
     this.themeName = themeName;
     this.editor = {};
@@ -44,7 +48,6 @@ export default class naive {
       configPages: ["app"],
     };
     this.HTMLElement = window.HTMLElement
-
     this.自定义HTML={}
     this.customHTML=this.自定义HTML
     this.corePlugins = {};
@@ -61,13 +64,12 @@ export default class naive {
     this.子窗口配置 = {};
     this.当前块元素数组 = [];
     this.eventBus = this.事件总线;
-    this.isApp = window.require ? true : false;
     this.生成默认设置=生成默认设置
-    
     this.设置 = 生成默认设置({}, this.workspaceDir, "",this.插件文件夹url);
     this.加载图标 = 加载图标;
     this.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
     this.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
+    this.加载窗口=窗口配置器.加载窗口
     this.编辑器队列 = [];
     this.注册图标 = 注册图标;
     this.自定义块标菜单 = [];

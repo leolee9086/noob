@@ -1,15 +1,17 @@
-const 窗口配置器= {
-  加载窗口(url, windowParams, closeCallback) {
-    if (window.require) {
-      
 
+const 窗口配置器= {
+  加载窗口(url, windowParams, closeCallback,owner,name) {
+    if (window.require) {
         const { BrowserWindow } = require("@electron/remote");
         // 新建窗口(Electron 环境)
-        
         let newWin = new BrowserWindow(windowParams);
-
         newWin.loadURL(url);
-        newWin.name = "name";     
+        newWin.name = name||url;
+        closeCallback?newWin.on('close',()=>closeCallback().bind(newWin)):null
+        newWin.owner= owner 
+        !this.wins?this.wins={}:null
+        this.wins.push(newWin)
+        return newWin
     }
   },
   打开服务器设置窗口() {

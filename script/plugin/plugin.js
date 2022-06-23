@@ -33,6 +33,9 @@ export class 主题插件 {
       this.消息广播器.onmessage =(msg)=>this.onBroadcastMassage(msg);
     }
   }
+  注册导出按钮(导出按钮设置){
+    this.app.自定义导出按钮[导出按钮设置.按钮文字]=导出按钮设置
+}
   初始化设置(){
 
   }

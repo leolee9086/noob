@@ -33,6 +33,9 @@ export  function 生成默认设置 (customoption, workspaceDir, userId,插件�
       脚注内容: `path:${workspaceDir}${插件文件夹url}/footer.html`,
       单块分享: true,
       允许搜索: false,
+      "publishSSLpfx":"",
+      "publishSSLpassphrase":""
+  
     };
     option.workspace = workspaceDir;
     for (let prop in option) {

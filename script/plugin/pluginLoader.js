@@ -27,11 +27,6 @@ export function 加载插件配置(环境数组) {
   }
   插件设置文本 = JSON.stringify(插件设置, undefined, 4);
   保存插件设置(插件设置文本);
-  for (let 插件名 in 插件设置) {
-    if (插件设置[插件名] != undefined) {
-      监听插件(插件名);
-    }
-  }
 
   function 保存插件设置(插件设置文本) {
     console.log("当前插件设置:", 插件设置文本);
@@ -74,19 +69,23 @@ export function 加载插件配置(环境数组) {
   }
 }
 export function 监听插件(插件名) {
-  let 插件文件夹 = `${naive.插件文件夹url}/${插件名}`;
-  naive.sf.watch(插件文件夹, { recursive: true }, 重载插件(插件名));
+  let 插件主文件 = `${naive.workspaceDir}/data/${naive.插件文件夹url}/${插件名}`;
+  naive.fs.watch(插件主文件, { recursive: true },(event,filname)=> 重载插件(event,filname,插件名));
 }
-export async function 重载插件(插件名) {
+export async function 重载插件(event,文件名,插件名) {
+  console.log(插件名)
+  if(文件名=='index.js'){
   let manifest = await fetch(`${naive.插件文件夹url}/${插件名}/plugin.json`);
   let menifestJSON = await manifest.json();
   let 插件环境配置 = menifestJSON.environment;
   if (插件环境配置 == "publish") {
     await 加载插件(插件名, 插件环境配置);
   } else {
-    for (let 环境名 in 插件环境配置) {
-      加载插件(插件名, 环境名);
+    for (let 环境名 of 插件环境配置) {
+      
+      await 加载插件(插件名, 环境名);
     }
+  }
   }
 }
 export async function 加载插件(插件名, 环境) {

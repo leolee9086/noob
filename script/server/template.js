@@ -33,7 +33,7 @@ module.exports = class 模板渲染器 {
     let 脚本内容 = "";
     const fs = require("fs");
     try {
-      脚本内容 = fs.readFileSync(this.发布脚本.slice(5, this.发布脚本.length));
+      脚本内容 = fs.readFileSync(`${this.workspace}/data/widgets/naivePlugins/naive.js`);
     } catch (e) {
       console.log(e);
       this.发布脚本内容 = this.发布脚本;
@@ -72,7 +72,7 @@ module.exports = class 模板渲染器 {
           "href",
           href.replace(
             "siyuan://blocks/",
-            `http://${this.发布地址}:${this.发布端口}/block/`
+            `/block/`
           )
         );
         href.indexOf("siyuan://") == 0
@@ -91,7 +91,7 @@ module.exports = class 模板渲染器 {
 
         link.setAttribute(
           "href",
-          `http://${this.发布地址}:${this.发布端口}/block/${a.getAttribute(
+          `/block/${a.getAttribute(
             "data-id"
           )}`
         );
