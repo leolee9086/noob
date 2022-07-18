@@ -16,7 +16,7 @@ module.exports = class 模板渲染器 {
     this.有限分享 = option.有限分享;
     this.允许搜索 = option.允许搜索;
     this.发布端口 = option.发布端口;
-    this.思源账号id = option.思源账号id;
+    this.发布图床前缀 = option.发布图床前缀;
     this.发布图标 = option.发布图标;
     this.workspace = option.workspace;
     this.脚注内容 = option.脚注内容;
@@ -127,7 +127,7 @@ module.exports = class 模板渲染器 {
           if (this.使用图床资源) {
             a.setAttribute(
               "src",
-              `https://assets.b3logfile.com/siyuan/${this.思源账号id}/` + src
+              this.发布图床前缀+ src.slice(7,src.length)
             );
           } else {
             a.setAttribute("src", `/` + src);
@@ -140,12 +140,9 @@ module.exports = class 模板渲染器 {
   }
 
   async 渲染块id(blockid) {
-    let data = {}; //处理中文乱码
-    // this.生成文档树()
-
+    let data = {}; 
     data.id = blockid;
     let url1 = `http://${this.思源伺服地址}:${this.思源伺服端口}/api/filetree/getDoc`;
-    console.log(this.单块分享, "jjj");
     let data1 = null;
     if (this.单块分享) {
       data1 = { id: blockid, k: "", mode: 0, size: 102400 };
