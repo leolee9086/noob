@@ -3,10 +3,9 @@
 <head>
     <meta charset="utf-8">
     <!-- 导入 Vue 3 -->
-    <link rel="stylesheet" href="//npm.elemecdn.com/element-plus/dist/index.css" />
-    <script src="https://npm.elemecdn.com/vue@3.2.33/dist/vue.global.js"></script>
-    <!-- 导入组件库 -->
-    <script src="https://npm.elemecdn.com/element-plus"></script>
+    <link rel="stylesheet" href="../script/public/static/element-plus/index.css" />
+    <script src="../script/public/static/vue/vue.global.js"></script>
+    <script src="../script/public/static/element-plus/index.full.js"></script>
 
 </head>
 <body>
@@ -86,8 +85,8 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
-                <el-form-item label="思源图床账号id">
-                    <el-input v-model="config.思源账号id" />
+                <el-form-item label="发布图床前缀">
+                    <el-input v-model="config.发布图床前缀" />
                 </el-form-item>
                 <el-form-item label="发布图标">
                     <el-input v-model="config.发布图标" />

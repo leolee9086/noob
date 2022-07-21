@@ -53,7 +53,6 @@ export function 加载插件配置(环境数组) {
     //获取当前文件的绝对路径
     var 文件路径 = path.join(插件路径, 文件名); //根据文件路径获取文件信息，返回一个fs.Stats对象
     let stats = fs.statSync(文件路径);
-
     var isFile = stats.isFile(); //是文件
     var isDir = stats.isDirectory(); //是文件夹
     if (isFile) {
@@ -82,7 +81,6 @@ export async function 重载插件(event,文件名,插件名) {
     await 加载插件(插件名, 插件环境配置);
   } else {
     for (let 环境名 of 插件环境配置) {
-      
       await 加载插件(插件名, 环境名);
     }
   }
@@ -93,10 +91,8 @@ export async function 加载插件(插件名, 环境) {
     return;
   }
   try {
-    let manifest = await fetch(`${naive.插件文件夹url}/${插件名}/plugin.json`);
+    let manifest = await fetch(`http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/plugin.json`);
     let menifestJSON = await manifest.json();
-    console.log(插件名);
-    console.log(menifestJSON);
     if (
       menifestJSON &&
       menifestJSON.environment.indexOf(环境) >= 0 &&
@@ -104,10 +100,8 @@ export async function 加载插件(插件名, 环境) {
       环境 !== "CustomBlock"
     ) {
       try {
-        console.log(插件名);
-
         let pluginclass = await import(
-          `${naive.插件文件夹url}/${插件名}/index.js`
+          `http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js`
         );
         console.log(pluginclass);
         naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
@@ -126,7 +120,7 @@ export async function 加载插件(插件名, 环境) {
       menifestJSON.environment.indexOf(环境) >= 0 &&
       环境 == "publish"
     ) {
-      let res = await fetch(`${naive.插件文件夹url}/${插件名}/index.js`);
+      let res = await fetch(`http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js`);
       naive.publishPlugins[插件名] = await res.text();
       console.log(naive.publishPlugins[插件名]);
     }
@@ -136,7 +130,7 @@ export async function 加载插件(插件名, 环境) {
       环境 == "CustomBlock"
     ) {
       let pluginclass = await import(
-        `${naive.插件文件夹url}/${插件名}/index.js`
+        `http://${naive.设置.发布地址}:${naive.设置.发布端口}/${插件名}/index.js`
       );
       customElements.define(驼峰转换(插件名), pluginclass[插件名]);
       naive.customHTML[驼峰转换(插件名)] = pluginclass[插件名];

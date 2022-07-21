@@ -8,8 +8,5 @@ const dom模板 ={
         </div>
         `
     }
-    
-
-
 }
 export {dom模板 as dom模板}

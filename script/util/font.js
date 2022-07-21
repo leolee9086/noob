@@ -12,7 +12,6 @@ export function 添加行内样式(event,样式字符串){
                 range.setEnd(lastRange.endContainer,lastRange.endOffset)
              //   console.log (当前文字区域.anchorNode)
             //    console.log (当前文字区域.focusNode)
-
                 if (当前文字区域.anchorNode==当前文字区域.focusNode){
                     let node = 当前文字区域.anchorNode
                     if (node.tagName){console.log(node.tagName)}

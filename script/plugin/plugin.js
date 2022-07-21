@@ -1,8 +1,7 @@
-import { blockHandler } from "../public/blockHandler.js";
-import { 窗口配置器 } from "../ui/page.js";
-import { 注册顶栏按钮 } from "../ui/menu.js"
-import { 注册竖线菜单项目 } from "../ui/menu.js"
-import { 注册块标菜单 } from "../ui/menu.js"
+import { 窗口配置器 } from "../public/ui/page.js";
+import { 注册顶栏按钮 } from "../public/ui/menu.js"
+import { 注册竖线菜单项目 } from "../public/ui/menu.js"
+import { 注册块标菜单 } from "../public/ui/menu.js"
 
 export class 主题插件 {
   constructor(option) {
@@ -10,7 +9,7 @@ export class 主题插件 {
     naive.plugins[this.name] = this;
     this.app = naive;
     this.workspaceDir=naive.workspaceDir
-    this.blockHandler = new blockHandler();
+    this.blockHandler = naive.blockHandler;
     this.窗口配置器 = 窗口配置器;
     this.kernelApi = naive.kernelApi;
     this.核心api = naive.核心api;

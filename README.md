@@ -25,7 +25,6 @@
 
 ### 编辑器界面设置
 
-
 ## 其他说明
 
 ### 实验性
@@ -53,6 +52,12 @@ theme.css文件直接引用了daylight.你也可以指定其他外观文件
 默认设置位于server文件夹下的main.js
 
 注意升级主题前备份自己的设置
+
+### 更多说明
+
+更多有关naive主题的说明请参考
+
+[naive主题 (chuanchengsheji.com)](https://www.chuanchengsheji.com/block/20220510191122-gnxim1b)
 
 ### 许可:
 

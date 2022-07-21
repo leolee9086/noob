@@ -3,36 +3,44 @@ import { 事件总线 } from "./public/eventBus.js";
 import { kernelApiList } from "./public/kernelApi.js";
 import { 加载插件 } from "./plugin/pluginLoader.js";
 import { 加载核心插件 } from "./plugin/pluginLoader.js";
-import { 加载图标 } from "./ui/icon.js";
-import { 注册图标 } from "./ui/icon.js";
-import { 窗口配置器 } from "./ui/page.js";
+import { 加载图标 } from "./public/ui/icon.js";
+import { 注册图标 } from "./public/ui/icon.js";
+import { 窗口配置器 } from "./public/ui/page.js";
 import { 主题插件 } from "./plugin/plugin.js";
-import { 主题界面 } from "./ui/ui.js";
+import { 主题界面 } from "./public/ui/ui.js";
 import { 共享数据总线 } from "./public/eventChannel.js";
 import { 快捷键监听器 } from "./public/keymap.js";
 import { 添加行内样式 } from "./util/font.js";
 import { dom模板 } from "./public/domTemplate.js";
 import { DOM监听器 } from "./public/DOMwatcher.js";
 import html2canvas from './public/static/html2canvas.esm.js';
+import { blockHandler } from "./public/blockHandler.js";
 
 export default class naive {
   constructor(themeName) {
+    this.environment={
+      app:false,
+      server:false,
+      publish:false,
+      browser:false,
+      mobile:false,
+    }
     //挂载思源到naive
     if (window.siyuan) {
       if(window.siyuan.config){
       this.workspaceDir = window.siyuan.config.system.workspaceDir;}
       this.siyuan = window.siyuan;
     }
-
     if(window.require){
         this.fs = require("fs");
         this.path = require("path");
         //用于截图等
+        this.environment.app=true
         this.domtoimage=require(this.workspaceDir+"/conf/appearance/themes/naive/script/public/static/domtoimage");
     }
     this.html2canvas=html2canvas;
     this.isApp = window.require ? true : false;
-
+    this.blockHandler = new blockHandler()
     this.themeName = themeName;
     this.editor = {};
     this.editor.footerWidget = "cc-template";
@@ -83,6 +91,19 @@ export default class naive {
     this.plugin = 主题插件;
     window.addEventListener("keyup", (event) => this.判断键盘目标(event));
     this.加载快捷键设置();
+  }
+  //全部环境应当尽可能以async风格的异步处理为主.
+  //app环境可以获取nodejs支持以及dom
+  初始化app环境(){
+  }
+  //mobile环境一些方法需要特别处理
+  初始化mobile环境(){
+  }
+  //sever环境在独立工作师也可以使用
+  初始化server环境(){
+  }
+  //browser环境需要对nodejs提供的模块进行替换
+  初始化browser环境(){
   }
   async 加载快捷键设置() {
     let res3 = await fetch(`${this.configURL}/keymap.json`);

@@ -1,4 +1,3 @@
-
 module.exports = {
   创建服务器: async function (workspaceDir, userId) {
     if (global.publishserver) {
@@ -9,17 +8,41 @@ module.exports = {
     const 渲染器类 = require("./template");
     const api = require("../public/siYuanApi");
     const fs = require("fs");
-    const compression = require('compression')
+    const compression = require("compression");
     const bodyParser = require("body-parser");
     const express1 = require("express");
     const app = express1();
-    const http =require('http')
-    const https =require('https')
+    const http = require("http");
+    const https = require("https");
+    const url = require("url");
+
+    //这里需要根据请求的来源判定返回的参数
+    let loaderOptions = {
+      defs: { BROWSER: false },
+      verbose: true,
+      tripleSlash: true,
+      fillWithBlanks: true,
+      uncommentPrefixString: "",
+    };
+    loaderOptions.defs = {
+      BROWSER: window.require ? false : true,
+      APP: window.require ? true : false,
+      PUBLISH: !window.siyuan,
+      MOBILE: !window.siyuan.mobileEditor ? false : true,
+      DEBUG: true,
+    };
+    let scriptLoader = new naive.ifdefParser(loaderOptions);
+    this.scriptLoader = scriptLoader;
     naive.expressApp = app;
     naive.express = express1;
     const cusoptionpath = `${workspaceDir}/${naive.插件文件夹路径}/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
-    let realoption = naive.生成默认设置(cusoption, workspaceDir, userId,naive.插件文件夹路径);
+    let realoption = naive.生成默认设置(
+      cusoption,
+      workspaceDir,
+      userId,
+      naive.插件文件夹路径
+    );
     naive.设置 = realoption;
     this.渲染器 = null;
     this.realoption = realoption;
@@ -31,6 +54,7 @@ module.exports = {
     渲染器 = new 渲染器类(realoption);
     this.渲染器 = 渲染器;
     naive.发布渲染器 = 渲染器;
+
     //启用gzip压缩
     app.use(compression());
     let res4 = await fs.readFileSync(
@@ -45,21 +69,24 @@ module.exports = {
       })
     );
     const port = realoption.发布端口;
-    const sslPort ="443"
-    const publishServer= http.createServer(app)
+    const sslPort = "443";
+    const publishServer = http.createServer(app);
     publishServer.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
     });
     //这里不能使用工作空间内的地址
-    const sslSetting ={
-      pfx:fs.readFileSync(this.realoption.publishSSLpfx),
-      passphrase:fs.readFileSync(this.realoption.publishSSLpassphrase)
-    }
-    const sslPublishServer = https.createServer(sslSetting,app)
-    sslPublishServer.listen(sslPort,() => {
-      console.log(`sslPublish app listening on port ${443}`,sslPublishServer,sslSetting);
+    const sslSetting = {
+      pfx: fs.readFileSync(this.realoption.publishSSLpfx),
+      passphrase: fs.readFileSync(this.realoption.publishSSLpassphrase),
+    };
+    const sslPublishServer = https.createServer(sslSetting, app);
+    sslPublishServer.listen(sslPort, () => {
+      console.log(
+        `sslPublish app listening on port ${443}`,
+        sslPublishServer,
+        sslSetting
+      );
     });
-
     this.空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
@@ -77,19 +104,26 @@ module.exports = {
         console.log(e, 888);
       }
     }
-    console.log(app);
 
     //允许访问外观设置文件夹内容
     app.use("/appearance", express1.static(`${workspaceDir}/conf/appearance/`));
-
     //stage文件夹使用副本的方式访问
-    app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
-    app.use("/static", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/public/static/`));
-
+    app.use(
+      "/stage",
+      express1.static(
+        `${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`
+      )
+    );
+    app.use(
+      "/static",
+      express1.static(
+        `${workspaceDir}/conf/appearance/themes/naive/script/public/static/`
+      )
+    );
     //暴露附件文件夹时允许访问附件路径
-    if(realoption.暴露附件){
-    app.use("/assets", express1.static(`${workspaceDir}/data/assets/`));
-      }
+    if (realoption.暴露附件) {
+      app.use("/assets", express1.static(`${workspaceDir}/data/assets/`));
+    }
     //允许搜索时,能够访问文档树
     app.post("/api/notebook/lsNotebooks", (req, res) => {
       if (realoption.允许搜索) {
@@ -127,9 +161,12 @@ module.exports = {
       }
     });
     //emojis文件夹默认能够访问
-    app.use("/emojis", express1.static(`${workspaceDir}/conf/appearance/emojis`));
+    app.use(
+      "/emojis",
+      express1.static(`${workspaceDir}/conf/appearance/emojis`)
+    );
     //只有暴露挂件选项开启时,能够访问挂件
-    if (realoption.暴露挂件){
+    if (realoption.暴露挂件) {
       app.use("/widgets", express1.static(`${workspaceDir}/data/widgets/`));
     }
     //静态路径伺服块id
@@ -144,15 +181,41 @@ module.exports = {
       res.send({ id: data.id });
     });
     //为发布端提供插件支持
-    console.log(naive.插件文件夹url)
-    app.use(
-      "/plugins",
+    console.log(naive.插件文件夹url);
+    
+    //启用ifdef
+    app.use("/plugins/*", async function (req, res, next) {
+      console.log(req);
+      let requrl = req.url;
+      if (req.originalUrl.endsWith(".js")) {
+        let content = await naive.scriptParser.parse(
+          `${workspaceDir}/data/${naive.插件文件夹url}/${req.originalUrl.replace(
+            "/plugins",
+            ""
+          )}`
+        );
+        res.type("application/x-javascript");
+        res.end(content);
+      } else {
+        res.sendFile(`${workspaceDir}/data/${naive.插件文件夹url}/${req.originalUrl.replace(
+          "/plugins",
+          ""
+        )}`)
+      }
+    });
+   /* app.use(
+      "/plugins/*",
       express1.static(`${workspaceDir}/data/${naive.插件文件夹url}`)
-    );
+    );*/
+   
     //stage文件夹使用副本的方式访问
-    app.use("/stage", express1.static(`${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`));
+    app.use(
+      "/stage",
+      express1.static(
+        `${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`
+      )
+    );
     naive.publishServer = publishServer;
-
     for (let 插件名 in naive.serverEndPluginConfig) {
       try {
         if (naive.serverEndPluginConfig[插件名]) {
@@ -161,7 +224,6 @@ module.exports = {
           let 插件 = naive.plugins[插件名];
           if (插件 && 插件.environment["server"]) {
             let router = 插件.router || `/${插件名}`;
-
             let methods = 插件.methods;
             methods.forEach((method) => {
               if (method == "use") {
@@ -185,7 +247,6 @@ module.exports = {
     console.log(app);
     return publishServer;
   },
-
   解析路径: async function (path, realoption) {
     let pathArray = path.replace(".sy", "").split("/");
     pathArray = pathArray.slice(1, pathArray.length);
@@ -206,7 +267,6 @@ module.exports = {
   },
   更新缓存: function (id, content, workspaceDir) {
     const fs = require("fs");
-
     fs.writeFile(
       `${workspaceDir}/conf/appearance/themes/naive/cache/${id}.html`,
       content,
@@ -221,7 +281,6 @@ module.exports = {
   返回块内容: async function (req, res) {
     let realblockid = "",
       realoption = this.realoption;
-
     if (req.params && req.params.blockid) {
       realblockid = req.params.blockid;
     } else if (req.query) {
@@ -232,11 +291,9 @@ module.exports = {
       this.渲染器.渲染首页().then((content1) => res.end(content1));
       return;
     }
-
     let content = "";
     let 块信息数组 = await 思源api.以sql向思源请求块数据(
       `${realoption.思源伺服地址}:${realoption.思源伺服端口}`,
-
       "",
       `select root_id , path  from blocks where id = '${realblockid}'`
     );
@@ -267,13 +324,11 @@ module.exports = {
           console.log(content, 2);
         } catch (e) {
           console.log(e);
-
           content = await this.渲染器.渲染块id(realdocid);
           this.更新缓存(realdocid, content, workspaceDir);
           console.log(content, 3);
         }
         console.log(content, 4);
-
         res.end(content);
       } else {
         res.end(

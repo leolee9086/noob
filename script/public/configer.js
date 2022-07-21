@@ -25,7 +25,7 @@ export  function 生成默认设置 (customoption, workspaceDir, userId,插件�
       即时分享: true,
       使用图床资源: true,
       发布端口: 80,
-      思源账号id: userId,
+      发布图床前缀: "",
       发布图标: "",
       暴露api: false,
       暴露挂件: false,

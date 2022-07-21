@@ -1,4 +1,7 @@
 //插件机制
+///#ifBROWSER
+console.log("test")
+///#endif
 let res4 = await fetch(`${naive.插件文件夹url}config.json`);
 naive.frontEndPluginConfig = await res4.json();
 naive.停用插件 = function (插件) {
