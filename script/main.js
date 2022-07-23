@@ -17,5 +17,4 @@ if(naive.isApp){
   //加载后台服务
   naive.加载js({src: `${naive.根目录}/script/server/severIndex.js`, type: "module"})
 }
-
 await naive.scriptParser.Babelimport(`${naive.根目录}/script/app/appIndex.js`,true)
