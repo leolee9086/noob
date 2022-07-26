@@ -424,5 +424,4 @@ module.exports = class 模板渲染器 {
   <link id="protyleHljsStyle" rel="stylesheet" type="text/css" href="${this.高亮样式}">
   </head>`;
   }
-  
 };

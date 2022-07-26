@@ -46,7 +46,7 @@ const ifdefParser = class {
     let input = await this.parse(filePath);
     if (!window.Babel) {
       const babel = await this.run(
-        `${naive.根目录}/script/util/ifdef/babel.min.js`
+        `${naive.根目录}/script/public/util/ifdef/babel.min.js`
       );
       babel();
     }

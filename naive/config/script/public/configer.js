@@ -39,7 +39,7 @@ export  function 生成默认设置 (customoption, workspaceDir, userId,插件�
     };
     option.workspace = workspaceDir;
     for (let prop in option) {
-      customoption[prop] !== ""
+      customoption[prop] !== ""&&customoption[prop] !== undefined
         ? (option[prop] = customoption[prop])
         : (option[prop] = option[prop]);
     }
@@ -52,3 +52,5 @@ export  function 生成默认设置 (customoption, workspaceDir, userId,插件�
     }
     return JSON.parse(JSON.stringify(option));
   }
+
+  module.exports=生成默认设置

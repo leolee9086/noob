@@ -158,7 +158,6 @@ export function apply_if(lines, ifBlock, defs, verbose, filePath) {
             })
             console.log("ifBlockContent:",blockcontent)
             console.log('-----')
-
         }
     };
     if (ifRes) {

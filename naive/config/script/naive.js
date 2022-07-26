@@ -10,37 +10,39 @@ import { 主题插件 } from "./plugin/plugin.js";
 import { 主题界面 } from "./public/ui/ui.js";
 import { 共享数据总线 } from "./public/eventChannel.js";
 import { 快捷键监听器 } from "./public/keymap.js";
-import { 添加行内样式 } from "./util/font.js";
+import { 添加行内样式 } from "./public/util/font.js";
 import { dom模板 } from "./public/domTemplate.js";
 import { DOM监听器 } from "./public/DOMwatcher.js";
-import html2canvas from './public/static/html2canvas.esm.js';
+import html2canvas from "./public/static/html2canvas.esm.js";
 import { blockHandler } from "./public/blockHandler.js";
-
 export default class naive {
-  constructor(themeName) {
-    this.environment={
-      app:false,
-      server:false,
-      publish:false,
-      browser:false,
-      mobile:false,
-    }
+  constructor(themeName, workspaceDir) {
+    this.environment = {
+      app: false,
+      server: false,
+      publish: false,
+      browser: false,
+      mobile: false,
+    };
     //挂载思源到naive
+    this.workspaceDir = workspaceDir;
     if (window.siyuan) {
-      if(window.siyuan.config){
-      this.workspaceDir = window.siyuan.config.system.workspaceDir;}
+      if (window.siyuan.config) {
+        // this.workspaceDir = window.siyuan.config.system.workspaceDir;
+      }
       this.siyuan = window.siyuan;
     }
-    if(window.require){
-        this.fs = require("fs");
-        this.path = require("path");
-        //用于截图等
-        this.environment.app=true
-        this.domtoimage=require(this.workspaceDir+"/conf/appearance/themes/naive/script/public/static/domtoimage");
+    if (window.require) {
+      this.fs = require("fs");
+      this.path = require("path");
+      //用于截图等
+      this.environment.app = true;
+      this.domtoimage = require(this.workspaceDir +
+        "/conf/appearance/themes/naive/script/public/static/domtoimage");
     }
-    this.html2canvas=html2canvas;
+    this.html2canvas = html2canvas;
     this.isApp = window.require ? true : false;
-    this.blockHandler = new blockHandler()
+    this.blockHandler = new blockHandler();
     this.themeName = themeName;
     this.editor = {};
     this.editor.footerWidget = "cc-template";
@@ -49,15 +51,16 @@ export default class naive {
     this.核心插件文件夹url =
       "/appearance/themes/naive/script/plugin/corePlugins";
     this.根目录 = `/appearance/themes/${this.themeName}`;
+    this.根路径 = `/conf`+this.根目录
     this.核心插件文件夹url = `/appearance/themes/${this.themeName}/script/plugin/corePlugins/`;
     this.插件文件夹url = "/widgets/naivePlugins/";
     this.竖线菜单设置 = { 菜单项目列表: [], 唤起词最大长度: 0 };
     this.核心插件列表 = {
       configPages: ["app"],
     };
-    this.HTMLElement = window.HTMLElement
-    this.自定义HTML={}
-    this.customHTML=this.自定义HTML
+    this.HTMLElement = window.HTMLElement;
+    this.自定义HTML = {};
+    this.customHTML = this.自定义HTML;
     this.corePlugins = {};
     this.publishPlugins = {};
     this.util = {};
@@ -72,17 +75,20 @@ export default class naive {
     this.子窗口配置 = {};
     this.当前块元素数组 = [];
     this.eventBus = this.事件总线;
-    this.生成默认设置=生成默认设置
-    this.设置 = 生成默认设置({}, this.workspaceDir, "",this.插件文件夹url);
+    //生成了默认设置
+    this.生成默认设置 = 生成默认设置;
+    this.设置 = 生成默认设置({}, this.workspaceDir, "", this.插件文件夹url);
+    this.伺服地址 = `http://${this.设置.发布地址}:${this.设置.发布端口}`;
+    this.http伺服地址 = `http://${this.设置.发布地址}:443`;
     this.加载图标 = 加载图标;
     this.打开服务器设置窗口 = 窗口配置器.打开服务器设置窗口;
     this.打开样式设置窗口 = 窗口配置器.打开样式设置窗口;
-    this.加载窗口=窗口配置器.加载窗口
+    this.加载窗口 = 窗口配置器.加载窗口;
     this.编辑器队列 = [];
     this.注册图标 = 注册图标;
     this.自定义块标菜单 = [];
     this.自定义头图菜单 = [];
-    this.自定义导出按钮= {}
+    this.自定义导出按钮 = {};
     this.加载插件 = 加载插件;
     this.plugins = {};
     this.dom模板 = dom模板;
@@ -94,17 +100,13 @@ export default class naive {
   }
   //全部环境应当尽可能以async风格的异步处理为主.
   //app环境可以获取nodejs支持以及dom
-  初始化app环境(){
-  }
+  初始化app环境() {}
   //mobile环境一些方法需要特别处理
-  初始化mobile环境(){
-  }
+  初始化mobile环境() {}
   //sever环境在独立工作师也可以使用
-  初始化server环境(){
-  }
+  初始化server环境() {}
   //browser环境需要对nodejs提供的模块进行替换
-  初始化browser环境(){
-  }
+  初始化browser环境() {}
   async 加载快捷键设置() {
     let res3 = await fetch(`${this.configURL}/keymap.json`);
     this.快捷键设置 = await res3.json();
@@ -128,7 +130,6 @@ export default class naive {
       json = await res.json();
     }
   }
- 
   填充菜单内容(菜单容器元素, 菜单项目列表) {
     菜单项目列表.forEach((菜单项目) =>
       菜单项目 ? 菜单容器元素.appendChild(this.生成竖线菜单项(菜单项目)) : null
@@ -174,7 +175,6 @@ export default class naive {
       旧竖线菜单 ? 旧竖线菜单.remove() : null;
       window.removeEventListener("keyup", window.naive.判断唤起词);
     }
-
     if (!node.nodeValue) {
       let 旧竖线菜单 = document.getElementById("customMenu");
 
@@ -266,9 +266,7 @@ export default class naive {
     }
   }
   log(...rest) {
-    return console.log(
-      this.log.caller,...rest
-    );
+    return console.log(this.log.caller, ...rest);
   }
   判断键盘目标(event) {
     console.log(event);
@@ -309,53 +307,5 @@ export default class naive {
         this.加载核心插件(插件名, 插件环境配置[环境]);
       }
     }
-  }
-  生成默认设置(customoption, workspaceDir, userId) {
-    let 思源伺服端口 = 6806;
-    let 思源伺服地址 = "127.0.0.1";
-    let option = {
-      发布地址: 思源伺服地址,
-      思源伺服地址: 思源伺服地址,
-      思源伺服端口: 思源伺服端口,
-      基础样式: `http://${customoption.发布地址 || 思源伺服地址}:${
-        customoption.发布端口 || 思源伺服端口
-      }/stage/build/export/base.css`,
-      发布主题: `http://${customoption.发布地址 || 思源伺服地址}:${
-        customoption.发布端口 || 思源伺服端口
-      }/appearance/themes/${
-        window.siyuan.config.appearance.themeDark
-      }/theme.css`,
-      发布脚本: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\config\\naive.js`,
-      高亮样式: `http://${customoption.发布地址 || 思源伺服地址}:${
-        customoption.发布端口 || 思源伺服端口
-      }/stage/protyle/js/highlight.js/styles/github.min.css`,
-      空页面内容: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\config\\naive.html`,
-      首页: {
-        思源文档id: "20200812220555-lj3enxa",
-      },
-      有限分享: false,
-      即时分享: true,
-      使用图床资源: true,
-      发布端口: 80,
-      思源账号id: userId,
-      发布图标: "",
-      暴露api: false,
-      暴露挂件: false,
-      暴露附件: false,
-      脚注内容: `path:${workspaceDir}\\conf\\appearance\\themes\\naive\\script\\footer.html`,
-      单块分享: true,
-      允许搜索: false,
-    };
-    option.workspace = workspaceDir;
-    for (let prop in option) {
-      customoption[prop] !== ""
-        ? (option[prop] = customoption[prop])
-        : (option[prop] = option[prop]);
-    }
-    if (option.首页 && !option.首页.思源文档id) {
-      option.首页.思源文档id = "20200812220555-lj3enxa";
-    }
-    option.workspace = workspaceDir;
-    return JSON.parse(JSON.stringify(option));
   }
 }

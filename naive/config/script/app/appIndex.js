@@ -1,6 +1,6 @@
 //插件机制
-///#ifBROWSER
-console.log("test")
+///#if!MOBILE
+console.log(window.siyuan)
 ///#endif
 let res4 = await fetch(`${naive.插件文件夹url}config.json`);
 naive.frontEndPluginConfig = await res4.json();

@@ -1,5 +1,5 @@
 //加载插件配置在服务器环境下运行
-import { 驼峰转换 } from "../util/name.js";
+import { 驼峰转换 } from "../public/util/name.js";
 export function 加载插件配置(环境数组) {
   const fs = require("fs");
   const 插件设置内容 = fs.readFileSync(
@@ -130,7 +130,7 @@ export async function 加载插件(插件名, 环境) {
       环境 == "CustomBlock"
     ) {
       let pluginclass = await import(
-        `http://${naive.设置.发布地址}:${naive.设置.发布端口}/${插件名}/index.js`
+        `http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js`
       );
       customElements.define(驼峰转换(插件名), pluginclass[插件名]);
       naive.customHTML[驼峰转换(插件名)] = pluginclass[插件名];
@@ -161,4 +161,13 @@ export async function 加载核心插件(插件名, 环境) {
   } catch (e) {
     console.error("加载核心插件", 插件名, "失败", e);
   }
+}
+export async function 加载笔记内插件(){
+  let stmt = `select * from blocks where id in (select block_id  from attributes where name='custom-plugin') and type ='d'`
+  let docs = await naive.核心API.sql({stmt:stmt},"")
+  docs.forEach(
+    doc=>{
+
+    }
+  )
 }

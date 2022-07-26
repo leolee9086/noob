@@ -256,3 +256,4 @@ export class  kernelApiList{
         }
     }
 }
+module.exports=kernelApiList

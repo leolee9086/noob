@@ -15,7 +15,6 @@ module.exports = {
     const http = require("http");
     const https = require("https");
     const url = require("url");
-
     //这里需要根据请求的来源判定返回的参数
     let loaderOptions = {
       defs: { BROWSER: false },
@@ -33,8 +32,6 @@ module.exports = {
     };
     let scriptLoader = new naive.ifdefParser(loaderOptions);
     this.scriptLoader = scriptLoader;
-    naive.expressApp = app;
-    naive.express = express1;
     const cusoptionpath = `${workspaceDir}/${naive.插件文件夹路径}/publish.json`;
     let cusoption = JSON.parse(fs.readFileSync(cusoptionpath, "utf-8"));
     let realoption = naive.生成默认设置(
@@ -43,24 +40,19 @@ module.exports = {
       userId,
       naive.插件文件夹路径
     );
-    naive.设置 = realoption;
     this.渲染器 = null;
     this.realoption = realoption;
-    naive.publishoption = realoption;
     console.log(cusoption);
     console.log(workspaceDir);
     console.log(realoption, 15);
     思源api = new api(realoption);
     渲染器 = new 渲染器类(realoption);
     this.渲染器 = 渲染器;
-    naive.发布渲染器 = 渲染器;
-
     //启用gzip压缩
     app.use(compression());
     let res4 = await fs.readFileSync(
       `${workspaceDir}/${naive.插件文件夹路径}/config.json`
     );
-    naive.serverEndPluginConfig = JSON.parse(res4);
     app.use(bodyParser.json()); //body-parser 解析json格式数据
     app.use(
       bodyParser.urlencoded({
@@ -160,6 +152,10 @@ module.exports = {
         res.sendStatus(404);
       }
     });
+    //设置接口
+    app.post("/naiveApi/getConfig", (req, res) => {
+      res.end(JSON.stringify(realoption));
+    });
     //emojis文件夹默认能够访问
     app.use(
       "/emojis",
@@ -182,39 +178,51 @@ module.exports = {
     });
     //为发布端提供插件支持
     console.log(naive.插件文件夹url);
-    
-    //启用ifdef
+    //pligins文件夹启用ifdef
     app.use("/plugins/*", async function (req, res, next) {
       console.log(req);
       let requrl = req.url;
       if (req.originalUrl.endsWith(".js")) {
         let content = await naive.scriptParser.parse(
-          `${workspaceDir}/data/${naive.插件文件夹url}/${req.originalUrl.replace(
-            "/plugins",
-            ""
-          )}`
+          `${workspaceDir}/data/${
+            naive.插件文件夹url
+          }/${req.originalUrl.replace("/plugins", "")}`
         );
         res.type("application/x-javascript");
         res.end(content);
       } else {
-        res.sendFile(`${workspaceDir}/data/${naive.插件文件夹url}/${req.originalUrl.replace(
-          "/plugins",
-          ""
-        )}`)
+        res.sendFile(
+          `${workspaceDir}/data/${
+            naive.插件文件夹url
+          }/${req.originalUrl.replace("/plugins", "")}`
+        );
       }
     });
-   /* app.use(
-      "/plugins/*",
-      express1.static(`${workspaceDir}/data/${naive.插件文件夹url}`)
-    );*/
-   
-    //stage文件夹使用副本的方式访问
+    app.use("/script/*", async function (req, res, next) {
+      console.log(req);
+      let requrl = req.url;
+      if (req.originalUrl.endsWith(".js")) {
+        let content = await naive.scriptParser.parse(
+          `${workspaceDir}${naive.根路径}${req.originalUrl}`
+        );
+        res.type("application/x-javascript");
+        res.end(content);
+      } else {
+        res.sendFile(`${workspaceDir}${naive.根路径}${req.originalUrl}`);
+      }
+    });
     app.use(
       "/stage",
       express1.static(
         `${workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`
       )
     );
+    naive.expressApp = app;
+    naive.express = express1;
+    naive.设置 = realoption;
+    naive.publishoption = realoption;
+    naive.发布渲染器 = 渲染器;
+    naive.serverEndPluginConfig = JSON.parse(res4);
     naive.publishServer = publishServer;
     for (let 插件名 in naive.serverEndPluginConfig) {
       try {
