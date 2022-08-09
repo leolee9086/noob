@@ -5,6 +5,6 @@
 //async是为了能够在函数中使用await
 //只有下面这段代码是必须的
 (async function(){
-  this.naivePath = './naive/index.js'
+  this.naivePath = '../naive/index.js'
   await import(this.naivePath)
 })()
