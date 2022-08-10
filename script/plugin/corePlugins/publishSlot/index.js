@@ -20,7 +20,7 @@ export class publishSlot extends naive.plugin {
 
 
 
-    <span class="item__icon">
+    <span class="item__icon" data-type="navi-searcher">
 
         <input />
     </span>
