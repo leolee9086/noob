@@ -42,7 +42,7 @@ export class publishBackground extends naive.plugin {
 <div class="protyle-background__tags"></div>
 <div class="protyle-background__iconw">
     <div class="protyle-background__icon" data-menu="true" data-type="open-emoji"></div>
-    <div class="protyle-icons fn__flex-center">
+    <div class="protyle-icons fn__flex-center fn__none">
         <span class="protyle-icon protyle-icon--first b3-tooltips b3-tooltips__s" data-menu="true" data-type="tag" aria-label="${window.siyuan.languages.addTag}"><svg><use xlink:href="#iconTags"></use></svg></span>
         <span class="protyle-icon b3-tooltips b3-tooltips__s" data-type="icon" aria-label="${window.siyuan.languages.changeIcon}"><svg><use xlink:href="#iconEmoji"></use></svg></span>
         <span class="protyle-icon protyle-icon--last b3-tooltips b3-tooltips__s" data-type="random" aria-label="${window.siyuan.languages.titleBg}"><svg><use xlink:href="#iconImage"></use></svg></span>
@@ -114,6 +114,7 @@ export class publishBackground extends naive.plugin {
     if (icon) {
       this.iconElement.classList.remove("fn__none");
       this.iconElement.innerHTML = unicode2Emoji(icon);
+      this.iconElement.style.marginLeft='16px'
     } else {
       this.iconElement.classList.add("fn__none");
     }

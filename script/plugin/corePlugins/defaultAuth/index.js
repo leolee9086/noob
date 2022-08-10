@@ -1,85 +1,108 @@
-
 export class defaultAuth extends naive.plugin {
   constructor() {
-    super({ name: "defaultAuth",sort:2 });
-    this.expressApp.post("/naiveApi/system/blockAuth", (req, res) => this.请求鉴权(req, res));
+    super({ name: "defaultAuth", sort: 2 });
+    this.expressApp.post("/naiveApi/system/blockAuth", (req, res) =>
+      this.请求鉴权(req, res)
+    );
     this.setPluginsProp("判定id权限", this.判定id权限);
     this.setPluginsProp("解析路径", this.解析路径);
     this.setPluginsProp("checkAccessAuth", this.checkAccessAuth);
     this.setPluginsProp("生成路径权限表", this.生成路径权限表);
     this.setPluginsProp("判定路径权限", this.判定路径权限);
-    this.setPluginsProp("批处理判定权限", this.批处理判定权限);
+    this.setPluginsProp("批处理判定路径权限", this.批处理判定路径权限);
+  }
+  pipe = [this.生成文档元数据, this.鉴权];
 
-  };
-  pipe=[
-    this.生成文档元数据,
-    this.鉴权,
-  ]
-
-  请求鉴权(req,res){
-    let id = req.params.blockid||req.query.blockid||req.query.id||req.body.id
-    let query = req.query
+  请求鉴权(req, res) {
+    let id =
+      req.params.blockid || req.query.blockid || req.query.id || req.body.id;
+    let query = req.query;
     res.json({
-        accessed:this.判定id权限(id,query)
-    })
+      accessed: this.判定id权限(id, query),
+    });
   }
-  生成文档元数据(req,res,渲染结果){
-    console.log(req)
-    let id = req.params.blockid||req.query.blockid||req.query.id
-    console.log(id)
-    let meta = 渲染结果.createElement('meta')    
-    if(id){
-        meta.setAttribute('data-node-id',id)
+  生成文档元数据(req, res, 渲染结果) {
+    console.log(req.headers)
+    if(req.headers["user-agent"]){
+        渲染结果.reqHeaders= req.headers
     }
-    else if(req.url=='/'){
-        meta.setAttribute('data-node-id',naive.设置.首页.id||naive.设置.首页.思源文档id||naive.设置.首页)
+
+    console.log(req);
+    let id = req.params.blockid || req.query.blockid || req.query.id;
+    console.log(id);
+    let meta = 渲染结果.createElement("meta");
+    if (id) {
+      meta.setAttribute("data-node-id", id);
+    } else if (req.url == "/") {
+      meta.setAttribute(
+        "data-node-id",
+        naive.设置.首页.id || naive.设置.首页.思源文档id || naive.设置.首页
+      );
     }
-    meta.setAttribute("charset","UTF-8")
-    console.log(meta)
-    渲染结果.head.appendChild(meta)
-    return 渲染结果
+    meta.setAttribute("charset", "UTF-8");
+    console.log(meta);
+    渲染结果.head.appendChild(meta);
+    return 渲染结果;
   }
-  async 鉴权(req,res,渲染结果){
-    let meta = 渲染结果.head.querySelector('meta')
-    let id  =  meta.getAttribute('data-node-id')
-    let id鉴权结果 = false
-    if(id ==null){
-        return 渲染结果
+  async 鉴权(req, res, 渲染结果) {
+    let meta = 渲染结果.head.querySelector("meta");
+    let id = meta.getAttribute("data-node-id");
+    let id鉴权结果 = false;
+    if (id == null) {
+      return 渲染结果;
+    } else {
+      id鉴权结果 = await this.判定id权限(id, req.query);
     }
-    else {
-        id鉴权结果 =await this.判定id权限(id,req.query)
-    }
-    meta.setAttribute('data-access',id鉴权结果)
-    return 渲染结果
+    meta.setAttribute("data-access", id鉴权结果);
+    return 渲染结果;
   }
-  async 判定路径权限(路径,accessedArray){
-    if(!accessedArray){
-     accessedArray =await this.生成路径权限表()
+  async 判定路径权限(路径, accessedArray) {
+    if (!accessedArray) {
+      accessedArray = await this.生成路径权限表();
     }
-    let 鉴权块= {path:''}
-    accessedArray.forEach(
-       block=>{
-          if(block.path.replace('.sy','').indexOf(路径.replace('.sy',''))>=0){
-              if(block.path.length>=鉴权块.path.length){
-                  鉴权块=block
-              }
-          }
-       }
-    )
-    return  鉴权块.value == 'public'?true:false
-  }
-  async 批处理判定权限(块数组){
-    let accessedArray =await this.生成路径权限表()
-    for (let i = 0; i < 块数组.length; i++) {
-        let 块数据 = 块数组[i]
-        let path = 块数据.path
-        块数据.accessed=await this.判定路径权限(path,accessedArray)
-        if(!块数据.accessed){
-            块数组[i]=undefined
+    let 鉴权块 = { path: "" };
+    console.log(accessedArray);
+    for (let i = 0; i < accessedArray.length; i++) {
+      let block = accessedArray[i];
+      //如果块的路径包含了鉴权序列中的某个路径,说明这个块在这个路径下
+      if (路径.replace(".sy", "").indexOf(block.path.replace(".sy", "")) >= 0) {
+        if (block.path.length >= 鉴权块.path.length) {
+          console.log(路径, 鉴权块.path);
+          console.log(鉴权块);
+          鉴权块 = block;
+          console.log(鉴权块);
         }
-        
+      }
     }
-    return 块数组
+    console.log(鉴权块);
+    return 鉴权块.value == "public" ? true : false;
+  }
+  async 批处理判定路径权限(块数组) {
+    let accessedArray = await this.生成路径权限表();
+    for (let i = 0; i < 块数组.length; i++) {
+      let 块数据 = 块数组[i];
+      let path = 块数据.path;
+      块数据.accessed = await this.判定路径权限(path, accessedArray);
+      if(!块数据.accessed){
+        for (let attr in 块数据){
+            if(块数据.hasOwnProperty(attr)){
+                if(!(['path','type','subType','subFileCount','id','color','size'].indexOf(attr)>=0)){
+                    块数据[attr]="私有块不可访问"
+                    console.log(attr)
+                    if(attr=='color'){
+                        块数据[attr]={background: "red"}
+                    }
+                }
+                /*if(attr!=='path'&&attr!=="type"&&attr!=='subType'&&attr!=='subFileCount'&&attr!=='id'){
+                块数据[attr]="私有块不可访问"
+                }*/
+           }
+        }
+      }
+    }
+    
+    console.log(块数组);
+    return 块数组;
   }
   async 判定id权限(块id, query) {
     let flag = false;
@@ -92,9 +115,8 @@ export class defaultAuth extends naive.plugin {
       )`
     );
     if (块信息数组 && 块信息数组[0]) {
-        let 路径 = 块信息数组[0].path 
-        flag = await this.判定路径权限(路径)
-  
+      let 路径 = 块信息数组[0].path;
+      flag = await this.判定路径权限(路径);
     }
     return flag;
   }
@@ -116,15 +138,14 @@ export class defaultAuth extends naive.plugin {
     }
     return obj;
   }
-  async 生成路径权限表(){
+  async 生成路径权限表() {
     let stmt = `
-   
         SELECT *
         FROM attributes AS a
         WHERE (a.name = 'custom-publish-access' ) and (a.root_id = a.block_id)
-        `
-    let accessedArray = await this.核心api.sql({stmt:stmt},'')
-    return (accessedArray)
+        `;
+    let accessedArray = await this.核心api.sql({ stmt: stmt }, "");
+    return accessedArray;
   }
   checkAccessAuth(块数据, query) {
     let flag = false;
@@ -143,4 +164,9 @@ export class defaultAuth extends naive.plugin {
     return flag;
   }
 }
-export const dependencies = ["template", "defaultRouter","publisher","publisher"];
+export const dependencies = [
+  "template",
+  "defaultRouter",
+  "publisher",
+  "publisher",
+];
