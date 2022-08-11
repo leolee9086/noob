@@ -82,6 +82,7 @@ export async function 重载插件(event, 文件名, 插件名) {
 export async function 加载插件(插件名){
   let options=JSON.parse(JSON.stringify(naive.ifDefOptions))
   options.verbose= false
+
   try{
     let {condition} = await import(
       `http://${naive.pathConstructor.pluginsURL()}/${插件名}/index.js

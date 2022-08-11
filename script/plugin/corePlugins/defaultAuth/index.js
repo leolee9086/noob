@@ -56,7 +56,8 @@ export class defaultAuth extends naive.plugin {
     meta.setAttribute("data-access", id鉴权结果);
     return 渲染结果;
   }
-  async 判定路径权限(路径, accessedArray) {
+  async 判定路径权限(路径, accessedArray,multi) {
+    console.log(路径, accessedArray,multi)
     if (!accessedArray) {
       accessedArray = await this.生成路径权限表();
     }
@@ -65,7 +66,9 @@ export class defaultAuth extends naive.plugin {
     for (let i = 0; i < accessedArray.length; i++) {
       let block = accessedArray[i];
       //如果块的路径包含了鉴权序列中的某个路径,说明这个块在这个路径下
+      console.log(路径,block.path)
       if (路径.replace(".sy", "").indexOf(block.path.replace(".sy", "")) >= 0) {
+        console.log(block,鉴权块)
         if (block.path.length >= 鉴权块.path.length) {
           console.log(路径, 鉴权块.path);
           console.log(鉴权块);
@@ -75,7 +78,12 @@ export class defaultAuth extends naive.plugin {
       }
     }
     console.log(鉴权块);
+    if(!multi){
     return 鉴权块.value == "public" ? true : false;
+    }
+    else{
+        return 鉴权块.value
+    }
   }
   async 批处理判定路径权限(块数组) {
     let accessedArray = await this.生成路径权限表();
@@ -104,7 +112,8 @@ export class defaultAuth extends naive.plugin {
     console.log(块数组);
     return 块数组;
   }
-  async 判定id权限(块id, query) {
+  async 判定id权限(块id,query,multi) {
+    console.log(块id,query,multi)
     let flag = false;
     let 块信息数组 = await 思源api.以sql向思源请求块数据(
       `${naive.设置.思源伺服地址}:${naive.设置.思源伺服端口}`,
@@ -114,10 +123,12 @@ export class defaultAuth extends naive.plugin {
         select block_id from attributes where name = 'custom-publish-token'
       )`
     );
+    console.log(块信息数组)
     if (块信息数组 && 块信息数组[0]) {
       let 路径 = 块信息数组[0].path;
-      flag = await this.判定路径权限(路径);
+      flag = await this.判定路径权限(路径,"",multi);
     }
+    
     return flag;
   }
   async 解析路径(path, realoption) {

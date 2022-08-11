@@ -7,6 +7,9 @@ export class  reloader extends  naive.plugin  {
           回调函数:()=>this.重新加载(),
         };
         this.注册顶栏按钮(重置按钮图标);
+        this.setPluginsProp("forceReload",this.重新加载)
+        this.setPluginsProp("重新加载",this.重新加载)
+
     }
     async 重新加载(){
         ///#ifAPP

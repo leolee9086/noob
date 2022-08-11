@@ -5,6 +5,8 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
+    const session = require('express-session')
+
     const api = require("../public/siYuanApi");
     const fs = require("fs");
     const path = require("path");
@@ -16,6 +18,58 @@ module.exports = {
     const http = require("http");
     const https = require("https");
     const url = require("url");
+    const sqlite3 = require("sqlite3").verbose();
+    const crypto = require("crypto");
+    const JSEncrypt = require("JSEncrypt");
+    let jsEncrypt = new JSEncrypt();
+
+    const dbname = "naiveDB.db";
+    const db = new sqlite3.Database(
+      naive.workspaceDir + `\\conf\\naiveConf\\${dbname}`
+    );
+    db.serialize(() => {
+      const sql = `create table if not exists user (id TEXT primary key,user_name TEXT,password TEXT,mail TEXT)`;
+      db.run(sql);
+    });
+    let keyStr;
+    console.log(crypto.getCiphers());
+    //这里初始化的密钥对必须如此
+    const initKeyPair = function () {
+      const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+        modulusLength: 1024,
+        publicKeyEncoding: {
+          type: "spki",
+          format: "pem",
+        },
+        privateKeyEncoding: {
+          type: "pkcs1",
+          format: "pem",
+          //       cipher: 'aes-256-cbc',
+          //         passphrase:'top secret'
+        },
+      });
+      naive.pathConstructor.initFilep(
+        naive.workspaceDir + `\\conf\\naiveConf\\privateKey.pem`,
+        privateKey
+      );
+      naive.pathConstructor.initFilep(
+        naive.workspaceDir + `\\conf\\naiveConf\\publicKey.pem`,
+        publicKey
+      );
+    };
+    initKeyPair();
+
+    let rsaPublicKey = fs
+      .readFileSync(naive.workspaceDir + `\\conf\\naiveConf\\publicKey.pem`)
+      .toString("ascii");
+    let rsaPrivateKey = fs
+      .readFileSync(naive.workspaceDir + `\\conf\\naiveConf\\privateKey.pem`)
+      .toString("ascii");
+    jsEncrypt.setPublicKey(rsaPublicKey);
+    let str = jsEncrypt.encrypt("测试");
+    jsEncrypt.setPrivateKey(rsaPrivateKey);
+    console.log(jsEncrypt.decrypt(str));
+
     //这里需要根据请求的来源判定返回的参数
     let scriptLoader = naive.ifdefParser;
     this.scriptLoader = scriptLoader;
@@ -28,7 +82,15 @@ module.exports = {
     思源api = new api(realoption);
     //启用gzip压缩
     //app.use(express1.json())
-
+    //https://zhuanlan.zhihu.com/p/409813376
+    app.use(session({
+      secret: '12345-67890-09876-54321', // 必选配置
+      resave: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
+      saveUninitialized: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
+      cookie: { secure: false, maxAge: 800000, httpOnly: false }, // 可选，配置cookie的选项，具体可以参考文章的配置内容。
+      name: 'session-id', // 可选，设置个session的名字
+  }))
+  
     app.use(bodyParser.json()); //body-parser 解析json格式数据
     app.use(
       bodyParser.urlencoded({
@@ -118,6 +180,43 @@ module.exports = {
       res.setHeader("Access-Control-Allow-Origin", "*");
 
       res.end(JSON.stringify(realoption));
+    });
+    app.post("/naiveApi/system/stageAuth", (req, res) => {
+      console.log(req);
+      if (req.body) {
+        let auth = req.body.auth;
+        // jsEncrypt.setPrivateKey(rsaPrivateKey)
+        //  let decipher = crypto.createDecipher("aes-256-cbc", rsaPrivateKey)
+        console.log(rsaPrivateKey);
+        console.log(auth);
+        let string = jsEncrypt.decrypt(auth);
+        console.log(string);
+        let json = JSON.parse(string)
+        console.log(json)
+       
+          let sql = `select * from user where user_name='${json.user}' and password='${json.password}'`
+          db.get(sql,(err,rows)=>{
+            if(err){
+              res.end(JSON.stringify({code:1,msg:"登录错误"}))
+            }
+            else{
+              console.log(rows)
+              req.session.status = "login success"
+              res.end(JSON.stringify({code:0,token:jsEncrypt.encrypt(rows.id)}))
+            }
+          })
+        
+    
+      }
+    });
+    app.post("/naiveApi/system/rsaPublicKey", (req, res) => {
+      let data = {
+        msg: 0,
+        data: {
+          key: rsaPublicKey,
+        },
+      };
+      res.end(JSON.stringify(data));
     });
     app.get("/naiveApi/getPublishOption", (req, res) => {
       res.setHeader("Access-Control-Allow-Private-Network", true);
