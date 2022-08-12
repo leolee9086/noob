@@ -262,7 +262,7 @@ module.exports = {
     //暴露附件文件夹时允许访问附件路径
     if (realoption.暴露附件) {
       //app.use("/assets", express1.static(`${naive.workspaceDir}/data/assets/`));
-      app.use("/assets", (req, res) => this.判定位置(req, res));
+      app.use("/assets", (req, res) => this.转发请求(req, res));
     }
 
     //emojis文件夹默认能够访问
@@ -369,7 +369,7 @@ module.exports = {
     });
     return publishServer;
   },
-  async 判定位置(req, res) {
+  async 转发请求(req, res) {
     const http = require("http");
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
