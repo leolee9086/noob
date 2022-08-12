@@ -27,6 +27,7 @@ export class publisher extends naive.plugin {
       res.status(404);
       res.end("404");
     }
+    this.注册发布用菜单()
   }
   设置默认发布() {
     this.expressApp.get("/block/:blockid", (req, res) =>
@@ -496,4 +497,4 @@ export class publisher extends naive.plugin {
     );
   }
 }
-export const dependencies = ["template", "defaultRouter"];
+export const dependencies = ["template", "defaultRouter","commonMenu"];
