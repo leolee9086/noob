@@ -6,7 +6,6 @@ module.exports = {
       global.publishserver.listen(null);
     }
     const session = require('express-session')
-
     const api = require("../public/siYuanApi");
     const monitor = require('express-status-monitor')
     const fs = require("fs");
