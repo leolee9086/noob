@@ -151,7 +151,6 @@ module.exports = {
       }
     }
     //允许访问外观设置文件夹内容
-
     //stage文件夹使用副本的方式访问
     app.use(
       "/stage",
@@ -165,14 +164,7 @@ module.exports = {
       )
     );
     //设置接口
-    /*app.use(
-      "/naiveApi/*",
-      formiable({
-        encoding: "utf-8",
-        uploadDir: naive.pathConstructor.uploadCachePath(),
-        multiples: true,
-      })
-    );*/
+    
     app.post("/naiveApi/getPublishOption", (req, res) => {
       res.setHeader("Access-Control-Allow-Private-Network", true);
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -247,6 +239,14 @@ module.exports = {
     app.post("/naiveApi/corePlugins", (req, res) => {
       res.end(JSON.stringify(naive.corePlugins));
     });
+    app.use(
+      "/naiveApi/file/*",
+      formiable({
+        encoding: "utf-8",
+        uploadDir: naive.pathConstructor.uploadCachePath(),
+        multiples: true,
+      })
+    );
     app.post("/naiveApi/file/putFile", (req, res) => {
       console.log(req);
       if (req.fields && req.fields.path) {
