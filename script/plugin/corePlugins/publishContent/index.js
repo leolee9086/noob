@@ -196,14 +196,27 @@ export class publishContent extends naive.plugin {
       req.query.blockid ||
       req.query.id ||
       naive.设置.首页.思源文档id;
+    if(blockid=="unidefined"){
+      blockid=''
+    }
     let block = await this.核心api.getDoc(
       { id: blockid, k: "", size: 102400, mode: 0 },
       ""
     );
+    
+    if(block){
     let docInfor = await this.核心api.getDocInfo({ id: blockid });
     block.docInfor = docInfor;
     渲染结果.block = block;
-    return 渲染结果;
+    return 渲染结果
+    }
+    else{
+      let emptyPage = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/empty.html','utf8')
+
+      res.end(emptyPage)
+      return 渲染结果
+
+    }
   }
   生成文档标题(req, res, 渲染结果) {
     let 标题元素 = 渲染结果.querySelector(".protyle-title__input");

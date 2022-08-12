@@ -94,7 +94,7 @@ export class defaultAuth extends naive.plugin {
       if(!块数据.accessed){
         for (let attr in 块数据){
             if(块数据.hasOwnProperty(attr)){
-                if(!(['path','type','subType','subFileCount','id','color','size'].indexOf(attr)>=0)){
+                if(!(['path','type','subType','subFileCount','id','color','size','box','rootID','root_id'].indexOf(attr)>=0)){
                     块数据[attr]="私有块不可访问"
                     console.log(attr)
                     if(attr=='color'){

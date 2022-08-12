@@ -1,6 +1,7 @@
 export class publishSlot extends naive.plugin {
     constructor() {
         super({ name: "publishSlot"});
+        this.fs = require('fs')
     }
     pipe = [
         this.生成导航栏,
@@ -50,7 +51,7 @@ export class publishSlot extends naive.plugin {
     async 生成脚注(req,res,渲染结果){
         let 文档容器 = 渲染结果.querySelector('.protyle-wysiwyg.protyle-wysiwyg--attr[data-doc-type="NodeDocument"]')
         let html = `
-            <div class="fn__flex fn__flex-1 fn__flex-column" style="text-align:center;min-height:0.1px !important">
+            <div class="fn__flex fn__flex-1 fn__flex-column" id="publishFooter" style="text-align:center;min-height:0.1px !important">
         `
         let stmt = `select * from blocks where id in (select block_id from attributes where name ="custom-publish-slot" and value="footer" )`
         let footBlocks = await this.核心api.sql({stmt:stmt},'')
@@ -63,8 +64,10 @@ export class publishSlot extends naive.plugin {
             </div>`
             }
         )
+        let footer = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/footer.html','utf8')
+        html+=footer
         文档容器.parentElement.innerHTML+=html+"</div>"
         return 渲染结果
     }
 }
-export const dependencies= ['publishContent']
+export const dependencies= ['publishTheme','publishContent']

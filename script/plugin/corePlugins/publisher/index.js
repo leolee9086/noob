@@ -104,40 +104,70 @@ export class publisher extends naive.plugin {
         continue;
       }
     }
-    console.log(渲染结果.reqHeaders["user-agent"])
-    if (渲染结果.reqHeaders && 渲染结果.reqHeaders["user-agent"]&&渲染结果.reqHeaders["user-agent"].match(/(iphone|ipod|android|ios|ipad|mobile)/i)) {
+    console.log(渲染结果.reqHeaders["user-agent"]);
+    if (
+      渲染结果.reqHeaders &&
+      渲染结果.reqHeaders["user-agent"] &&
+      渲染结果.reqHeaders["user-agent"].match(
+        /(iphone|ipod|android|ios|ipad|mobile)/i
+      )
+    ) {
       渲染结果.querySelector("#panelLeft")
-        ? 渲染结果.querySelector("#panelLeft").classList.add('fn__none')
+        ? 渲染结果.querySelector("#panelLeft").classList.add("fn__none")
         : null;
       渲染结果.querySelector("#panelRight")
-        ? 渲染结果.querySelector("#panelRight").classList.add('fn__none')
+        ? 渲染结果.querySelector("#panelRight").classList.add("fn__none")
         : null;
-        渲染结果.querySelector(".publishNavi .toolbarLeft")
-        ? 渲染结果.querySelector(".publishNavi .toolbarLeft").classList.add('fn__none')
+      渲染结果.querySelector(".publishNavi .toolbarLeft")
+        ? 渲染结果
+            .querySelector(".publishNavi .toolbarLeft")
+            .classList.add("fn__none")
         : null;
-        渲染结果.querySelector(".publishNavi .toolbarRight")
-        ? 渲染结果.querySelector(".publishNavi .toolbarRight").classList.add('fn__none')
+      渲染结果.querySelector(".publishNavi .toolbarRight")
+        ? 渲染结果
+            .querySelector(".publishNavi .toolbarRight")
+            .classList.add("fn__none")
         : null;
-      let fontbase=36
+      let fontbase = 36;
       渲染结果.querySelector("#editorFontSize").innerHTML = `
        .protyle-wysiwyg, .protyle-title {font-size:${fontbase}px !important}
 .b3-typography code:not(.hljs), .protyle-wysiwyg code:not(.hljs) { font-variant-ligatures: normal }
-.li > .protyle-action {height:${fontbase*2}px;line-height: ${fontbase*2}px}
+.li > .protyle-action {height:${fontbase * 2}px;line-height: ${fontbase * 2}px}
 .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h1, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h2, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h3, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h4, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h5, .protyle-wysiwyg [data-node-id].li > .protyle-action ~ .h6 {
-  line-height:${fontbase*2}px;
+  line-height:${fontbase * 2}px;
 }
-.protyle-wysiwyg [data-node-id].li > .protyle-action:after {height: ${fontbase}px;width: ${fontbase}px;margin:-${fontbase/2}px 0 0 -${fontbase/2}px}
-.protyle-wysiwyg [data-node-id].li > .protyle-action svg {height: ${fontbase*2/3}px}
-.protyle-wysiwyg [data-node-id] [spellcheck="false"] {min-height:${fontbase*34/21}px}
-.protyle-wysiwyg .li {min-height:${fontbase*42/21}px}
-.protyle-gutters button svg {height:${fontbase*34/21}px}
-.protyle-wysiwyg img.emoji, .b3-typography img.emoji {width:${fontbase*26/21}px}
-.protyle-wysiwyg .h1 img.emoji, .b3-typography h1 img.emoji {width:${fontbase*45/21}px}
-.protyle-wysiwyg .h2 img.emoji, .b3-typography h2 img.emoji {width:${fontbase*40/21}px}
-.protyle-wysiwyg .h3 img.emoji, .b3-typography h3 img.emoji {width:${fontbase*36/21}px}
-.protyle-wysiwyg .h4 img.emoji, .b3-typography h4 img.emoji {width:${fontbase*32/21}px}
-.protyle-wysiwyg .h5 img.emoji, .b3-typography h5 img.emoji {width:${fontbase*29/21}px}
-.protyle-wysiwyg .h6 img.emoji, .b3-typography h6 img.emoji {width:${fontbase*26/21}px}
+.protyle-wysiwyg [data-node-id].li > .protyle-action:after {height: ${fontbase}px;width: ${fontbase}px;margin:-${
+        fontbase / 2
+      }px 0 0 -${fontbase / 2}px}
+.protyle-wysiwyg [data-node-id].li > .protyle-action svg {height: ${
+        (fontbase * 2) / 3
+      }px}
+.protyle-wysiwyg [data-node-id] [spellcheck="false"] {min-height:${
+        (fontbase * 34) / 21
+      }px}
+.protyle-wysiwyg .li {min-height:${(fontbase * 42) / 21}px}
+.protyle-gutters button svg {height:${(fontbase * 34) / 21}px}
+.protyle-wysiwyg img.emoji, .b3-typography img.emoji {width:${
+        (fontbase * 26) / 21
+      }px}
+.protyle-wysiwyg .h1 img.emoji, .b3-typography h1 img.emoji {width:${
+        (fontbase * 45) / 21
+      }px}
+.protyle-wysiwyg .h2 img.emoji, .b3-typography h2 img.emoji {width:${
+        (fontbase * 40) / 21
+      }px}
+.protyle-wysiwyg .h3 img.emoji, .b3-typography h3 img.emoji {width:${
+        (fontbase * 36) / 21
+      }px}
+.protyle-wysiwyg .h4 img.emoji, .b3-typography h4 img.emoji {width:${
+        (fontbase * 32) / 21
+      }px}
+.protyle-wysiwyg .h5 img.emoji, .b3-typography h5 img.emoji {width:${
+        (fontbase * 29) / 21
+      }px}
+.protyle-wysiwyg .h6 img.emoji, .b3-typography h6 img.emoji {width:${
+        (fontbase * 26) / 21
+      }px}
 .b3-typography, .protyle-wysiwyg, .protyle-title, .protyle-title__input{font-family: "文泉驿等宽正黑", "quote", "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols" !important;}
 .sb[data-sb-layout="col"]{
   flex-direction:column !important;
@@ -145,10 +175,22 @@ export class publisher extends naive.plugin {
 }
 
 `;
-      
+
       渲染结果.querySelector(".publishNavi").style.marginTop = "10px";
-      渲染结果.querySelector(".publishNavi").style.height = `${fontbase*3/2}px`
+      渲染结果.querySelector(".publishNavi").style.height = `${
+        (fontbase * 3) / 2
+      }px`;
     }
+    let base = 渲染结果.querySelector('base')
+    if(base){
+      base.setAttribute('href',req.protocol+"://"+naive.设置.发布地址)
+    }else{
+       base = 渲染结果.createElement("base")
+       base.setAttribute('href',req.protocol+"://"+naive.设置.发布地址)
+
+       document.head.appendChild(base)
+    }
+
     渲染结果 = `<!DOCTYPE html>
     <html>          
     ${渲染结果.querySelector("html").innerHTML}
@@ -255,21 +297,34 @@ export class publisher extends naive.plugin {
       this.realoption.思源伺服端口 +
       req.url;
     syres = await this.请求数据(url, apitoken, req.body);
-    if (syres.data && syres.data.files && syres.data.files[0]) {
-      syres.data.files = await this.批处理判定路径权限(syres.data.files);
-      /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
+    if (req.session && !req.session.status) {
+      if (syres.data && syres.data.files && syres.data.files[0]) {
+        syres.data.files = await this.批处理判定路径权限(syres.data.files);
+        /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
         let file = syres.data.files[i];
         let flag = await this.判定id权限(file.id, req.body);
         //console.log(flag)
         if(!flag){syres.data.files[i]=undefined}
       }*/
-      syres.data.files = syres.data.files.filter((file) => {
-        return file;
-      });
-    }
-    if (syres.data && syres.data.nodes && syres.data.links) {
-      syres.data.nodes = await this.批处理判定路径权限(syres.data.nodes);
-      /* for (let i = 0, len = syres.data.nodes.length; i < len; i++) {
+        syres.data.files = syres.data.files.filter((file) => {
+          return file;
+        });
+      }
+      if (syres.data && syres.data.blocks && syres.data.blocks[0]) {
+        syres.data.blocks = await this.批处理判定路径权限(syres.data.blocks);
+        /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
+        let file = syres.data.files[i];
+        let flag = await this.判定id权限(file.id, req.body);
+        //console.log(flag)
+        if(!flag){syres.data.files[i]=undefined}
+      }*/
+        syres.data.blocks = syres.data.blocks.filter((file) => {
+          return file;
+        });
+      }
+      if (syres.data && syres.data.nodes && syres.data.links) {
+        syres.data.nodes = await this.批处理判定路径权限(syres.data.nodes);
+        /* for (let i = 0, len = syres.data.nodes.length; i < len; i++) {
         let file = syres.data.nodes[i];
         console.log(file)
         let flag = await this.判定id权限(file.id, req.body);
@@ -278,19 +333,20 @@ export class publisher extends naive.plugin {
       
         if(!flag){syres.data.nodes[i]['label']="私有块不可访问"}
       }*/
-      for (let i = 0, len = syres.data.links.length; i < len; i++) {
-        let link = syres.data.links[i];
-        let fromid = link.from;
-        let toid = link.to;
-        let labels = await this.核心api.sql({
-          stmt: `select  * from blocks  where id in (select block_id from refs where def_block_id='${fromid}') and id in  (select block_id from refs where def_block_id='${toid}')`,
-        });
-        if (labels && labels[0]) {
-          syres.data.links[i]["label"] = labels[0].content;
+        for (let i = 0, len = syres.data.links.length; i < len; i++) {
+          let link = syres.data.links[i];
+          let fromid = link.from;
+          let toid = link.to;
+          let labels = await this.核心api.sql({
+            stmt: `select  * from blocks  where id in (select block_id from refs where def_block_id='${fromid}') and id in  (select block_id from refs where def_block_id='${toid}')`,
+          });
+          if (labels && labels[0]) {
+            syres.data.links[i]["label"] = labels[0].content;
+          }
         }
       }
+      syres = JSON.parse(JSON.stringify(syres));
     }
-    syres = JSON.parse(JSON.stringify(syres));
     res.end(JSON.stringify(syres));
   }
   async 请求数据(url, apitoken, data) {

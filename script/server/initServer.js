@@ -129,12 +129,6 @@ module.exports = {
       console.log(e);
       naive.sslOpen = false;
     }
-    if (naive.sslOpen) {
-      const sslPublishServer = https.createServer(sslSetting, app);
-      sslPublishServer.listen(sslPort, () => {
-        console.log(`sslPublish app listening on port ${443}`);
-      });
-    }
     this.空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
@@ -178,7 +172,6 @@ module.exports = {
     app.post("/naiveApi/getPublishOption", (req, res) => {
       res.setHeader("Access-Control-Allow-Private-Network", true);
       res.setHeader("Access-Control-Allow-Origin", "*");
-
       res.end(JSON.stringify(realoption));
     });
     app.post("/naiveApi/system/stageAuth", (req, res) => {
@@ -352,6 +345,13 @@ module.exports = {
         `${naive.workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`
       )
     );
+    if (naive.sslOpen) {
+      const sslPublishServer = https.createServer(sslSetting, app);
+      sslPublishServer.listen(sslPort, () => {
+        console.log(`sslPublish app listening on port ${443}`);
+      });
+    }
+
     naive.router = express1.Router();
     naive.expressApp = app;
     naive.express = express1;

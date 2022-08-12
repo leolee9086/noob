@@ -37,13 +37,13 @@ export async function initNaive() {
   for (let 属性名 in console) {
     if (console.hasOwnProperty(属性名)) {
       console["force_" + 属性名] = console[属性名];
-      if (!naive.ifDefOptions.defs.APP) {
-        console[属性名] = function () {};
+      if (!naive.ifDefOptions.defs.DEBUG) {
+        console[属性名] = function(){};
       }
     }
   }
 
-  if (naive.ifDefOptions.defs.APP) {
+  if ( naive.ifDefOptions.defs.APP) {
     const fs = require("fs");
     naive.publishOption = 生成默认设置(
       JSON.parse(

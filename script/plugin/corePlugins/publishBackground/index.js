@@ -131,13 +131,13 @@ export class publishBackground extends naive.plugin {
           : _a.replace(/^url\(["']?/, "").replace(/["']?\)$/, "");
       if (img.indexOf("url(") > -1) {
         this.imgElement.removeAttribute("style");
-        this.imgElement.setAttribute("src", url);
+        this.imgElement.setAttribute("src", url=="undefined"?"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=":url);
         this.imgElement.style.objectPosition = position;
         this.element
           .querySelector('[data-type="position"]')
           .classList.remove("fn__none");
       } else {
-        this.imgElement.setAttribute("src", this.transparentData);
+        this.imgElement.setAttribute("src", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=");
         this.element
           .querySelector('[data-type="position"]')
           .classList.add("fn__none");

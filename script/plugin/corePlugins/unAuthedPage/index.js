@@ -25,14 +25,24 @@ export class unAuthedPage extends naive.plugin{
                 
             }
             else{
-                console.log(naive.设置.白名单发布)
-                if(!naive.设置.白名单发布){
+                console.log(naive.设置.默认发布设置)
+                if(!naive.设置.默认发布设置||naive.设置.默认发布设置=='private'){
                     let unAuthedPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/private.html','utf8')
                     res.end(unAuthedPageTemplate)
                     console.log(res)
                 }
-                else{
+                else if((naive.设置.默认发布设置=='protected')){
+                    let unAuthedPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
+                    res.end(unAuthedPageTemplate)
+                    console.log(res)
+    
                 } 
+                else if(naive.设置.默认发布设置=='public'){
+
+                }
+                else{
+
+                }
             }
             
 

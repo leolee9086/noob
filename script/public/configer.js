@@ -35,7 +35,8 @@ export  function 生成默认设置 (customoption, workspaceDir) {
       允许搜索: false,
       "publishSSLpfx":"",
       "publishSSLpassphrase":"",
-      develop:false
+      develop:false,
+      默认发布设置:"protected"
     };
     option.workspace = workspaceDir;
     for (let prop in option) {
