@@ -62,11 +62,8 @@ export default class pathConstructor {
     let filePath = `${this.workspaceDir}/conf/naiveConf/template`;
     this.initDirp(filePath);
     this.initFilep(`${filePath}/empty.html`, "");
-    this.initFilep(`${filePath}/header.html`, "");
-    this.initFilep(`${filePath}/background.html`, "");
     this.initFilep(`${filePath}/content.html`, "");
     this.initFilep(`${filePath}/footer.html`, "");
-    this.initFilep(`${filePath}/naive.js`, "");
     this.initFilep(`${filePath}/unAuthedPage.html`, "");
     return filePath;
   }
