@@ -8,6 +8,7 @@ module.exports = {
     const session = require('express-session')
 
     const api = require("../public/siYuanApi");
+    const monitor = require('express-status-monitor')
     const fs = require("fs");
     const path = require("path");
     const compression = require("compression");
@@ -83,6 +84,9 @@ module.exports = {
     //启用gzip压缩
     //app.use(express1.json())
     //https://zhuanlan.zhihu.com/p/409813376
+    const statusMonitor = require('express-status-monitor')();
+    app.use(statusMonitor)
+
     app.use(session({
       secret: '12345-67890-09876-54321', // 必选配置
       resave: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。

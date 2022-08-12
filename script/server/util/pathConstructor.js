@@ -62,9 +62,11 @@ export default class pathConstructor {
     let filePath = `${this.workspaceDir}/conf/naiveConf/template`;
     this.initDirp(filePath);
     this.initFilep(`${filePath}/empty.html`, "");
-    this.initFilep(`${filePath}/content.html`, "");
     this.initFilep(`${filePath}/footer.html`, "");
+    this.initFilep(`${filePath}/private.html`, "");
     this.initFilep(`${filePath}/unAuthedPage.html`, "");
+    this.initFilep(`${filePath}/defaultPage.html`, "");
+
     return filePath;
   }
   cachePath() {
