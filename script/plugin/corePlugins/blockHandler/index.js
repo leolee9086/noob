@@ -23,7 +23,7 @@ export class blockHandler extends naive.plugin {
       this.获取文档id(naive.当前块id);
     }
   }
-  获取id与类型(target) {
+  async 获取id与类型(target) {
     if (!target) {
       return;
     }
@@ -31,7 +31,12 @@ export class blockHandler extends naive.plugin {
       if (target.getAttribute("data-node-id") !== naive.当前块id) {
         naive.当前块id = target.getAttribute("data-node-id");
         naive.事件总线.emit("当前块id改变", naive.当前块id);
-        this.获取文档id(naive.当前块id);
+        if(target.getAttribute('data-type')!=='navigation-file'){
+        await this.获取文档id(naive.当前块id);
+        }
+        else{
+          naive.当前文档id = naive.当前块id
+        }
         if (target.getAttribute("data-type")) {
           naive.当前块类型 = target.getAttribute("data-type");
         }

@@ -13,3 +13,9 @@
 ### 许可:
 
 采用AGPL许可
+
+### 示例插件
+
+示例插件可以参考:
+
+[leolee9086/comment (github.com)](https://github.com/leolee9086/comment)
