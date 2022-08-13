@@ -39,7 +39,7 @@ export class publisher extends naive.plugin {
     //允许搜索时,能够访问文档树
     this.expressApp.post("/api/notebook/lsNotebooks", (req, res) => {
       if (this.realoption.允许搜索) {
-        this.转发JSON请求(req, res);
+        this.转发JSON请求(req, res,true);
       }
     });
     //允许搜索时,能够列出所有文档
@@ -68,7 +68,7 @@ export class publisher extends naive.plugin {
     this.expressApp.post("/api/*", (req, res) => {
       if (this.realoption.暴露api) {
         console.log(req);
-        this.转发JSON请求(req, res);
+        this.转发JSON请求(req, res,false);
       } else {
         res.sendStatus(404);
       }
@@ -263,7 +263,11 @@ export class publisher extends naive.plugin {
     console.log(渲染管线);
     return 渲染管线;
   }
-  async 转发JSON请求(req, res) {
+  async 转发JSON请求(req, res,unAuth) {
+    if(!unAuth&&!req.session){
+      res.statue(403)
+      res.end("请首先登录或提供token")
+    }
     console.log(req.url, req);
     if (req.url.indexOf("account") >= 0) {
       res.end("不可访问账户api");
@@ -286,6 +290,7 @@ export class publisher extends naive.plugin {
       return;
     }
     var { connection, host, ...originHeaders } = req.headers;
+    console.log(req.headers)
     // 构造请求报文
     //    console.log(req.url, req.body);
     let resData = {};
