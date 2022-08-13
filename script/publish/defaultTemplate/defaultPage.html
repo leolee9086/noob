@@ -219,7 +219,7 @@
     <span class="b3-list-item__text"><a href="/block/${file.id}">${file.name}</a></span>
     <span class="counter">${file.count}</span>
 </li>`
-                    if (file.blocks) {
+                    if (file.blocks&&file.blocks instanceof Array) {
                         html += "<ul class>"
                         file.blocks.forEach(
                             block => {

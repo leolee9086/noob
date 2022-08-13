@@ -15,6 +15,7 @@ export default class pathConstructor {
       this.cachePath();
     }
   }
+  
   requireScript(filepath) {
     let path = require("path");
     return require(path.join(this.naivePath() + "/script", filepath));

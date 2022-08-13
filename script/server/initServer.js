@@ -8,7 +8,7 @@ module.exports = {
     const session = require('express-session')
     const api = require("../public/siYuanApi");
     const monitor = require('express-status-monitor')
-    const fs = require("fs");
+    const fs = require("fs-extra");
     const path = require("path");
     const compression = require("compression");
     const bodyParser = require("body-parser");
@@ -22,7 +22,6 @@ module.exports = {
     const crypto = require("crypto");
     const JSEncrypt = require("JSEncrypt");
     let jsEncrypt = new JSEncrypt();
-
     const dbname = "naiveDB.db";
     const db = new sqlite3.Database(
       naive.workspaceDir + `\\conf\\naiveConf\\${dbname}`
@@ -31,7 +30,12 @@ module.exports = {
       const sql = `create table if not exists user (id TEXT primary key,user_name TEXT,password TEXT,mail TEXT)`;
       db.run(sql);
     });
-    let keyStr;
+    try{
+      fs.copySync(naive.workspaceDir+'\\conf\\appearance\\themes\\naive\\script\\publish\\defaultTemplate',        
+      naive.workspaceDir + `\\conf\\naiveConf\\template`,
+      )
+    }catch(e){console.log(e)}
+
     console.log(crypto.getCiphers());
     //这里初始化的密钥对必须如此
     const initKeyPair = function () {

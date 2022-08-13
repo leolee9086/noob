@@ -10,6 +10,8 @@ export class defaultAuth extends naive.plugin {
     this.setPluginsProp("生成路径权限表", this.生成路径权限表);
     this.setPluginsProp("判定路径权限", this.判定路径权限);
     this.setPluginsProp("批处理判定路径权限", this.批处理判定路径权限);
+    this.setPluginsProp("批处理判定id权限", this.批处理判定id权限);
+
   }
   pipe = [this.生成文档元数据, this.鉴权];
 
@@ -94,7 +96,7 @@ export class defaultAuth extends naive.plugin {
       if(!块数据.accessed){
         for (let attr in 块数据){
             if(块数据.hasOwnProperty(attr)){
-                if(!(['path','type','subType','subFileCount','id','color','size','box','rootID','root_id'].indexOf(attr)>=0)){
+                if(!(['path','type','subType','subFileCount','id','color','size','box','rootID','root_id',].indexOf(attr)>=0)){
                     块数据[attr]="私有块不可访问"
                     console.log(attr)
                     if(attr=='color'){
@@ -111,6 +113,27 @@ export class defaultAuth extends naive.plugin {
     
     console.log(块数组);
     return 块数组;
+  }
+  async 批处理判定id权限(块数组,query,multi){
+    let sql = ''
+    块数组.forEach(
+      (块数据,i)=>{
+        let id = 块数据.id 
+        sql+=i!==0?`or id = '${id}' `:` id = '${id}'`
+      }
+    )
+    sql = 'select * from blocks where '+sql
+    let resdata = await  this.核心api.sql({stmt:sql},'')
+    resdata.forEach(
+      data=>{
+        块数组.forEach(
+          块=>{块.id==data.id?块.path=data.path:null}
+        
+      )
+      }
+    )
+    console.error(块数组)
+    return await this.批处理判定路径权限(块数组)
   }
   async 判定id权限(块id,query,multi) {
     console.log(块id,query,multi)

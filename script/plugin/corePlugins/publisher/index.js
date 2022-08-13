@@ -323,6 +323,12 @@ export class publisher extends naive.plugin {
           return file;
         });
       }
+      if(syres.data&&syres.data.backlinks&&syres.data.backmentions){
+        
+        syres.data.backlinks = await this.批处理判定id权限(syres.data.backlinks);
+        syres.data.backmentions = await this.批处理判定id权限(syres.data.backmentions);
+
+      }
       if (syres.data && syres.data.nodes && syres.data.links) {
         syres.data.nodes = await this.批处理判定路径权限(syres.data.nodes);
         /* for (let i = 0, len = syres.data.nodes.length; i < len; i++) {
