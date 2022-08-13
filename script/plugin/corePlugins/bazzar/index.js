@@ -3,4 +3,4 @@ export class bazzar extends naive.plugin{
         super({name:'bazzar'})
     }
 }
-export const environment = ['app']
+export const environment = ['APP']

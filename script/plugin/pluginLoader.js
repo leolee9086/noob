@@ -108,7 +108,18 @@ export async function 加载插件(插件名){
         )}`
       );
     }
-    if (pluginclass.dependencies) {
+
+    if(pluginclass.environments&&pluginclass.environments instanceof Array){
+      let flag = false
+      pluginclass.environments.forEach(en => {
+        flag= naive.ifDefOptions[en]?true:false
+  
+      });
+      if(!flag){
+        return
+      }
+    }
+    if (pluginclass.dependencies&&pluginclass.dependencies instanceof Array) {
         for await( let 插件名 of pluginclass.dependencies) {
         try{
         await 加载核心插件(插件名);
@@ -138,7 +149,17 @@ async function 加载核心插件(插件名) {
       naive.ifDefOptions
     )}`
   )
-  if (pluginclass.dependencies) {
+  if(pluginclass.environments&&pluginclass.environments instanceof Array){
+    let flag = false
+    pluginclass.environments.forEach(en => {
+      flag= naive.ifDefOptions[en]?true:false
+
+    });
+    if(!flag){
+      return
+    }
+  }
+  if (pluginclass.dependencies&&pluginclass.dependencies instanceof Array) {
       for await( let 依赖插件名 of pluginclass.dependencies) {
       console.log(依赖插件名)
       await 加载核心插件(依赖插件名);
