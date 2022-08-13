@@ -6,9 +6,9 @@ export async function updatePluginsConfig() {
   //获取集市内容
   let 远程插件列表 = {}
   try{
-  let  res = await fetch(`https://cdn.jsdelivr.net/gh/leolee9086/naiveBazzar/plugins.json`)
+  let  res = await fetch(`https://raw.github.com/leolee9086/naiveBazzar/main/plugins.json`)
   res = await res.text()
-  console.log(res)
+  console.force_log(res)
   远程插件列表 = JSON.parse(res).repos
   console.log(远程插件列表)
   }catch(e){console.error(e)}

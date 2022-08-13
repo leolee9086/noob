@@ -81,10 +81,23 @@ export class defaultAuth extends naive.plugin {
     }
     console.log(鉴权块);
     if(!multi){
-    return 鉴权块.value == "public" ? true : false;
+     if(鉴权块.value == "public"){
+      return true
+     }
+     else if(!鉴权块.value){
+      return naive.设置.默认发布设置=='public'?true:false
+     }
+     else{
+      return false
+     }
     }
     else{
+        if(['public',"private",'protected'].indexOf(鉴权块.value)>=0){
         return 鉴权块.value
+      }
+      else{
+        return naive.设置.默认发布设置
+      }
     }
   }
   async 批处理判定路径权限(块数组) {
