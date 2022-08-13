@@ -84,7 +84,7 @@ export class defaultAuth extends naive.plugin {
      if(鉴权块.value == "public"){
       return true
      }
-     else if(!鉴权块.value){
+     else if(['public',"private",'protected'].indexOf(鉴权块.value)<0){
       return naive.设置.默认发布设置=='public'?true:false
      }
      else{
