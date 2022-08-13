@@ -71,3 +71,4 @@ export class publishSlot extends naive.plugin {
     }
 }
 export const dependencies= ['publishTheme','publishContent']
+export const environments = ["APP"];

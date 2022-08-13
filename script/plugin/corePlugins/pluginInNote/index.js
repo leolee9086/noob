@@ -115,3 +115,4 @@ export class pluginInNote extends naive.plugin{
     }
 }
 export const dependencies = ['commonMenu']
+export const environments = ["APP"];

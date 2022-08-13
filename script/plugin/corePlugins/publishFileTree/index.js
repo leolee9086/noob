@@ -39,3 +39,4 @@ export class publishFileTree extends naive.plugin {
   }
 }
 export const dependencies = ["publishContent"];
+export const environments = ["APP"];

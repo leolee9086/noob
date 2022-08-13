@@ -114,3 +114,4 @@ data-def-path="">
   }
 }
 export const dependencies = ["publishContent"];
+export const environments = ["APP"];

@@ -52,3 +52,4 @@ export class unAuthedPage extends naive.plugin{
     }
 }
 export const dependencies = ['defaultAuth']
+export const environments = ["APP"];

@@ -509,3 +509,4 @@ export class publisher extends naive.plugin {
   }
 }
 export const dependencies = ["template", "defaultRouter","commonMenu"];
+export const environments = ["APP"];

@@ -217,3 +217,4 @@ export const dependencies = [
   "publisher",
   "publisher",
 ];
+export const environments = ["APP"];
