@@ -14,6 +14,7 @@ export class unAuthedPage extends naive.plugin{
               if(access=="protected"){
                 let unAuthedPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
                 res.end(unAuthedPageTemplate)
+           
                 console.log(res)
             }
             else if(access=="private"){
@@ -47,7 +48,7 @@ export class unAuthedPage extends naive.plugin{
             
 
         }
-        
+       
         return  渲染结果
     }
 }

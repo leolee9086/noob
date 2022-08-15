@@ -5,14 +5,14 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
-    const session = require('express-session')
+    const session = require("express-session");
     const api = require("../public/siYuanApi");
-    const monitor = require('express-status-monitor')
+    const monitor = require("express-status-monitor");
     const fs = require("fs-extra");
-    naive.fs =fs
+    naive.fs = fs;
     const path = require("path");
     const compression = require("compression");
-    naive.compressing     = require("compressing");
+    naive.compressing = require("compressing");
     const bodyParser = require("body-parser");
     const formiable = require("express-formidable");
     const express1 = require("express");
@@ -23,11 +23,70 @@ module.exports = {
     const crypto = require("crypto");
     const JSEncrypt = require("JSEncrypt");
     let jsEncrypt = new JSEncrypt();
-    const dbname = "naiveDB.db";
-    const db = new sqlite3(
-      naive.workspaceDir + `\\conf\\naiveConf\\${dbname}`,{verbose:console.log}
-    );
+    const Sequelize = require("sequelize");
+    const { DataTypes } = require("sequelize");
+
+    const sqlite3 = require("sqlite3");
+    const sequelize = new Sequelize("database", null, null, {
+      dialect: "sqlite",
+      storage: `${naive.pathConstructor.initFilep(
+        "F:\\siyuan\\conf\\naiveConf\\naiveDB.db"
+      )}`,
+      define: {
+        timestamps: false,
+        freezeTableName: true,
+      },
+      host: "localhost",
+
+      // dialectModule: sqlite3
+    });
     //初始化用户数据库
+    const user = sequelize.define("user", {
+      id: {
+        type: DataTypes.TEXT,
+        unique: true,
+        primaryKey: true,
+      },
+      name: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+      },
+      password: {
+        type: DataTypes.TEXT,
+      },
+      email: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      isDelete: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      avator: {
+        type: DataTypes.TEXT,
+        defaultValue: "none",
+      },
+      user_group: {
+        type: DataTypes.TEXT,
+        defaultValue: "visitor",
+      },
+    });
+    try {
+      await sequelize.authenticate();
+      console.log("Connection has been established successfully.");
+    } catch (error) {
+      console.error("Unable to connect to the database:", error);
+    }
+
+    let noAdminUser = false;
+    await sequelize.sync({ alter: true });
+    let admin = await user.findAll({
+      where: { user_group: "admin" },
+    });
+    if (!admin[0]) {
+      noAdminUser = true;
+      naive.dbNoUser = true;
+    }
     console.log(crypto.getCiphers());
     //这里初始化的密钥对必须如此
     const initKeyPair = function () {
@@ -79,17 +138,19 @@ module.exports = {
     //启用gzip压缩
     //app.use(express1.json())
     //https://zhuanlan.zhihu.com/p/409813376
-    const statusMonitor = require('express-status-monitor')();
-    app.use(statusMonitor)
+    const statusMonitor = require("express-status-monitor")();
+    app.use(statusMonitor);
 
-    app.use(session({
-      secret: '12345-67890-09876-54321', // 必选配置
-      resave: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
-      saveUninitialized: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
-      cookie: { secure: false, maxAge: 800000, httpOnly: false }, // 可选，配置cookie的选项，具体可以参考文章的配置内容。
-      name: 'session-id', // 可选，设置个session的名字
-  }))
-  
+    app.use(
+      session({
+        secret: "12345-67890-09876-54321", // 必选配置
+        resave: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
+        saveUninitialized: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
+        cookie: { secure: false, maxAge: 800000, httpOnly: false }, // 可选，配置cookie的选项，具体可以参考文章的配置内容。
+        name: "session-id", // 可选，设置个session的名字
+      })
+    );
+
     app.use(bodyParser.json()); //body-parser 解析json格式数据
     app.use(
       bodyParser.urlencoded({
@@ -159,13 +220,13 @@ module.exports = {
       )
     );
     //设置接口
-    
+
     app.post("/naiveApi/getPublishOption", (req, res) => {
       res.setHeader("Access-Control-Allow-Private-Network", true);
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.end(JSON.stringify(realoption));
     });
-    app.post("/naiveApi/system/stageAuth", (req, res) => {
+    app.post("/naiveApi/system/stageAuth", async (req, res) => {
       console.log(req);
       if (req.body) {
         let auth = req.body.auth;
@@ -175,11 +236,34 @@ module.exports = {
         console.log(auth);
         let string = jsEncrypt.decrypt(auth);
         console.log(string);
-        let json = JSON.parse(string)
-        console.log(json)
-       
-        
-    
+        let json = JSON.parse(string);
+        console.log(json);
+        let checkedUser = await user.findAll({
+          where: {
+            name: json.user,
+            password: json.password,
+          },
+        });
+        console.log(checkedUser);
+        if (naive.dbNoUser) {
+          await user.create({
+            id: Lute.NewNodeID(),
+            name: json.user,
+            password: json.password,
+            user_group: "admin",
+          });
+        }
+        if (checkedUser && checkedUser[0]) {
+          req.session.status = "Authed";
+          res.json(
+           {
+              code: 0,
+              token: jsEncrypt.encrypt(
+                JSON.stringify({ name: json.user, password: json.password })
+              ),
+          }
+          );
+        }
       }
     });
     app.post("/naiveApi/system/rsaPublicKey", (req, res) => {
