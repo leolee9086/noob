@@ -1,3 +1,5 @@
+import { DOM监听器 } from "/script/public/DOMwatcher.js";
+
 export class linkCard extends naive.plugin {
   constructor() {
     super({ name: "linkCard" });
@@ -6,6 +8,18 @@ export class linkCard extends naive.plugin {
       naive.pathConstructor.naivePath() +
         "/script/plugin/corePlugins/linkCard/icon4Tsundoku"
     );
+    window.siyuan.ws.ws.addEventListener("message", () => {
+      this.hackLink();
+    });
+    document.addEventListener("mouseover", () => {
+      this.hackLink();
+    });
+    let 监听选项1 = {
+      监听目标: `[data-node-id]`,
+      监听器回调: () => this.hackLink(),
+    };
+    this.DOM监听器1 = new DOM监听器(监听选项1);
+
   }
   hackLink() {
     try{
@@ -39,7 +53,7 @@ export class linkCard extends naive.plugin {
         link.shadowRoot?link.shadowRoot.innerHTML=`<span>${link.innerHTML}</span>`:null
       }
     });
-    window.requestAnimationFrame(() => this.hackLink());}catch(e){}
+  }catch(e){}
   }
   attachLinkShadow(a) {
     a.shadowRoot?a.shadowRoot.innerHTML='':null

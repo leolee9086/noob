@@ -1,4 +1,3 @@
-
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
 
 const hideElements = (panels, protyle) => {
@@ -60,6 +59,20 @@ const disabledProtyle = (protyle) => {
 export class protyleEditor extends naive.plugin {
   constructor() {
     super({ name: protyleEditor });
+
+    window.siyuan.ws.ws.addEventListener("message", () => {
+      this.hackBacklink();
+    });
+    document.addEventListener("mouseover", () => {
+      this.hackBacklink();
+    });
+    let 监听选项1 = {
+      监听目标: `[data-node-id]`,
+      监听器回调: () => this.hackBacklink(),
+    };
+   
+    this.DOM监听器1 = new DOM监听器(监听选项1);
+
     this.hackBacklink();
     /*shadowDocument.body.appendChild(editorElement)
         let styles=  document.head.querySelectorAll('style')
@@ -108,23 +121,36 @@ export class protyleEditor extends naive.plugin {
     let 目标元素组 = document.querySelectorAll(
       `.backlinkList.fn__flex-1 ul [data-treetype="backlink"] .b3-list-item__text,.backlinkMList.fn__flex-1 ul [data-treetype="backlink"] .b3-list-item__text`
     );
-    let 目标元素组1 =document.querySelectorAll(
-        ".protyle-wysiwyg__embed"
-    )
-    this.createEditor(目标元素组)
-   // this.createEditor(目标元素组1)
+    let 目标元素组1 = document.querySelectorAll(
+      ".protyle-wysiwyg__embed:not(.protyle-wysiwyg__embed .protyle-wysiwyg__embed)"
+    );
+    this.createEditor(目标元素组);
+    this.createEditor(目标元素组1);
 
-   window.requestAnimationFrame(async() => this.hackBacklink())
-
+    //window.requestAnimationFrame(async() => this.hackBacklink())
   }
-  createEditor(目标元素组){
-    目标元素组.forEach(async (块元素) => {
-        if(块元素.parentElement.dataset.type=="NodeDocument"){
-            return
+  createEditor(目标元素组) {
+    this.渲染计数器=0
+    目标元素组.forEach(async (块元素,i) =>
+      setTimeout(() => {
+        if (块元素.parentElement.dataset.type == "NodeDocument") {
+          this.渲染计数器-=1
+          return;
         }
-        if(!this.isInViewPort(块元素)){return}
+        if (!this.isInViewPort(块元素)) {
+          this.渲染计数器-=1
+          if(块元素.shadowRoot){
+            let element = 块元素.shadowRoot.querySelector("iframe");
+            element.setAttribute('src','')
+          }
+          return;
+        }
+        if(this.渲染计数器>10){
+          return
+        }
+        this.渲染计数器+=1
         if (!块元素.shadowRoot) {
-          块元素.attachShadow({mode:'open'})
+          块元素.attachShadow({ mode: "open" });
           let editorElement = document.createElement("div");
           let element = document.createElement("iframe");
           element.classList.add(
@@ -137,40 +163,42 @@ export class protyleEditor extends naive.plugin {
           element.setAttribute("frameBorder", "none");
           element.setAttribute(
             "src",
-            `/stage/build/mobile/?hideToolBar=true&&id=${(块元素.dataset&&块元素.dataset.id)||块元素.previousElementSibling.dataset.id}`
+            `/stage/build/mobile/?hideToolBar=true&&id=${
+              (块元素.dataset && 块元素.dataset.id) ||
+              块元素.previousElementSibling.dataset.id
+            }`
           );
           editorElement.className = "block__edit  fn__flex-1 protyle";
           块元素.shadowRoot.appendChild(element);
-        }
-        else{
-          let element =块元素.shadowRoot.querySelector('iframe')
-          if(element&&element.getAttribute('src')!== `/stage/build/mobile/?hideToolBar=true&&id=${(块元素.dataset&&块元素.dataset.id)||块元素.previousElementSibling.dataset.id}`){
-          element.setAttribute(
+        } else {
+          let element = 块元素.shadowRoot.querySelector("iframe");
+          if (
+            element &&
+            element.getAttribute("src") !==
+              `/stage/build/mobile/?hideToolBar=true&&id=${
+                (块元素.dataset && 块元素.dataset.id) ||
+                块元素.previousElementSibling.dataset.id
+              }`
+          ) {
+            element.setAttribute(
               "src",
-              `/stage/build/mobile/?hideToolBar=true&&id=${(块元素.dataset&&块元素.dataset.id)||块元素.previousElementSibling.dataset.id}`
+              `/stage/build/mobile/?hideToolBar=true&&id=${
+                (块元素.dataset && 块元素.dataset.id) ||
+                块元素.previousElementSibling.dataset.id
+              }`
             );
           }
         }
-      });
-  
-  }
-   isInViewPort(element) {
-    const viewWidth = window.innerWidth || document.documentElement.clientWidth;
-    const viewHeight = window.innerHeight || document.documentElement.clientHeight;
-    const {
-      top,
-      right,
-      bottom,
-      left,
-    } = element.getBoundingClientRect();
-  
-    return (
-      top >= 0 &&
-      left >= 0 &&
-      right <= viewWidth &&
-      bottom <= viewHeight
+      }, 10)
     );
   }
-  
+  isInViewPort(element) {
+    const viewWidth = window.innerWidth || document.documentElement.clientWidth;
+    const viewHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+    const { top, right, bottom, left } = element.getBoundingClientRect();
+
+    return top >= 0 && left >= 0 && right <= viewWidth && bottom <= viewHeight;
+  }
 }
 export const environments = ["APP"];
