@@ -20,24 +20,19 @@ module.exports = {
     const http = require("http");
     const https = require("https");
     const url = require("url");
-    const sqlite3 = require("sqlite3").verbose();
+    const sqlite3 = require("better-sqlite3");
     const crypto = require("crypto");
     const JSEncrypt = require("JSEncrypt");
     let jsEncrypt = new JSEncrypt();
     const dbname = "naiveDB.db";
-    const db = new sqlite3.Database(
-      naive.workspaceDir + `\\conf\\naiveConf\\${dbname}`
+    const db = new sqlite3(
+      naive.workspaceDir + `\\conf\\naiveConf\\${dbname}`,{verbose:console.log}
     );
-    db.serialize(() => {
-      const sql = `create table if not exists user (id TEXT primary key,user_name TEXT,password TEXT,mail TEXT)`;
-      db.run(sql);
-    });
-    try{
-      fs.copySync(naive.workspaceDir+'\\conf\\appearance\\themes\\naive\\script\\publish\\defaultTemplate',        
-      naive.workspaceDir + `\\conf\\naiveConf\\template`,
-      )
-    }catch(e){console.log(e)}
-
+    //初始化用户数据库
+    const createUserTable = db.prepare(`create table if not exists user (id TEXT primary key,user_name TEXT,password TEXT,mail TEXT)`)
+    const createUserProfileTable=db.prepare(`create table if not exists userProfile (id TEXT primary key,user_name TEXT,user_group TEXT)`)
+    createUserTable.run()
+    createUserProfileTable.run()
     console.log(crypto.getCiphers());
     //这里初始化的密钥对必须如此
     const initKeyPair = function () {

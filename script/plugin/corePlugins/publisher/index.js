@@ -46,12 +46,11 @@ export class publisher extends naive.plugin {
       try{
         let module = await import(文件路径)
         if(module.router){
-          module.router.prototype.use=function(path,cb){naive.expressApp.use(`/app/${路由名称}/${path}`,cb)}          module.router.prototype.use=function(path,cb){naive.expressApp.use(`/app/${路由名称}/${path}`,cb)}
+          module.router.prototype.use=function(path,cb){naive.expressApp.use(`/app/${路由名称}/${path}`,cb)}          
           module.router.prototype.get=function(path,cb){naive.expressApp.get(`/app/${路由名称}/${path}`,cb)}
           module.router.prototype.post=function(path,cb){naive.expressApp.post(`/app/${路由名称}/${path}`,cb)}
           module.router.prototype.engine=function(path,cb){naive.expressApp.engine(`/app/${路由名称}/${path}`,cb)}
           module.router.prototype.put=function(path,cb){naive.expressApp.put(`/app/${路由名称}/${path}`,cb)}
-
           new module.router()
         }
       }catch(e){throw e}

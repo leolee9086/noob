@@ -40,17 +40,13 @@ export class pluginInNote extends naive.plugin{
             } 
         }
         stmt += ` and type = "${块类型}"`
-        console.error(stmt)
         let res = await this.核心api.sql({stmt:stmt},'')
         console.log(res)
         if(res&&res[0]){
-
             res.forEach(
-                
                     block=>{            
                          this.获取笔记内插件内容(block.id)
                     }
-                
             )
         }
     }

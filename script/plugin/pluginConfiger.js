@@ -4,14 +4,6 @@ export async function updatePluginsConfig() {
   const fs = require("fs");
   const path = require("path"); //解析需要遍历的文件夹
   //获取集市内容
-  let 远程插件列表 = {}
-  try{
-  let  res = await fetch(`https://raw.github.com/leolee9086/naiveBazzar/main/plugins.json`)
-  res = await res.text()
-  console.force_log(res)
-  远程插件列表 = JSON.parse(res).repos
-  console.log(远程插件列表)
-  }catch(e){console.error(e)}
   const 插件设置内容 = fs.readFileSync(
     naive.pathConstructor.pluginConfigPath(),
     "utf-8"

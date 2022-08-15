@@ -3,8 +3,11 @@ export class naiveBazzar extends naive.plugin {
     super({ name: "naiveBazzar" });
     naive.bazzar = {};
     naive.bazzar.plugins = {};
-
     this.获取插件列表();
+    this.获取核心插件列表()
+  }
+  async 获取核心插件列表(){
+    
   }
   async 获取插件列表() {
     let bazzarOss = "https://ccds-1300128285.cos.ap-guangzhou.myqcloud.com";
