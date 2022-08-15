@@ -20,7 +20,6 @@ module.exports = {
     const http = require("http");
     const https = require("https");
     const url = require("url");
-    const sqlite3 = require("better-sqlite3");
     const crypto = require("crypto");
     const JSEncrypt = require("JSEncrypt");
     let jsEncrypt = new JSEncrypt();
@@ -29,10 +28,6 @@ module.exports = {
       naive.workspaceDir + `\\conf\\naiveConf\\${dbname}`,{verbose:console.log}
     );
     //初始化用户数据库
-    const createUserTable = db.prepare(`create table if not exists user (id TEXT primary key,user_name TEXT,password TEXT,mail TEXT)`)
-    const createUserProfileTable=db.prepare(`create table if not exists userProfile (id TEXT primary key,user_name TEXT,user_group TEXT)`)
-    createUserTable.run()
-    createUserProfileTable.run()
     console.log(crypto.getCiphers());
     //这里初始化的密钥对必须如此
     const initKeyPair = function () {
@@ -183,17 +178,6 @@ module.exports = {
         let json = JSON.parse(string)
         console.log(json)
        
-          let sql = `select * from user where user_name='${json.user}' and password='${json.password}'`
-          db.get(sql,(err,rows)=>{
-            if(err){
-              res.end(JSON.stringify({code:1,msg:"登录错误"}))
-            }
-            else{
-              console.log(rows)
-              req.session.status = "login success"
-              res.end(JSON.stringify({code:0,token:jsEncrypt.encrypt(rows.id)}))
-            }
-          })
         
     
       }
