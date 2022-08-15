@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="/script/public/static/element-plus/index.css" />
     <script src="/script/public/static/vue/vue.global.js"></script>
     <script src="/script/public/static/element-plus/index.full.js"></script>
-
+    <style>
+        .fn__grid{
+            display:grid;
+            grid-template-columns: repeat(6,1fr);
+        }
+    </style>
 </head>
 
 <body>
@@ -16,8 +21,38 @@
 <template style="display: false;" id="template">
     <el-container>
         <el-header>插件设置</el-header>
-        <el-main>
-            <el-form :model="config" label-width="120px">
+       <el-main>
+            
+            <div class="fn__grid" style="padding: 6px;">
+                <div v-for="(开关值,插件名) in config" style="padding: 3px;">
+                    <el-card  :key = 插件名>
+                        <div style="height:150px">
+                        <img style="max-width:100%;min-width: 100%;min-height:150px ;max-height: 150px;" :src="`/plugins/${插件名}/preview.png`">
+                        </div>
+                        <el-row>
+                            <el-col :span="8">{{插件名}}</el-col>
+                            <el-col :span="8"></el-col>
+                            <el-col :span="8"></el-col>
+
+                        </el-row>
+                        <el-row>
+                            <el-col :span="8">
+                                <el-button size="mini">更新</el-button>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-button size="mini">卸载</el-button>
+                            </el-col>
+                            <el-col :span="8">
+                                <span>启用                     <el-switch v-model="config[插件名]"></el-switch>
+                                </span>
+                            </el-col>
+    
+                        </el-row>
+    
+                    </el-card>
+                </div>
+            </div>
+       <!--     <el-form :model="config" label-width="120px">
                 <template v-for="(开关值,插件名) in config" :key = 插件名 >
                     <el-form-item :label="插件名" v-if="插件名!=='configPages'" width="100%">
                         <el-col :span="20">
@@ -33,9 +68,9 @@
                     <el-divider></el-divider>
 
                 </template>
-            </el-form>
+            </el-form>-->
         </el-main>
-        <el-footer>
+       <el-footer>
 
             <el-button @click="重置()">
                 重置

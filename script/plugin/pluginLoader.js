@@ -112,7 +112,7 @@ export async function 加载插件(插件名){
     if(pluginclass.environments&&pluginclass.environments instanceof Array){
       let flag = false
       pluginclass.environments.forEach(en => {
-        flag= naive.ifDefOptions[en]?true:false
+        flag= naive.ifDefOptions.defs[en]?true:false
   
       });
       if(!flag){
@@ -152,10 +152,11 @@ async function 加载核心插件(插件名) {
   if(pluginclass.environments&&pluginclass.environments instanceof Array){
     let flag = false
     pluginclass.environments.forEach(en => {
-      flag= naive.ifDefOptions[en]?true:false
+      flag= naive.ifDefOptions.defs[en]?true:false
 
     });
     if(!flag){
+      console.log(`跳过核心插件${插件名}加载`)
       return
     }
   }

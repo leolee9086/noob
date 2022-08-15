@@ -1,6 +1,6 @@
 export class publishTheme extends naive.plugin {
     constructor() {
-        super({ name: "publisher" });
+        super({ name: "publishTheme" });
     }
     pipe=[
         this.修改发布主题

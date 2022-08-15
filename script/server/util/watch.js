@@ -39,6 +39,9 @@ module.exports = {
     );
   },
   async reload(eventType, filename) {
+    if(!naive.ifDefOptions.defs.DEBUG){
+      return
+    }
     try {
       console.log("The type of change was:", eventType, filename);
       const { webContents } = require("@electron/remote");
