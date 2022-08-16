@@ -1,3 +1,5 @@
+const compression = require("compression");
+naive.compressing = require("compressing");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 module.exports = function addParser(app){
@@ -18,5 +20,6 @@ module.exports = function addParser(app){
             extended: false,
           })
         );
-    
+        app.use(compression());
+
     }

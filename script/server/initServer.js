@@ -6,27 +6,19 @@ module.exports = {
       global.publishserver.listen(null);
     }
     const api = require("../public/siYuanApi");
-    const monitor = require("express-status-monitor");
     const fs = require("fs-extra");
     naive.fs = fs;
     const path = require("path");
-    const compression = require("compression");
-    naive.compressing = require("compressing");
     const formiable = require("express-formidable");
     const express1 = require("express");
     const app = express1();
     const http = require("http");
     const https = require("https");
     const addParser =require ('./middleWares/parsers.js')
-    console.log(addParser)
-    const url = require("url");
-    const crypto = require("crypto");
-    const JSEncrypt = require("JSEncrypt");
-    let jsEncrypt = new JSEncrypt();
+    const addNaiveApi =require ('./middleWares/naiveApi.js')
+    let {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
     const Sequelize = require("sequelize");
     const { DataTypes } = require("sequelize");
-
-    const sqlite3 = require("sqlite3");
     const sequelize = new Sequelize("database", null, null, {
       dialect: "sqlite",
       storage: `${naive.pathConstructor.initFilep(
@@ -86,44 +78,6 @@ module.exports = {
       noAdminUser = true;
       naive.dbNoUser = true;
     }
-    console.log(crypto.getCiphers());
-    //这里初始化的密钥对必须如此
-    const initKeyPair = function () {
-      const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-        modulusLength: 1024,
-        publicKeyEncoding: {
-          type: "spki",
-          format: "pem",
-        },
-        privateKeyEncoding: {
-          type: "pkcs1",
-          format: "pem",
-          //       cipher: 'aes-256-cbc',
-          //         passphrase:'top secret'
-        },
-      });
-      naive.pathConstructor.initFilep(
-        naive.workspaceDir + `\\conf\\naiveConf\\privateKey.pem`,
-        privateKey
-      );
-      naive.pathConstructor.initFilep(
-        naive.workspaceDir + `\\conf\\naiveConf\\publicKey.pem`,
-        publicKey
-      );
-    };
-    initKeyPair();
-
-    let rsaPublicKey = fs
-      .readFileSync(naive.workspaceDir + `\\conf\\naiveConf\\publicKey.pem`)
-      .toString("ascii");
-    let rsaPrivateKey = fs
-      .readFileSync(naive.workspaceDir + `\\conf\\naiveConf\\privateKey.pem`)
-      .toString("ascii");
-    jsEncrypt.setPublicKey(rsaPublicKey);
-    let str = jsEncrypt.encrypt("测试");
-    jsEncrypt.setPrivateKey(rsaPrivateKey);
-    console.log(jsEncrypt.decrypt(str));
-
     //这里需要根据请求的来源判定返回的参数
     let scriptLoader = naive.ifdefParser;
     this.scriptLoader = scriptLoader;
@@ -148,7 +102,6 @@ module.exports = {
       res.setHeader("Access-Control-Allow-Origin", "*");
       next();
     });
-    app.use(compression());
     //获取设置
     let res4 = await fs.readFileSync(naive.pathConstructor.cusoptionPath());
     const port = realoption.发布端口;
