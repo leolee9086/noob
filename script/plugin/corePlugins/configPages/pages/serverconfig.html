@@ -46,9 +46,6 @@
                 <el-form-item label="分享设置">
                     <el-row>
                         <el-col :span="6">
-                            <el-switch active-text="有限分享" v-model="config.有限分享" />
-                        </el-col>
-                        <el-col :span="6">
                             <el-switch active-text="即时分享" v-model="config.即时分享" />
                         </el-col>
                         <el-col :span="6">
@@ -71,6 +68,7 @@
                             <el-switch active-text="暴露附件" v-model="config.暴露附件" />
                         </el-col>
                         <el-col :span="8">
+                            <span>默认发布选项</span>
                             <el-input active-text="默认发布设置" v-model="config.默认发布设置" />
                         </el-col>
                     </el-row>
@@ -133,9 +131,7 @@
             保存() {
                 const formData = new FormData()
                 //允许搜索的情况下块鉴权大大降低性能
-                if(this.config.有限分享){
-                    this.config.允许搜索=false
-                }
+           
                 data = JSON.stringify(this.config, undefined, 4)
                 var blob = new Blob([data], {type: 'text/json'})
 

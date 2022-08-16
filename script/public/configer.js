@@ -21,7 +21,6 @@ export  function 生成默认设置 (customoption, workspaceDir) {
       首页: {
         思源文档id: "20200812220555-lj3enxa",
       },
-      有限分享: false,
       即时分享: true,
       使用图床资源: true,
       发布端口: 80,
