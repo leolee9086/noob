@@ -5,7 +5,6 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
-    const session = require("express-session");
     const api = require("../public/siYuanApi");
     const monitor = require("express-status-monitor");
     const fs = require("fs-extra");
@@ -13,12 +12,13 @@ module.exports = {
     const path = require("path");
     const compression = require("compression");
     naive.compressing = require("compressing");
-    const bodyParser = require("body-parser");
     const formiable = require("express-formidable");
     const express1 = require("express");
     const app = express1();
     const http = require("http");
     const https = require("https");
+    const addParser =require ('./middleWares/parsers.js')
+    console.log(addParser)
     const url = require("url");
     const crypto = require("crypto");
     const JSEncrypt = require("JSEncrypt");
@@ -78,7 +78,6 @@ module.exports = {
       console.error("Unable to connect to the database:", error);
     }
 
-    let noAdminUser = false;
     await sequelize.sync({ alter: true });
     let admin = await user.findAll({
       where: { user_group: "admin" },
@@ -140,25 +139,8 @@ module.exports = {
     //https://zhuanlan.zhihu.com/p/409813376
     const statusMonitor = require("express-status-monitor")();
     app.use(statusMonitor);
+    addParser(app)
 
-    app.use(
-      session({
-        secret: "12345-67890-09876-54321", // 必选配置
-        resave: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
-        saveUninitialized: false, //必选，建议false，只要保存登录状态的用户，减少无效数据。
-        cookie: { secure: false, maxAge: 800000, httpOnly: false }, // 可选，配置cookie的选项，具体可以参考文章的配置内容。
-        name: "session-id", // 可选，设置个session的名字
-      })
-    );
-
-    app.use(bodyParser.json()); //body-parser 解析json格式数据
-    app.use(
-      bodyParser.urlencoded({
-        //此项必须在 bodyParser.json 下面,为参数编码
-        extended: false,
-      })
-    );
-    let router = express1.Router();
 
     app.use(function (req, res, next) {
       console.log(req);
