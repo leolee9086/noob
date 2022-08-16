@@ -47,9 +47,7 @@ export  function 生成默认设置 (customoption, workspaceDir) {
       option.首页.思源文档id = "20200812220555-lj3enxa";
     }
     option.workspace = workspaceDir;
-    if(option.有限分享){
-      option.允许搜索=false
-    }
+ 
     return JSON.parse(JSON.stringify(option));
   }
 
