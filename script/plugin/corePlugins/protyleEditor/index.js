@@ -158,6 +158,8 @@ export class protyleEditor extends naive.plugin {
             "block__popover--move",
             "block__popover--top"
           );
+          element.setAttribute("loading", 'lazy');
+
           element.setAttribute("border", 0);
           element.setAttribute("width", "100%");
           element.setAttribute("frameBorder", "none");
@@ -198,7 +200,7 @@ export class protyleEditor extends naive.plugin {
       window.innerHeight || document.documentElement.clientHeight;
     const { top, right, bottom, left } = element.getBoundingClientRect();
 
-    return top >= 0 && left >= 0 && right <= viewWidth && bottom <= viewHeight;
+    return top >= -100 && left >= -100 && right <= viewWidth+200 && bottom <= viewHeight+200;
   }
 }
 export const environments = ["APP"];

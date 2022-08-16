@@ -4,11 +4,9 @@ export class naiveBazzar extends naive.plugin {
     naive.bazzar = {};
     naive.bazzar.plugins = {};
     this.获取插件列表();
-    this.获取核心插件列表()
+    this.获取核心插件列表();
   }
-  async 获取核心插件列表(){
-    
-  }
+  async 获取核心插件列表() {}
   async 获取插件列表() {
     let bazzarOss = "https://ccds-1300128285.cos.ap-guangzhou.myqcloud.com";
     let pluginListPath = "/bazzar/plugins.json";
@@ -52,6 +50,16 @@ export class naiveBazzar extends naive.plugin {
       console.log(naive.bazzar.plugins);
     });
   }
+  async 卸载插件(插件名) {
+    let flag = naive.ifDefOptions.defs.DEBUG ? true : false;
+    naive.ifDefOptions.defs.DEBUG
+      ? (naive.ifDefOptions.defs.DEBUG = false)
+      : null;
+    naive.watchingReload = false;
+    fs.removeSync(naive.pathConstructor.pluginsPath() + `/${插件名}`);
+    naive.ifDefOptions.defs.DEBUG = flag;
+    naive.watchingReload = true;
+  }
   async 安装插件(插件名) {
     let 插件属性 = naive.bazzar.plugins[插件名];
     if (插件属性) {
@@ -63,13 +71,11 @@ export class naiveBazzar extends naive.plugin {
         naive.pathConstructor.cachePath() + "/comment.zip",
         buffer
       );
-      // 插件包.body.pipeTo(naive.pathConstructor.cachePath()+'comment.zip')
-      // console.log(插件包文件对象)
       let flag = naive.ifDefOptions.defs.DEBUG ? true : false;
       naive.ifDefOptions.defs.DEBUG
         ? (naive.ifDefOptions.defs.DEBUG = false)
         : null;
-      naive.compressing.zip
+      naive.watchingReload = false
         .uncompress(buffer, naive.pathConstructor.cachePath() + "/plugincache")
         .then(() => {
           fs.copySync(
@@ -79,6 +85,7 @@ export class naiveBazzar extends naive.plugin {
             naive.pathConstructor.pluginsPath() + `/${插件属性.插件名}`
           );
           naive.ifDefOptions.defs.DEBUG = flag;
+          naive.watchingReload = true;
         });
     }
   }

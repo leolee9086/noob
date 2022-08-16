@@ -28,6 +28,10 @@ export class urlTool extends naive.plugin {
         hideToolBar
           ? document.querySelector(".toolbar").classList.add("fn__none")
           : null;
+          hideToolBar
+          ? document.querySelector(".protyle-background").classList.add("fn__none")
+          : null;
+
         let edit = document
           .querySelector(".toolbar")
           .querySelector(`#toolbarEdit`);
