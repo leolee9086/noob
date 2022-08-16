@@ -36,10 +36,9 @@ module.exports = {
     //app.use(express1.json())
     //https://zhuanlan.zhihu.com/p/409813376
     const statusMonitor = require("express-status-monitor")();
+    //启用性能监控
     app.use(statusMonitor);
     addParser(app)
-
-
     app.use(function (req, res, next) {
       console.log(req);
       res.setHeader("Access-Control-Allow-Private-Network", true);

@@ -23,6 +23,8 @@
     "jsencrypt": "^3.2.1",
     "jsonwebtoken": "^8.5.1",
     "mkdirp": "^1.0.4",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
     "sequelize": "^6.21.3",
     "sqlite3": "^5.0.11"
   }
