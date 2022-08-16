@@ -17,7 +17,7 @@ export class 主题插件 {
     this.expressApp = naive.expressApp;
     this.publishServer = naive.publishServer;
     this.发布渲染器 = naive.发布渲染器;
-    this.publishoption = naive.publishoption;
+    this.publishOption = naive.publishOption;
     this.baseURL = `${naive.插件文件夹url}/${this.name}/`;
     this.basePath = `${naive.workspaceDir}\\data\\widgets\\naivePlugins\\${this.name}\\`;
     this.消息广播器 = new BroadcastChannel(this.name);

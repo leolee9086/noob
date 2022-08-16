@@ -12,6 +12,8 @@ export class customWindow extends naive.plugin {
                     url = this.url格式化(url);
                     let newWin = new BrowserWindow(windowParams);
                     newWin.loadURL(url.href);
+                    require("@electron/remote/main").enable(newWin.webContents) 
+
                     // newWin.name = name;
                     newWin.onClose =
                       // naive.子窗口[name] = newWin
@@ -25,7 +27,6 @@ export class customWindow extends naive.plugin {
                       });
                     ///#else
                     window.open(url);
-
                     ///#endif
 
                           }

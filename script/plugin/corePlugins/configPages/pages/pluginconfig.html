@@ -33,7 +33,11 @@
                             <el-col :span="8">{{插件名}}</el-col>
                             <el-col :span="8"></el-col>
                             <el-col :span="8"></el-col>
-
+                        </el-row>
+                        <el-row>
+                            <span>
+                                <span >{{插件描述[插件名]||"这个插件没有描述"}}</span>
+                            </span>
                         </el-row>
                         <el-row>
                             <el-col :span="8">
@@ -42,11 +46,13 @@
                             <el-col :span="8">
                                 <el-button size="mini">卸载</el-button>
                             </el-col>
+                            <el-col :span="8" v-if="插件设置[插件名]">
+                                <el-button size="mini"><el-link :href="`/plugins/${插件名}/`">设置</el-link></el-button>
+                            </el-col>
                             <el-col :span="8">
                                 <span>启用                     <el-switch v-model="config[插件名]"></el-switch>
                                 </span>
                             </el-col>
-    
                         </el-row>
     
                     </el-card>
@@ -100,7 +106,8 @@
         data() {
             return {
                 config: {},
-                插件描述:{}
+                插件描述:{},
+                插件设置:{}
             }
         },
         mounted() {
@@ -111,6 +118,7 @@
                     this.插件描述[插件名]=json.describe
                     console.log(this.插件描述)
                 })
+                fetch(`/plugins/${插件名}/index.html`).then((res)=>res.status!==404?this.插件设置[插件名]=true:null)
             }
         },
         methods: {
@@ -137,7 +145,7 @@
         watch: {
             config: {
                 handler(val) {
-                    console.log(val)
+                    this.保存()
                 },
                 deep: true
             }

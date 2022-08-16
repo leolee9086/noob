@@ -20,3 +20,4 @@ export class toolbarItem extends naive.plugin{
     }
 }
 export const dependencies = ['template']
+export const environments =['APP',"BROWSER"]

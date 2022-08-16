@@ -1,5 +1,4 @@
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
-
 export class linkCard extends naive.plugin {
   constructor() {
     super({ name: "linkCard" });

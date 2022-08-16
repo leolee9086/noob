@@ -82,19 +82,22 @@ export async function 重载插件(event, 文件名, 插件名) {
 export async function 加载插件(插件名){
   let options=JSON.parse(JSON.stringify(naive.ifDefOptions))
   options.verbose= false
-
+  options.defs=JSON.parse(JSON.stringify(naive.ifDefOptions.defs))
   try{
     let {condition} = await import(
       `http://${naive.pathConstructor.pluginsURL()}/${插件名}/index.js
       `
     );
     let pluginclass
+    let defs =options.defs
+
     if (condition){
-      for(let name in options.defs){
-        condition[name]= options.defs.hasOwnProperty(name)?options.defs[name]:condition[name]
+       for(let name in options.defs){
+        condition[name]= defs[name]!==undefined?defs[name]:condition[name]
         options.defs =condition
         options.verbose= naive.ifDefOptions.verbose
       }
+
        pluginclass = await import(
         `http://${naive.pathConstructor.pluginsURL()}/${插件名}/index.js?condition=${JSON.stringify(
           options
@@ -112,7 +115,7 @@ export async function 加载插件(插件名){
     if(pluginclass.environments&&pluginclass.environments instanceof Array){
       let flag = false
       pluginclass.environments.forEach(en => {
-        flag= naive.ifDefOptions.defs[en]?true:false
+        naive.ifDefOptions.defs[en]?flag= true:null
   
       });
       if(!flag){
@@ -131,7 +134,7 @@ export async function 加载插件(插件名){
     !naive.plugins[插件名]
       ? (naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 }))
       : null;
-      pluginclass.dependencies?naive.plugins[插件名]=pluginclass.dependencies:null
+      pluginclass.dependencies?naive.plugins[插件名].dependencies=pluginclass.dependencies:null
     console.log(`加载插件${插件名}成功`)
       }catch(e){
         console.error(`加载插件${插件名}失败:`, e);
@@ -152,7 +155,7 @@ async function 加载核心插件(插件名) {
   if(pluginclass.environments&&pluginclass.environments instanceof Array){
     let flag = false
     pluginclass.environments.forEach(en => {
-      flag= naive.ifDefOptions.defs[en]?true:false
+      naive.ifDefOptions.defs[en]?flag= true:null
 
     });
     if(!flag){

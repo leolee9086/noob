@@ -57,6 +57,7 @@ export async function initNaive() {
       naive.user.userId,
       naive.插件文件夹路径
     );
+    
     await updatePluginsConfig();
     naive.corePluginsList = corePluginList();
     naive.pluginsConfig = JSON.parse(

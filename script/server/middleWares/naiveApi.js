@@ -1,6 +1,7 @@
 const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('../keys/index.js')
 const fs = naive.fs
 const formiable = require("express-formidable");
+const path =require('path')
 let realoption = window.naive.publishOption;
 console.log(realoption)
 module.exports = function addNaiveApi(app) {

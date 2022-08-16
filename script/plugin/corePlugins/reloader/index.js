@@ -6,7 +6,10 @@ export class  reloader extends  naive.plugin  {
           图标: "iconRefresh",
           回调函数:()=>this.重新加载(),
         };
+            ///#if!MOBILE
+
         this.注册顶栏按钮(重置按钮图标);
+        ///#endif
         this.setPluginsProp("forceReload",this.重新加载)
         this.setPluginsProp("重新加载",this.重新加载)
 

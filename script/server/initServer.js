@@ -18,7 +18,7 @@ module.exports = {
     const addStaticPath = require('./middleWares/staticPath.js')
     const addNaiveApi =require ('./middleWares/naiveApi.js')
     const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
-    const {models,sequelize,checkAdmin} = require('./models/index') 
+    const {checkAdmin} = require('./models/index') 
     await checkAdmin()
    
     //这里需要根据请求的来源判定返回的参数
@@ -30,6 +30,7 @@ module.exports = {
     console.log(naive.workspaceDir);
     let realoption = naive.publishOption;
     this.realoption = realoption;
+    naive.设置 = realoption;
     思源api = new api(realoption);
     //启用gzip压缩
     //app.use(express1.json())
@@ -84,8 +85,6 @@ module.exports = {
         console.log(e, 888);
       }
     }
-    naive.设置 = realoption;
-    naive.publishoption = realoption;
 
     //允许访问外观设置文件夹内容
     //stage文件夹使用副本的方式访问
