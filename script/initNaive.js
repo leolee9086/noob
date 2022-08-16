@@ -45,10 +45,14 @@ export async function initNaive() {
 
   if ( naive.ifDefOptions.defs.APP) {
     const fs = require("fs");
-    naive.publishOption = 生成默认设置(
+    let option = {}
+    try {option =
       JSON.parse(
         fs.readFileSync(naive.pathConstructor.cusoptionPath(), "utf-8")
-      ),
+      )
+    }catch(e){}
+    naive.publishOption = 生成默认设置(
+      option,
       naive.workspaceDir,
       naive.user.userId,
       naive.插件文件夹路径

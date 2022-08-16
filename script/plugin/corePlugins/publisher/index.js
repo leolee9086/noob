@@ -1,9 +1,7 @@
-import { 模板渲染器 } from "./template.js";
 export class publisher extends naive.plugin {
   constructor() {
     super({ name: "publisher" });
     this.realoption = naive.设置;
-    this.渲染器 = new 模板渲染器(this.realoption);
     const fs = require("fs");
     this.模板路径 = this.initDir(`/templates/`);
     let 模板列表 = fs.readdirSync(this.模板路径);
@@ -96,15 +94,14 @@ export class publisher extends naive.plugin {
     });
     //允许搜索时,能够搜索所有文档,这里需要加上鉴权
     this.expressApp.post("/api/search/fullTextSearchBlock", (req, res) => {
-      if (this.realoption.允许搜索 && !this.realoption.有限分享) {
+      if (this.realoption.允许搜索 ) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够嵌入所有块,这里需要加入鉴权
     this.expressApp.post("/api/search/searchEmbedBlock", (req, res) => {
-      this.checkAuth(req, res);
-      if (this.realoption.允许搜索 && !this.realoption.有限分享) {
+      if (this.realoption.允许搜索 ) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
@@ -426,76 +423,6 @@ export class publisher extends naive.plugin {
     }
   }
 
-  async 返回块内容(req, res) {
-    console.log(req);
-    let realblockid = "",
-      realoption = this.realoption;
-    if (req.params && req.params.blockid) {
-      realblockid = req.params.blockid;
-    } else if (req.query) {
-      realblockid =
-        req.query.id || req.query.blockid || realoption.首页.思源文档id;
-    } else {
-      console.log("渲染首页");
-      this.渲染器.渲染首页().then((content1) => res.end(content1));
-      return;
-    }
-    let content = "";
-    let 块信息数组 = await 思源api.以sql向思源请求块数据(
-      `${realoption.思源伺服地址}:${realoption.思源伺服端口}`,
-      "",
-      `select root_id , path  from blocks where id = '${realblockid}'`
-    );
-    console.log(块信息数组, "bbb");
-    if (块信息数组 && 块信息数组[0]) {
-      let realdocid = 块信息数组[0].root_id;
-      console.log(realoption.单块分享);
-      if (realoption.单块分享) {
-        realdocid = realblockid;
-      }
-      let flag = await this.判定id权限(realdocid, req.query);
-      console.log(realoption, "kkk");
-      if (!realoption.有限分享) {
-        flag = true;
-      }
-      if (flag) {
-        if (realoption.即时分享) {
-          content = await this.渲染器.渲染块id(realdocid);
-          console.log(content, 1);
-          res.end(content);
-          return;
-        }
-        try {
-          content = await fs.promises.readFile(
-            `${workspaceDir}/conf/appearance/themes/naive/cache/${realdocid}.html`,
-            "utf-8"
-          );
-          console.log(content, 2);
-        } catch (e) {
-          console.log(e);
-          content = await this.渲染器.渲染块id(realdocid);
-          this.更新缓存(realdocid, content, workspaceDir);
-          console.log(content, 3);
-        }
-        console.log(content, 4);
-        res.end(content);
-      } else {
-        res.end(
-          this.渲染器.渲染模板(
-            this.空页面 ||
-              realoption.空页面内容 ||
-              "<div>块不存在或未分享</div>"
-          )
-        );
-      }
-    } else {
-      res.end(
-        this.渲染器.渲染模板(
-          this.空页面 || realoption.空页面内容 || `<div>块不存在</div>`
-        )
-      );
-    }
-  }
   转发请求(req, res) {
     const http = require("http");
     var { connection, host, ...originHeaders } = req.headers;

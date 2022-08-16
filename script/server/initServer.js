@@ -15,69 +15,12 @@ module.exports = {
     const http = require("http");
     const https = require("https");
     const addParser =require ('./middleWares/parsers.js')
+    const addStaticPath = require('./middleWares/staticPath.js')
     const addNaiveApi =require ('./middleWares/naiveApi.js')
-    let {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
-    const Sequelize = require("sequelize");
-    const { DataTypes } = require("sequelize");
-    const sequelize = new Sequelize("database", null, null, {
-      dialect: "sqlite",
-      storage: `${naive.pathConstructor.initFilep(
-        "F:\\siyuan\\conf\\naiveConf\\naiveDB.db"
-      )}`,
-      define: {
-        timestamps: false,
-        freezeTableName: true,
-      },
-      host: "localhost",
-
-      // dialectModule: sqlite3
-    });
-    //初始化用户数据库
-    const user = sequelize.define("user", {
-      id: {
-        type: DataTypes.TEXT,
-        unique: true,
-        primaryKey: true,
-      },
-      name: {
-        type: DataTypes.STRING(20),
-        allowNull: false,
-      },
-      password: {
-        type: DataTypes.TEXT,
-      },
-      email: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      isDelete: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-      avator: {
-        type: DataTypes.TEXT,
-        defaultValue: "none",
-      },
-      user_group: {
-        type: DataTypes.TEXT,
-        defaultValue: "visitor",
-      },
-    });
-    try {
-      await sequelize.authenticate();
-      console.log("Connection has been established successfully.");
-    } catch (error) {
-      console.error("Unable to connect to the database:", error);
-    }
-
-    await sequelize.sync({ alter: true });
-    let admin = await user.findAll({
-      where: { user_group: "admin" },
-    });
-    if (!admin[0]) {
-      noAdminUser = true;
-      naive.dbNoUser = true;
-    }
+    const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
+    const {models,sequelize,checkAdmin} = require('./models/index') 
+    await checkAdmin()
+   
     //这里需要根据请求的来源判定返回的参数
     let scriptLoader = naive.ifdefParser;
     this.scriptLoader = scriptLoader;
@@ -141,22 +84,15 @@ module.exports = {
         console.log(e, 888);
       }
     }
+    naive.设置 = realoption;
+    naive.publishoption = realoption;
+
     //允许访问外观设置文件夹内容
     //stage文件夹使用副本的方式访问
-    app.use(
-      "/stage",
-      express1.static(`${naive.pathConstructor.templatePath()}/stage/`)
-    );
-    //静态文件引用
-    app.use(
-      "/static",
-      express1.static(
-        `${naive.pathConstructor.naivePath()}/script/public/static/`
-      )
-    );
+    addStaticPath(app)
     //设置接口
-
-    app.post("/naiveApi/getPublishOption", (req, res) => {
+    addNaiveApi(app)
+  /*  app.post("/naiveApi/getPublishOption", (req, res) => {
       res.setHeader("Access-Control-Allow-Private-Network", true);
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.end(JSON.stringify(realoption));
@@ -173,7 +109,7 @@ module.exports = {
         console.log(string);
         let json = JSON.parse(string);
         console.log(json);
-        let checkedUser = await user.findAll({
+        let checkedUser = await models.user.findAll({
           where: {
             name: json.user,
             password: json.password,
@@ -181,7 +117,7 @@ module.exports = {
         });
         console.log(checkedUser);
         if (naive.dbNoUser) {
-          await user.create({
+          await models.user.create({
             id: Lute.NewNodeID(),
             name: json.user,
             password: json.password,
@@ -260,7 +196,7 @@ module.exports = {
           res.json({ data: null, msg: "上传文件成功" });
         }
       }
-    });
+    });*/
 
     //暴露附件文件夹时允许访问附件路径
     if (realoption.暴露附件) {
@@ -346,12 +282,6 @@ module.exports = {
         );
       }
     });
-    app.use(
-      "/stage",
-      express1.static(
-        `${naive.workspaceDir}/conf/appearance/themes/naive/script/publish/stage/`
-      )
-    );
     if (naive.sslOpen) {
       const sslPublishServer = https.createServer(sslSetting, app);
       sslPublishServer.listen(sslPort, () => {
@@ -362,8 +292,6 @@ module.exports = {
     naive.router = express1.Router();
     naive.expressApp = app;
     naive.express = express1;
-    naive.设置 = realoption;
-    naive.publishoption = realoption;
     naive.serverEndPluginConfig = JSON.parse(res4);
     naive.publishServer = publishServer;
     naive.eventBus.emit("message", {
