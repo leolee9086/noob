@@ -64,6 +64,10 @@ module.exports = function addNaiveApi(app) {
           name: json.user,
           password: json.password,
         });
+        req.session.statues="Authed"
+        req.session.user=json.user
+        req.session.user_group='visitor'
+
         res.json({
           code: 3,
           token: jsEncrypt.encrypt(
@@ -107,6 +111,9 @@ module.exports = function addNaiveApi(app) {
       }
       if (checkedUser && checkedUser[0]) {
         req.session.status = "Authed";
+        req.session.user=checkedUser.name
+        req.session.user_group=checkedUser.user_group
+
         res.json({
           code: 0,
           token: jsEncrypt.encrypt(
