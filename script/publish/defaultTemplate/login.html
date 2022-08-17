@@ -160,11 +160,11 @@
             请输入密码
         </div>
         <input class="b3-text-filed" id="authPassword" type="password" placeholder="密码" /><br>
-        <input class="b3-text-filed" id="authEnsurePassword" type="ensurePassword" placeholder="确认密码" /><br>
+        <input class="b3-text-filed" id="authEnsurePassword" type="password" placeholder="确认密码" /><br>
 
         <button class="b3-button" onclick="submitAuth()">注册</button>
         <div style="color: #5f6368;font-size: 14px;margin: 16px 0;">
-            该块为受保护的块,请联系网站所有人获取当前块访问授权
+            密码长度为8到16位,请至少包含一位特殊字符
         </div>
     </div>
     <div style="overflow: hidden;
@@ -240,12 +240,18 @@
                 if (0 === response.code) {
                     localStorage.setItem('token', response.token);
                     window.location.href = window.location.href
-                } else {
+                } 
+                else if (3==response.code){
+                    localStorage.setItem('token', response.token);
+                    window.location.href = '/'
+
+                }
+                else {
                     document.querySelector('#message').classList.add('b3-snackbar--show')
                     document.querySelector('#message').firstElementChild.textContent = response.msg
                     setTimeout(() => {
                         document.querySelector('#message').classList.remove('b3-snackbar--show')
-                        document.querySelector('#message').firstElementChild.textContent = 'response.msg'
+                        document.querySelector('#message').firstElementChild.textContent = ''
                     }, 6000)
                 }
             })

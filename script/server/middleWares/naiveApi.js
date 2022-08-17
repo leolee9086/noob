@@ -67,6 +67,7 @@ module.exports = function addNaiveApi(app) {
         req.session.statues="Authed"
         req.session.user=json.user
         req.session.user_group='visitor'
+        req.session.failed=0
 
         res.json({
           code: 3,
@@ -88,10 +89,31 @@ module.exports = function addNaiveApi(app) {
     res.end(unAuthedPageTemplate);
     console.log(res);
   });
-
+  app.get("/user/login",async(req,res)=>{
+    let unAuthedPageTemplate = fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
+    res.end(unAuthedPageTemplate)
+  })
   app.post("/naiveApi/system/stageAuth", async (req, res) => {
     console.log(req);
+    if(req.session&&req.session.failed&&req.session.nextAllowedTry){
+        let date= new Date()
+        req.session.nextAllowedTry<=date.getMilliseconds()
+        res.json({
+            code:1,
+            msg:"失败次数过多,请稍候重新登录"
+        }
+        )
+        return
+    }
+    if(!req.body){
+        res.json({
+            code:1,
+            msg:"请求错误,请重新尝试"
+
+        })
+    }
     if (req.body) {
+        
       let auth = req.body.auth;
       let string = jsEncrypt.decrypt(auth);
       let json = JSON.parse(string);
@@ -113,7 +135,7 @@ module.exports = function addNaiveApi(app) {
         req.session.status = "Authed";
         req.session.user=checkedUser.name
         req.session.user_group=checkedUser.user_group
-
+        req.session.failed=0
         res.json({
           code: 0,
           token: jsEncrypt.encrypt(
@@ -123,6 +145,37 @@ module.exports = function addNaiveApi(app) {
             })
           ),
         });
+        return
+      }
+      else{
+        req.session.status = "";
+        req.session.user=''
+        req.session.user_group=''
+        if(!req.session.failed){
+            req.session.failed=1
+        }
+        else{
+            req.session.failed+=1
+        }
+        if(req.session.failed>=10){
+            let date= new Date()
+            date.setMinutes(date.getMinutes()+10)
+            req.session.nextAllowedTry=date.getMilliseconds()
+            res.json(
+                {
+                    code:1,
+                    msg:"失败次数过多,请在10分钟后尝试重新登录"
+                }
+            )
+            return
+        }
+        res.json(
+            {
+                code:1,
+                msg:'登录失败,请重新尝试'
+            }
+        )
+
       }
     }
   });

@@ -57,11 +57,15 @@ export class publishSlot extends naive.plugin {
         let footBlocks = await this.核心api.sql({stmt:stmt},'')
         footBlocks.forEach(
             block=>{
+                if(block.type!=='html'){
                 html += `<div data-type="footer-item" data-position="center" class="item">
                 <span>
                     <span class="item__text"><a href="/block/${block.id}">${block.name||block.content.slice(0,6)}</a></span>
                 </span>
-            </div>`
+            </div>`}
+            else{
+                html+=block.markdown
+            }
             }
         )
         let footer = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/footer.html','utf8')

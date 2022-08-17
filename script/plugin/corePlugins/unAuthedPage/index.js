@@ -1,20 +1,18 @@
 export class unAuthedPage extends naive.plugin{
     constructor() {
-        super({ name: "defaultAuth",sort:2 });
+        super({ name: "unAuthedPage",sort:2 });
         this.fs = require('fs')
       };
     pipe=[
         this.判定并生成空页面
     ]
     async 判定并生成空页面(req,res,渲染结果){
-        if(渲染结果&&!req.session.status){
-            console.error(req.session.status)
+        if(渲染结果&&req.session&&req.session.status!=='Authed'){
             let access =await this.判定id权限(渲染结果.head.querySelector('meta').dataset.nodeId,'',true)
             console.error(access)
               if(access=="protected"){
                 let unAuthedPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
                 res.end(unAuthedPageTemplate)
-           
                 console.log(res)
             }
             else if(access=="private"){
@@ -36,7 +34,6 @@ export class unAuthedPage extends naive.plugin{
                     let unAuthedPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
                     res.end(unAuthedPageTemplate)
                     console.log(res)
-    
                 } 
                 else if(naive.设置.默认发布设置=='public'){
 
@@ -45,10 +42,10 @@ export class unAuthedPage extends naive.plugin{
 
                 }
             }
-            
-
         }
-       
+        else if(!渲染结果||!req.session){
+            res.redirect('/user/login')
+        }
         return  渲染结果
     }
 }

@@ -2,8 +2,9 @@ export class publisher extends naive.plugin {
   constructor() {
     super({ name: "publisher" });
     this.realoption = naive.设置;
-    const fs = require("fs");
-    this.模板路径 = this.initDir(`/templates/`);
+    const fs = naive.fs
+    this.模板路径 = naive.pathConstructor.templatePath()
+    fs.copySync(`${naive.pathConstructor.naivePath()}/script/publish/defaultTemplate`,naive.pathConstructor.templatePath())
     let 模板列表 = fs.readdirSync(this.模板路径);
     console.log(this.模板路径, 模板列表);
     this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
@@ -11,7 +12,7 @@ export class publisher extends naive.plugin {
     this.加载发布路由()
   }
   async 加载发布路由(){
-    let routerTemplatesPath = this.initDir('/templates/routerTemplate')
+    let routerTemplatesPath = naive.pathConstructor.templatePath()+'/routerTemplate'
     console.log("自定义路由路径",routerTemplatesPath)
     let fs  = naive.fs 
     let 路由列表 = fs.readdirSync(routerTemplatesPath)
