@@ -4,7 +4,7 @@ const {DataTypes} =  require('sequelize')
 const sequelize = new Sequelize("database", null, null, {
   dialect: "sqlite",
   storage: `${naive.pathConstructor.initFilep(
-    "F:\\siyuan\\conf\\naiveConf\\naiveDB.db"
+    `${naive.workspaceDir}\\conf\\naiveConf\\naiveDB.db`
   )}`,
   define: {
     timestamps: false,
