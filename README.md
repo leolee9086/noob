@@ -6,7 +6,9 @@
 
 更多有关naive主题的说明请参考
 
-[162.14.82.132/block/20220621165656-u8opptt](http://162.14.82.132/block/20220621165656-u8opptt)naive主题 (chuanchengsheji.com)
+[162.14.82.132/block/20220510191122-gnxim1b](http://162.14.82.132/block/20220510191122-gnxim1b)
+
+naive主题 (chuanchengsheji.com)
 
 这个地址的鉴权已经关闭,显示为私有块不可访问的块实际上可以打开
 
