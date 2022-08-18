@@ -54,6 +54,9 @@ export class publishSlot extends naive.plugin {
             <div class="fn__flex fn__flex-1 fn__flex-column" id="publishFooter" style="text-align:center;min-height:0.1px !important;position: absolute;justify-content: center;min-width: 100%;bottom: 0;padding:16px;background-color:var(--b3-theme-background)">
         `
         let stmt = `select * from blocks where id in (select block_id from attributes where name ="custom-publish-slot" and value="footer" )`
+        if(req.session&&req.session.user_group=='admin'){
+            html+=`<div>管理员${req.session.user},欢迎回来,当前块从<a href="/editor/stage/build/desktop/?id=${渲染结果.block.id}">这里</a>开始编辑</div>`
+        }
         let footBlocks = await this.核心api.sql({stmt:stmt},'')
         footBlocks.forEach(
             block=>{
@@ -68,6 +71,7 @@ export class publishSlot extends naive.plugin {
             }
             }
         )
+        
         let footer = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/footer.html','utf8')
         html+=footer
         文档容器.parentElement.innerHTML+=html+"</div>"

@@ -133,9 +133,11 @@ module.exports = function addNaiveApi(app) {
       }
       if (checkedUser && checkedUser[0]) {
         req.session.status = "Authed";
-        req.session.user=checkedUser.name
-        req.session.user_group=checkedUser.user_group
+        req.session.user=checkedUser[0].name
+        req.session.user_group=checkedUser[0].user_group
         req.session.failed=0
+        console.error(req.session)
+        
         res.json({
           code: 0,
           token: jsEncrypt.encrypt(

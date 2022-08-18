@@ -224,6 +224,10 @@ export class publishContent extends naive.plugin {
     let 文档图标 = 渲染结果.querySelector(".protyle-title__icon")
     文档图标.setAttribute('data-href','block/'+渲染结果.block.id)
     标题元素.innerHTML = 标题内容;
+    if(req.session&&req.session.user_group=='admin'){
+      标题元素.innerHTML+=`<div><a style="font-size:16px;font-weight:lighter" href="/editor/stage/build/desktop/?id=${渲染结果.block.id}">开始编辑</a></div>`
+  }
+
     return 渲染结果;
   }
   生成发布文档头(req, res, 渲染结果) {

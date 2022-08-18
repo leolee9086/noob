@@ -13,13 +13,25 @@ export class urlTool extends naive.plugin {
       return;
     }
     //获取编辑器作为目标
+    let 临时目标1 = document.querySelector(
+      ".protyle-wysiwyg.protyle-wysiwyg--attr"
+    )
+
     let 临时目标 = document.querySelector(
       ".protyle-breadcrumb>.protyle-breadcrumb__bar"
     );
-    if (临时目标) {
+    if (临时目标1&&临时目标) {
+      let link=document.createElement('span')
+      link.dataset.type = "block-ref"
+      link.dataset.id=块id
+      console.log(临时目标1,link)
+      临时目标1.appendChild(link)
+      let event = new MouseEvent("click");
+      link.dispatchEvent(event)
+      link.remove()
+
       let crumb = document.createElement("span");
       crumb.className = "protyle-breadcrumb__item";
-
       crumb.setAttribute("data-node-id", 块id);
       临时目标.appendChild(crumb);
       crumb.click();

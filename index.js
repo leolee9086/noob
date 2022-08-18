@@ -27,7 +27,7 @@ naive.ifDefOptions.defs.BROWSER=window.require ? false : true,
 naive.ifDefOptions.defs.APP=window.require ? true : false,
 naive.ifDefOptions.defs.PUBLISH=!window.siyuan,
 naive.ifDefOptions.defs.MOBILE=!window.siyuan.mobileEditor ? false : true,
-naive.ifDefOptions.defs.DEBUG= true,
+naive.ifDefOptions.defs.DEBUG= false,
 
 
 naive.ifdefParser = new ifdefParser(naive.ifDefOptions);

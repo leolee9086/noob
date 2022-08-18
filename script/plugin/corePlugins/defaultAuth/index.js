@@ -92,7 +92,7 @@ export class defaultAuth extends naive.plugin {
      }
     }
     else{
-        if(['public',"private",'protected'].indexOf(鉴权块.value)>=0){
+        if(['public',"private",'protected'].indexOf(鉴权块.value)>=0||(鉴权块.value&&鉴权块.value.startsWith('userGroup:'))){
         return 鉴权块.value
       }
       else{

@@ -1,58 +1,75 @@
 export class publisher extends naive.plugin {
   constructor() {
     super({ name: "publisher" });
+    window.siyuan.ws.ws.addEventListener('close',()=>{window.open('/')})
+    ///#ifAPP
     this.realoption = naive.设置;
-    const fs = naive.fs
-    this.模板路径 = naive.pathConstructor.templatePath()
-    fs.copySync(`${naive.pathConstructor.naivePath()}/script/publish/defaultTemplate`,naive.pathConstructor.templatePath())
+    const fs = naive.fs;
+    this.模板路径 = naive.pathConstructor.templatePath();
+    fs.copySync(
+      `${naive.pathConstructor.naivePath()}/script/publish/defaultTemplate`,
+      naive.pathConstructor.templatePath()
+    );
     let 模板列表 = fs.readdirSync(this.模板路径);
     console.log(this.模板路径, 模板列表);
     this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
     this.设置默认发布();
-    this.加载发布路由()
+    this.加载发布路由();
+    ///#endif
   }
-  async 加载发布路由(){
-    let routerTemplatesPath = naive.pathConstructor.templatePath()+'/routerTemplate'
-    console.log("自定义路由路径",routerTemplatesPath)
-    let fs  = naive.fs 
-    let 路由列表 = fs.readdirSync(routerTemplatesPath)
-    let baseCustomRouter = '/app'
-    路由列表.forEach(
-      路由=>{
-        if(fs.statSync){
-          let stats = fs.statSync(routerTemplatesPath+`/${路由}`);
-          var isFile = stats.isFile(); //是文件
-          var isDir = stats.isDirectory(); //是文件夹
-          console.log("自定义路由",stats)
-          if(isDir){
-            let routerIndexPath = routerTemplatesPath+`/${路由}/index.js`
-            let routerIndexExists = fs.existsSync(routerIndexPath)
-            if(routerIndexExists){
-              try{
-                this.加载路由文件(routerIndexPath,'index.js',路由)
-              }catch(e){
-                console.force_error(`用户插件${路由}加载失败`+':\n'+e)
-              }
+  async 加载发布路由() {
+    let routerTemplatesPath =
+      naive.pathConstructor.templatePath() + "/routerTemplate";
+    console.log("自定义路由路径", routerTemplatesPath);
+    let fs = naive.fs;
+    let 路由列表 = fs.readdirSync(routerTemplatesPath);
+    let baseCustomRouter = "/app";
+    路由列表.forEach((路由) => {
+      if (fs.statSync) {
+        let stats = fs.statSync(routerTemplatesPath + `/${路由}`);
+        var isFile = stats.isFile(); //是文件
+        var isDir = stats.isDirectory(); //是文件夹
+        console.log("自定义路由", stats);
+        if (isDir) {
+          let routerIndexPath = routerTemplatesPath + `/${路由}/index.js`;
+          let routerIndexExists = fs.existsSync(routerIndexPath);
+          if (routerIndexExists) {
+            try {
+              this.加载路由文件(routerIndexPath, "index.js", 路由);
+            } catch (e) {
+              console.force_error(`用户插件${路由}加载失败` + ":\n" + e);
             }
           }
         }
       }
-    )
-    console.log("自定义路由列表",路由列表)
+    });
+    console.log("自定义路由列表", 路由列表);
   }
-  async 加载路由文件(文件路径,文件类型,路由名称){
-    if(文件类型=='index.js'){
-      try{
-        let module = await import(文件路径)
-        if(module.router){
-          module.router.prototype.use=function(path,cb){naive.expressApp.use(`/app/${路由名称}/${path}`,cb)}          
-          module.router.prototype.get=function(path,cb){naive.expressApp.get(`/app/${路由名称}/${path}`,cb)}
-          module.router.prototype.post=function(path,cb){naive.expressApp.post(`/app/${路由名称}/${path}`,cb)}
-          module.router.prototype.engine=function(path,cb){naive.expressApp.engine(`/app/${路由名称}/${path}`,cb)}
-          module.router.prototype.put=function(path,cb){naive.expressApp.put(`/app/${路由名称}/${path}`,cb)}
-          new module.router()
+  async 加载路由文件(文件路径, 文件类型, 路由名称) {
+    if (文件类型 == "index.js") {
+      try {
+        let module = await import(文件路径);
+        if (module.router) {
+          module.router.prototype.use = function (path, cb) {
+            naive.expressApp.use(`/app/${路由名称}/${path}`, cb);
+          };
+          module.router.prototype.get = function (path, cb) {
+            naive.expressApp.get(`/app/${路由名称}/${path}`, cb);
+          };
+          module.router.prototype.post = function (path, cb) {
+            naive.expressApp.post(`/app/${路由名称}/${path}`, cb);
+          };
+          module.router.prototype.engine = function (path, cb) {
+            naive.expressApp.engine(`/app/${路由名称}/${path}`, cb);
+          };
+          module.router.prototype.put = function (path, cb) {
+            naive.expressApp.put(`/app/${路由名称}/${path}`, cb);
+          };
+          new module.router();
         }
-      }catch(e){throw e}
+      } catch (e) {
+        throw e;
+      }
     }
   }
   async 渲染(req, res) {
@@ -71,7 +88,7 @@ export class publisher extends naive.plugin {
       res.status(404);
       res.end("404");
     }
-    this.注册发布用菜单()
+    this.注册发布用菜单();
   }
   设置默认发布() {
     this.expressApp.get("/block/:blockid", (req, res) =>
@@ -83,7 +100,7 @@ export class publisher extends naive.plugin {
     //允许搜索时,能够访问文档树
     this.expressApp.post("/api/notebook/lsNotebooks", (req, res) => {
       if (this.realoption.允许搜索) {
-        this.转发JSON请求(req, res,true);
+        this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够列出所有文档
@@ -95,14 +112,14 @@ export class publisher extends naive.plugin {
     });
     //允许搜索时,能够搜索所有文档,这里需要加上鉴权
     this.expressApp.post("/api/search/fullTextSearchBlock", (req, res) => {
-      if (this.realoption.允许搜索 ) {
+      if (this.realoption.允许搜索) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够嵌入所有块,这里需要加入鉴权
     this.expressApp.post("/api/search/searchEmbedBlock", (req, res) => {
-      if (this.realoption.允许搜索 ) {
+      if (this.realoption.允许搜索) {
         console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
@@ -111,7 +128,7 @@ export class publisher extends naive.plugin {
     this.expressApp.post("/api/*", (req, res) => {
       if (this.realoption.暴露api) {
         console.log(req);
-        this.转发JSON请求(req, res,false);
+        this.转发JSON请求(req, res, false);
       } else {
         res.sendStatus(404);
       }
@@ -129,6 +146,7 @@ export class publisher extends naive.plugin {
         }
         渲染结果 = (await 渲染函数(req, res, 渲染结果)) || "";
         let 文字渲染结果 = "";
+        console.log(渲染结果)
         try {
           文字渲染结果 = 渲染结果.querySelector("body").innerHTML;
         } catch (e) {
@@ -224,14 +242,14 @@ export class publisher extends naive.plugin {
         (fontbase * 3) / 2
       }px`;
     }
-    let base = 渲染结果.querySelector('base')
-    if(base){
-      base.setAttribute('href',req.protocol+"://"+naive.设置.发布地址)
-    }else{
-       base = 渲染结果.createElement("base")
-       base.setAttribute('href',req.protocol+"://"+naive.设置.发布地址)
+    let base = 渲染结果.querySelector("base");
+    if (base) {
+      base.setAttribute("href", req.protocol + "://" + naive.设置.发布地址);
+    } else {
+      base = 渲染结果.createElement("base");
+      base.setAttribute("href", req.protocol + "://" + naive.设置.发布地址);
 
-       document.head.appendChild(base)
+      document.head.appendChild(base);
     }
 
     渲染结果 = `<!DOCTYPE html>
@@ -305,34 +323,42 @@ export class publisher extends naive.plugin {
     console.log(渲染管线);
     return 渲染管线;
   }
-  async 转发JSON请求(req, res,unAuth) {
-    if(!unAuth&&!req.session){
-      res.statue(403)
-      res.end("请首先登录或提供token")
+  async 转发JSON请求(req, res, unAuth) {
+    console.log(req);
+    if (!unAuth && !req.session) {
+      res.statue(403);
+      res.end("请首先登录或提供token");
     }
-    console.log(req.url, req);
-    if (req.url.indexOf("account") >= 0) {
-      res.end("不可访问账户api");
-      return;
+    if(req.session && req.session.user_group === "admin"&&(!((req.rawHeaders.indexOf("application/json;charset=UTF-8"))>=0))){
+      console.log(req.rawHeaders)
+      console.log(req.rawHeaders.indexOf("application/json;charset=UTF-8"))
+      await this.转发请求(req,res)
+      return
     }
-    if (req.url.indexOf("setting") >= 0) {
-      res.end("不可访问设置api");
-      return;
-    }
-    if (req.url.indexOf("setting") >= 0) {
-      res.end("不可访问设置api");
-      return;
-    }
-    if (req.url.indexOf("sync") >= 0) {
-      res.end("不可访问同步api");
-      return;
-    }
-    if (req.url.indexOf("backup") >= 0) {
-      res.end("不可访问备份api");
-      return;
-    }
+      console.log(req.url, req);
+      if (req.url.indexOf("account") >= 0) {
+        res.end("不可访问账户api");
+        return;
+      }
+      if (req.url.indexOf("setting") >= 0) {
+        res.end("不可访问设置api");
+        return;
+      }
+      if (req.url.indexOf("setting") >= 0) {
+        res.end("不可访问设置api");
+        return;
+      }
+      if (req.url.indexOf("sync") >= 0) {
+        res.end("不可访问同步api");
+        return;
+      }
+      if (req.url.indexOf("backup") >= 0) {
+        res.end("不可访问备份api");
+        return;
+      }
+    
     var { connection, host, ...originHeaders } = req.headers;
-    console.log(req.headers)
+    console.log(req.headers);
     // 构造请求报文
     //    console.log(req.url, req.body);
     let resData = {};
@@ -345,40 +371,43 @@ export class publisher extends naive.plugin {
       this.realoption.思源伺服端口 +
       req.url;
     syres = await this.请求数据(url, apitoken, req.body);
-    if (req.session && !req.session.status) {
-      if (syres.data && syres.data.files && syres.data.files[0]) {
-        syres.data.files = await this.批处理判定路径权限(syres.data.files);
-        /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
+    if (req.session && req.session.user_group !== "admin") {
+      if (req.session && !req.session.status) {
+        if (syres.data && syres.data.files && syres.data.files[0]) {
+          syres.data.files = await this.批处理判定路径权限(syres.data.files);
+          /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
         let file = syres.data.files[i];
         let flag = await this.判定id权限(file.id, req.body);
         //console.log(flag)
         if(!flag){syres.data.files[i]=undefined}
       }*/
-        syres.data.files = syres.data.files.filter((file) => {
-          return file;
-        });
-      }
-      if (syres.data && syres.data.blocks && syres.data.blocks[0]) {
-        syres.data.blocks = await this.批处理判定路径权限(syres.data.blocks);
-        /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
+          syres.data.files = syres.data.files.filter((file) => {
+            return file;
+          });
+        }
+        if (syres.data && syres.data.blocks && syres.data.blocks[0]) {
+          syres.data.blocks = await this.批处理判定路径权限(syres.data.blocks);
+          /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
         let file = syres.data.files[i];
         let flag = await this.判定id权限(file.id, req.body);
         //console.log(flag)
         if(!flag){syres.data.files[i]=undefined}
       }*/
-        syres.data.blocks = syres.data.blocks.filter((file) => {
-          return file;
-        });
-      }
-      if(syres.data&&syres.data.backlinks&&syres.data.backmentions){
-        
-        syres.data.backlinks = await this.批处理判定id权限(syres.data.backlinks);
-        syres.data.backmentions = await this.批处理判定id权限(syres.data.backmentions);
-
-      }
-      if (syres.data && syres.data.nodes && syres.data.links) {
-        syres.data.nodes = await this.批处理判定路径权限(syres.data.nodes);
-        /* for (let i = 0, len = syres.data.nodes.length; i < len; i++) {
+          syres.data.blocks = syres.data.blocks.filter((file) => {
+            return file;
+          });
+        }
+        if (syres.data && syres.data.backlinks && syres.data.backmentions) {
+          syres.data.backlinks = await this.批处理判定id权限(
+            syres.data.backlinks
+          );
+          syres.data.backmentions = await this.批处理判定id权限(
+            syres.data.backmentions
+          );
+        }
+        if (syres.data && syres.data.nodes && syres.data.links) {
+          syres.data.nodes = await this.批处理判定路径权限(syres.data.nodes);
+          /* for (let i = 0, len = syres.data.nodes.length; i < len; i++) {
         let file = syres.data.nodes[i];
         console.log(file)
         let flag = await this.判定id权限(file.id, req.body);
@@ -387,15 +416,16 @@ export class publisher extends naive.plugin {
       
         if(!flag){syres.data.nodes[i]['label']="私有块不可访问"}
       }*/
-        for (let i = 0, len = syres.data.links.length; i < len; i++) {
-          let link = syres.data.links[i];
-          let fromid = link.from;
-          let toid = link.to;
-          let labels = await this.核心api.sql({
-            stmt: `select  * from blocks  where id in (select block_id from refs where def_block_id='${fromid}') and id in  (select block_id from refs where def_block_id='${toid}')`,
-          });
-          if (labels && labels[0]) {
-            syres.data.links[i]["label"] = labels[0].content;
+          for (let i = 0, len = syres.data.links.length; i < len; i++) {
+            let link = syres.data.links[i];
+            let fromid = link.from;
+            let toid = link.to;
+            let labels = await this.核心api.sql({
+              stmt: `select  * from blocks  where id in (select block_id from refs where def_block_id='${fromid}') and id in  (select block_id from refs where def_block_id='${toid}')`,
+            });
+            if (labels && labels[0]) {
+              syres.data.links[i]["label"] = labels[0].content;
+            }
           }
         }
       }
@@ -454,7 +484,7 @@ export class publisher extends naive.plugin {
         });
         response2.on("end", () => {
           // 处理目标服务器数据,并将其返回给客户端
-          responsebodyBuffer = Buffer.concat(responsebody);
+          let responsebodyBuffer = Buffer.concat(responsebody);
           console.log(response2, 25);
           res.setHeader("Access-Control-Allow-Private-Network", true);
           res.end(responsebodyBuffer);
@@ -480,5 +510,5 @@ export class publisher extends naive.plugin {
     );
   }
 }
-export const dependencies = ["template", "defaultRouter","commonMenu"];
-export const environments = ["APP"];
+export const dependencies = ["template", "defaultRouter", "commonMenu"];
+export const environments = ["APP",'BROWSER'];

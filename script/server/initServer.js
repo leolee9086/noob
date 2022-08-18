@@ -19,8 +19,9 @@ module.exports = {
     const addNaiveApi =require ('./middleWares/naiveApi.js')
     const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
     const {checkAdmin} = require('./models/index') 
+    const addSiyuanProxy =require('./middleWares/siyuanApi.js')
     await checkAdmin()
-   
+    
     //这里需要根据请求的来源判定返回的参数
     let scriptLoader = naive.ifdefParser;
     this.scriptLoader = scriptLoader;
@@ -67,6 +68,8 @@ module.exports = {
       console.log(e);
       naive.sslOpen = false;
     }
+
+    naive.publishServer=publishServer
     this.空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
@@ -286,6 +289,7 @@ module.exports = {
         console.log(`sslPublish app listening on port ${443}`);
       });
     }
+    addSiyuanProxy(app)
 
     naive.router = express1.Router();
     naive.expressApp = app;
