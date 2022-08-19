@@ -161,8 +161,9 @@
         </div>
         <input class="b3-text-filed" id="authPassword" type="password" placeholder="密码" /><br>
         <input class="b3-text-filed" id="authEnsurePassword" type="password" placeholder="确认密码" /><br>
+        <input class="b3-text-filed" id="authToken" type="password" placeholder="请输入思源访问鉴权码以确认管理员身份" /><br>
 
-        <button class="b3-button" onclick="submitAuth()">注册</button>
+        <button class="b3-button" onclick="submitAdmin()">注册</button>
         <div style="color: #5f6368;font-size: 14px;margin: 16px 0;">
             密码长度为8到16位,请至少包含一位特殊字符
         </div>
@@ -214,15 +215,15 @@
         }
 
 
-        function submitAuth() {
+        function submitAdmin() {
             fetch('/naiveApi/system/userRegist', {
                 method: 'POST',
                 body: JSON.stringify({auth: rsaEncrypt
                     ({
                         'ensurePassword': document.querySelector("#authEnsurePassword").value,
-
                         'password': document.querySelector("#authPassword").value,
-                        'user': document.querySelector("#authUser").value
+                        'user': document.querySelector("#authUser").value,
+                        "authToken":document.querySelector("#authToken").value
                     })}),
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
@@ -243,11 +244,7 @@
                     localStorage.setItem('token', response.token);
                     window.location.href = window.location.href
                 } 
-                else if (3==response.code){
-                    localStorage.setItem('token', response.token);
-                    window.location.href = '/'
-
-                }
+               
                 else {
                     document.querySelector('#message').classList.add('b3-snackbar--show')
                     document.querySelector('#message').firstElementChild.textContent = response.msg

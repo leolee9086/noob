@@ -2,6 +2,33 @@ export class unAuthedPage extends naive.plugin {
   constructor() {
     super({ name: "unAuthedPage", sort: 2 });
     this.fs = require("fs");
+    this.设定登录路由()
+  }
+  设定登录路由(){
+    let app = naive.expressApp
+    app.get("/user/regist", async (req, res) => {
+      let unAuthedPageTemplate = this.fs.readFileSync(
+        naive.pathConstructor.templatePath() + "/login.html",
+        "utf8"
+      );
+      let adminPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/admin.html','utf8')
+
+      if(naive.dbNoUser){
+        res.end(adminPageTemplate)
+      }
+      else res.end(unAuthedPageTemplate);
+      console.log(res);
+    });
+    app.get("/user/login",async(req,res)=>{
+      let loginPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
+      let adminPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/admin.html','utf8')
+      if(naive.dbNoUser){
+        res.end(adminPageTemplate)
+      }
+      else{ 
+        res.end(loginPageTemplate)
+      }
+    })  
   }
   pipe = [this.判定并生成空页面];
   async 判定并生成空页面(req, res, 渲染结果) {
@@ -98,7 +125,6 @@ export class unAuthedPage extends naive.plugin {
     else if (!渲染结果 || !req.session) {
       res.redirect("/user/login");
       return 渲染结果;
-
     }
   }
 }

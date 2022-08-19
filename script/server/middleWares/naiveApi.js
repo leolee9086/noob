@@ -59,6 +59,31 @@ module.exports = function addNaiveApi(app) {
               });
               return;
         }
+        
+        if (naive.dbNoUser) {
+          if(json.authToken!==window.siyuan.config.accessAuthCode){
+            res.json(
+              {
+                code:3,
+                msg:"抱歉,访问鉴权码错误"
+              }
+            )
+            return
+          }
+
+          await user.create({
+            id: Lute.NewNodeID(),
+            name: json.user,
+            password: json.password,
+            user_group: "admin",
+          });
+          req.session.statues="Authed"
+          req.session.user=json.user
+          req.session.user_group='admin'
+          req.session.failed=0
+  
+        }
+  
         await models.user.create({
           id: Lute.NewNodeID(),
           name: json.user,
@@ -81,18 +106,7 @@ module.exports = function addNaiveApi(app) {
       }
     }
   });
-  app.get("/user/regist", async (req, res) => {
-    let unAuthedPageTemplate = fs.readFileSync(
-      naive.pathConstructor.templatePath() + "/login.html",
-      "utf8"
-    );
-    res.end(unAuthedPageTemplate);
-    console.log(res);
-  });
-  app.get("/user/login",async(req,res)=>{
-    let unAuthedPageTemplate = fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
-    res.end(unAuthedPageTemplate)
-  })
+
   app.post("/naiveApi/system/stageAuth", async (req, res) => {
     console.log(req);
     if(req.session&&req.session.failed&&req.session.nextAllowedTry){
@@ -123,21 +137,12 @@ module.exports = function addNaiveApi(app) {
           password: json.password,
         },
       });
-      if (naive.dbNoUser) {
-        await user.create({
-          id: Lute.NewNodeID(),
-          name: json.user,
-          password: json.password,
-          user_group: "admin",
-        });
-      }
       if (checkedUser && checkedUser[0]) {
         req.session.status = "Authed";
         req.session.user=checkedUser[0].name
         req.session.user_group=checkedUser[0].user_group
         req.session.failed=0
         console.error(req.session)
-        
         res.json({
           code: 0,
           token: jsEncrypt.encrypt(
