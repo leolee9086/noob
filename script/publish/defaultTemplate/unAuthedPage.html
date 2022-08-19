@@ -162,6 +162,8 @@
         <input class="b3-text-filed" id="authPassword" type="password" placeholder="密码" /><br>
 
         <button class="b3-button" onclick="submitAuth()">解锁 Unlock</button>
+        <button class="b3-button" onclick="login()">注册 regist</button>
+
         <div style="color: #5f6368;font-size: 14px;margin: 16px 0;">
             该块为受保护的块,请联系网站所有人获取当前块访问授权
         </div>
@@ -178,7 +180,9 @@
         <div class="b3-snackbar__content"></div>
     </div>
     <script>
-        
+        const login= function(){
+            window.open('/user/regist')
+        }
         const jsencrypt = new JSEncrypt()
        // const publicKey = document.head.querySelector('#publicKey').innertext
         fetch(
