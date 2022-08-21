@@ -1,6 +1,8 @@
 export class pluginInNote extends naive.plugin {
   constructor() {
     super({ name: "pluginInNote" });
+    this.已缓存笔记列表={}
+
     !naive.pluginInNote ? (naive.pluginInNote = {}) : null;
     this.pluginInNoteError = {};
     let style = document.head.querySelector("#pluginNoteStyle");
@@ -42,80 +44,110 @@ export class pluginInNote extends naive.plugin {
     console.log(res);
     if (res && res[0]) {
       res.forEach((block) => {
-        this.获取笔记内插件内容(block.id);
+        let 缓存路径 = this.initFolder()+`/notes/${block.id}.js`
+        this.获取笔记内插件内容(block.id,缓存路径);
       });
     }
   }
-  /*async 加载笔记内插件() {
-    let 插件列表 = naive.inNotePlugins;
-    let cachePath = this.initFolder();
-    let 支持文件路径 = cachePath + `/dep`;
-    插件列表.forEach((插件名) => {
-      let 插件路径 = cachePath + `/plugins/plugin-${插件名}.js`;
-      this.解析插件内容(插件路径);
-    });
+  async parseImport(code){
+    console.force_log(naive.parseImport(code))
+    let [imports,exports]=naive.parseImport(code)
+    imports.forEach(
+        导入声明=>{
+            code =code.substring(0,导入声明.s)+this.重写导入(导入声明)+code.substring(导入声明.e)
+            console.force_log(code)
+        }
+    )
+    return code
   }
-  async 解析插件内容(插件路径) {
-    let 原始代码 = fs.readFileSync(插件路径);
-    let [解析后导入, 解析后导出] = await this.parseImport(原始代码);
-    解析后导入.forEach((导入声明) => {
-      let name = 导入声明.n;
-      let realName = path.join(this.initFolder(), 导入声明.n);
-    });
-  }*/
-  async 获取笔记内插件内容(块id) {
+  async 重写导入(导入声明){
+    let path = require('path')
+
+    let name =导入声明.n
+    name = name.replace(/\\/g,"/")
+    name = name.replace("//","/")
+    if(name.startsWith('@note:')){
+        let 块id =  name.replace('@note:','')
+        name = path.normalize(path.resolve(this.initFolder(),'notes/'+name)).replace(/\\/g,"/")
+        let 缓存路径 = this.initFolder()+`/notes/${块id}.js`
+        this.缓存笔记内脚本内容(块id,缓存路径)
+    }
+    if(!name.endsWith('.js')){
+        let filepath = path.normalize(path.resolve(this.initFolder(),name)).replace(/\\/g,"/")
+        let e = naive.fs.existsSync(filepath+'.js')
+        e?name = name +'.js':name=name+'/index.js'
+    }
+    
+    name = path.normalize(path.resolve(this.initFolder()+'/plugins',name)).replace(/\\/g,"/").replace(/\/\//g,"/")
+    console.force_log(name)
+    return name
+  }
+  async 缓存笔记内脚本内容(块id,缓存路径){
+    if(!this.已缓存笔记列表[缓存路径]){
+        this.已缓存笔记列表[缓存路径]={}
+    }
+    if( !this.已缓存笔记列表[缓存路径][块id]){
+    this.已缓存笔记列表[缓存路径][块id]={}
+    }
+    else{
+        return
+    }
     let doc = await this.核心api.getDoc(
-      { id: 块id, mode: 0, size: 102400, k: "" },
-      ""
-    );
-    console.log(doc);
-    let div = document.createElement("div");
-    div.innerHTML = doc.content;
-    console.log(div);
-    let codeBlocks = div.querySelectorAll(
-      "div[data-node-id]:not(div[data-node-id] div[data-node-id])"
-    );
-    console.log(codeBlocks);
-    let code = "";
-    codeBlocks.forEach((el) => {
-      if (
-        el.querySelector(".protyle-action__language") &&
-        ["js", "javascript"].indexOf(
-          el.querySelector(".protyle-action__language").innerHTML
-        ) >= 0
-      ) {
-        code += el.querySelector(".hljs").innerText;
-      } else {
-        let textels = el.querySelectorAll(`div[contenteditable="true"]`);
-        textels.forEach((child) => {
-          let text = child.innerText;
-          let textArray = text.split(/\r\n|\n|\r/);
-          textArray.forEach((line) => (code += "//" + line + "\n"));
-        });
-      }
-    });
-    console.log(code);
+        { id: 块id, mode: 0, size: 102400, k: "" },
+        ""
+      );
+      console.log(doc);
+      let div = document.createElement("div");
+      div.innerHTML = doc.content;
+      console.log(div);
+      let codeBlocks = div.querySelectorAll(
+        "div[data-node-id]:not(div[data-node-id] div[data-node-id])"
+      );
+      console.log(codeBlocks);
+      let code = "";
+      codeBlocks.forEach((el) => {
+        if (
+          el.querySelector(".protyle-action__language") &&
+          ["js", "javascript"].indexOf(
+            el.querySelector(".protyle-action__language").innerHTML
+          ) >= 0
+        ) {
+          code += el.querySelector(".hljs").innerText;
+        } else {
+          let textels = el.querySelectorAll(`div[contenteditable="true"]`);
+          textels.forEach((child) => {
+            let text = child.innerText;
+            let textArray = text.split(/\r\n|\n|\r/);
+            textArray.forEach((line) => (code += "//" + line + "\n"));
+          });
+        }
+      });
+      console.log(code);
+      code =await this.parseImport(code)
+      naive.pathConstructor.mkfilep(缓存路径, code);
+      this.已缓存笔记列表[缓存路径][块id]=code
+  }
+  async 获取笔记内插件内容(块id) {
     let cachePath = this.initFolder();
-    let fs = require("fs");
     let filePath = cachePath + `/plugins/plugin-${块id}.js`;
-    naive.pathConstructor.mkfilep(filePath, code);
+    await this.缓存笔记内脚本内容(块id,filePath)
     try {
-      let module = await import(filePath).then((module, error) => {
+      let module =await import(filePath)/*.then((module, error) => {
         if (error) {
-          console.log(error);
+          console.force_log(error);
         } else {
           return module;
         }
-      });
+      });*/
       let pluginClass = new module["plugin"]();
-      console.log(module, pluginClass);
+      console.force_log(module, pluginClass);
       naive.pluginInNote[pluginClass.name] = pluginClass;
     } catch (e) {
       console.error(e);
       this.pluginInNoteError[块id] = e;
       this.errorstyle.innerHTML += `
             .protyle-background[data-node-id="${块id}"] ~ [data-doc-type="NodeDocument"]::before{
-                content:"加载错误: ${e}" !important;
+                content:'加载错误: ${e.replace('\'',"\\'").replace('\"','\\"')}' !important;
                 color:var(--b3-card-error-color) !important;
                 border:dashed 2px var(--b3-card-error-color)
             }

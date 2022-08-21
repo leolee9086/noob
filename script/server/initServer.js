@@ -20,6 +20,8 @@ module.exports = {
     const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
     const {checkAdmin} = require('./models/index') 
     const addSiyuanProxy =require('./middleWares/siyuanApi.js')
+    const {parse} =require('es-module-lexer')
+    naive.parseImport= parse
     await checkAdmin()
     
     //这里需要根据请求的来源判定返回的参数
@@ -51,9 +53,6 @@ module.exports = {
     const port = realoption.发布端口;
     const sslPort = "443";
     const publishServer = http.createServer(app);
-    publishServer.listen(port, () => {
-      console.log(`publish app listening on port ${port}`);
-    });
     //这里使用的地址不能被思源伺服,否则密钥可能泄露
     let sslSetting = {};
     try {
@@ -261,6 +260,7 @@ module.exports = {
         res.end(e);
       }
     });
+    console.log('test')
     app.use("/script/*", async function (req, res, next) {
       console.log(req);
       let parsedUrl = req._parsedUrl;
@@ -283,6 +283,10 @@ module.exports = {
         );
       }
     });
+    publishServer.listen(port, () => {
+      console.log(`publish app listening on port ${port}`);
+    });
+
     if (naive.sslOpen) {
       const sslPublishServer = https.createServer(sslSetting, app);
       sslPublishServer.listen(sslPort, () => {

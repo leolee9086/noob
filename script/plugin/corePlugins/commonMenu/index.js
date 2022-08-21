@@ -233,9 +233,18 @@ const 生成列表菜单项目 = function (菜单项目) {
   let button = document.createElement("button");
   button.className = "b3-menu__item diy";
   button.onclick = () =>
-    菜单项目.回调函数.call(菜单项目.注册插件, naive.当前块id);
+  菜单项目.回调函数.call(菜单项目.注册插件, naive.当前块id);
   button.setAttribute("data-node-id", naive.当前块id);
   button.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="${菜单项目.菜单图标}"></use></svg><span class="b3-menu__label">${菜单项目.菜单文字}</span>`;
+  if(菜单项目.children){
+    button.innerHTML+=`<svg class="b3-menu__icon b3-menu__icon--arrow"><use xlink:href="#iconRight"></use></svg>`
+    let div = document.createElement('div')
+    div.className="b3-menu__submenu"
+    菜单项目.children.forEach(element => {
+      div.appendChild(生成列表菜单项目(element))
+    });
+    button.appendChild(div)
+  }
   return button;
 };
 export class commonMenu extends naive.plugin {

@@ -233,9 +233,11 @@ export class  kernelApiList{
 }
     async set(方法,路径,英文名,中文名){
         this[英文名] =this.生成方法(方法,路径).bind(this)
+		this[英文名]['raw'] =this.生成方法(方法,路径,true).bind(this)
+
         中文名?this[中文名] = this[英文名]:null
     }
-    生成方法(方法,路径){
+    生成方法(方法,路径,flag){
         return async function(data,apitoken="",callback){
             let resData  = null
 			if (data instanceof FormData) {
@@ -260,8 +262,15 @@ export class  kernelApiList{
                 headers:head,
             }).then(function(response){resData= response.json()})
             let realData = await resData
+			if(!flag){
 			if(callback){callback(realData.data?realData.data:null)}
             return realData.data?realData.data:null    
+			}
+			else{
+				if(callback){callback(realData?realData:null)}
+				return realData?realData:null    
+	
+			}
         }
     }
 }

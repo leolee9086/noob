@@ -71,11 +71,12 @@ export async function initNaive() {
       return;
     }
     console.log(window.location);
-    naive.publishOption = await (
+   /* naive.publishOption = await (
       await fetch(
         `http://${window.location.hostname}/naiveApi/getPublishOption`
       )
-    ).json();
+    ).json();*/
+    naive.publishOption =await naive.核心api.getFile.raw({path:'conf/naiveConf/config/publish.json'},'')
     console.log(naive.publishOption);
     naive.plugin = await (
       await import(
