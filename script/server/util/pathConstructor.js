@@ -1,5 +1,4 @@
 import { 生成默认设置 } from "../../public/configer.js";
-
 export default class pathConstructor {
   constructor(workspaceDir, themeName) {
     this.workspaceDir = workspaceDir;
@@ -15,7 +14,6 @@ export default class pathConstructor {
       this.cachePath();
     }
   }
-  
   requireScript(filepath) {
     let path = require("path");
     return require(path.join(this.naivePath() + "/script", filepath));
@@ -96,19 +94,19 @@ export default class pathConstructor {
 
   }
   scriptURL() {
-    return `${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/script`;
+    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/script`;
   }
   pluginsURL() {
-    return `${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/plugins`;
+    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/plugins`;
   }
   pluginConfigURL() {
-    return `${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/naiveApi/pluginConfig`;
+    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/naiveApi/pluginConfig`;
   }
   corePluginsURL() {
-    return `${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/script/plugin/corePlugins`;
+    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/script/plugin/corePlugins`;
   }
   baseURL(){
-    return `${naive.publishOption.发布地址}:${naive.publishOption.发布端口}`
+    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}`
   }
   mkfilep(filePath, data) {
     let fs = require("fs");

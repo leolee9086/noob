@@ -78,6 +78,8 @@ export async function initNaive() {
     ).json();*/
     naive.publishOption =await naive.核心api.getFile.raw({path:'conf/naiveConf/config/publish.json'},'')
     console.log(naive.publishOption);
+    //校验发布地址是否有效
+    
     naive.plugin = await (
       await import(
         `http://${naive.pathConstructor.scriptURL()}/plugin/plugin.js?condition=${JSON.stringify(

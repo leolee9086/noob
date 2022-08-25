@@ -1,0 +1,30 @@
+*[custom-ccstyle='列表卡片']>.list , *[custom-ccstyle='列表卡片']>.li{
+	max-width : 20em;
+	min-width :20em;
+	border : solid ;
+	border-width: 2px ; 
+	border-color: rgb(131, 123, 243);
+	margin : 5px;
+	background-color :#7faae6;
+	border-radius:5px; 
+}
+*[custom-ccstyle='列表卡片']{
+	display : -webkit-flex;
+	overflow-x:scroll /*只是x方向*/;
+	border : solid ;
+	border-width: 2px ; 
+	border-color: rgb(131, 123, 243);
+	background-color : #a0c5f5;
+	border-style : solid;
+	border-radius:10px;
+}
+*[custom-ccstyle='列表卡片'] .p{
+	display : -webkit-flex;
+	overflow-x:scroll /*只是x方向*/;
+	border : solid ;
+	border-width: 2px ; 
+	border-color: rgb(131, 123, 243);
+	background-color : #a0c5f5;
+	border-style : solid;
+	border-radius:10px;
+}

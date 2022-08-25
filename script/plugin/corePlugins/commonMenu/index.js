@@ -230,6 +230,9 @@ function 注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜
   }
 }
 const 生成列表菜单项目 = function (菜单项目) {
+  if(菜单项目['渲染函数']){
+    return (菜单项目['渲染函数'])()
+  }
   let button = document.createElement("button");
   button.className = "b3-menu__item diy";
   button.onclick = () =>
@@ -242,6 +245,10 @@ const 生成列表菜单项目 = function (菜单项目) {
     div.className="b3-menu__submenu"
     菜单项目.children.forEach(element => {
       div.appendChild(生成列表菜单项目(element))
+      if(element['渲染函数']){
+        return (element['渲染函数'])()
+      }
+    
     });
     button.appendChild(div)
   }

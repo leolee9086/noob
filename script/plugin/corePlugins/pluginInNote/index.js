@@ -143,11 +143,11 @@ export class pluginInNote extends naive.plugin {
       console.force_log(module, pluginClass);
       naive.pluginInNote[pluginClass.name] = pluginClass;
     } catch (e) {
-      console.error(e);
+      console.force_table(e.stack);
       this.pluginInNoteError[块id] = e;
       this.errorstyle.innerHTML += `
             .protyle-background[data-node-id="${块id}"] ~ [data-doc-type="NodeDocument"]::before{
-                content:'加载错误: ${e.replace('\'',"\\'").replace('\"','\\"')}' !important;
+                content:'加载错误: ${e.message.replace(/\'/g,'"').replace('\"','\"')}' !important;
                 color:var(--b3-card-error-color) !important;
                 border:dashed 2px var(--b3-card-error-color)
             }
