@@ -42,7 +42,7 @@ export async function initNaive() {
       }
     }
   }
-
+//app环境下直接读取配置文件
   if ( naive.ifDefOptions.defs.APP) {
     const fs = require("fs");
     let option = {}
@@ -57,7 +57,6 @@ export async function initNaive() {
       naive.user.userId,
       naive.插件文件夹路径
     );
-    
     await updatePluginsConfig();
     naive.corePluginsList = corePluginList();
     naive.pluginsConfig = JSON.parse(
@@ -76,6 +75,7 @@ export async function initNaive() {
         `http://${window.location.hostname}/naiveApi/getPublishOption`
       )
     ).json();*/
+    //这里为了防止设置出错时无法通过naiveApi获取配置，使用了思源自身的api来获取文件
     naive.publishOption =await naive.核心api.getFile.raw({path:'conf/naiveConf/config/publish.json'},'')
     console.log(naive.publishOption);
     //校验发布地址是否有效
