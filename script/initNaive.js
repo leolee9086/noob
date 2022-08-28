@@ -14,7 +14,7 @@ export async function initNaive() {
   naive.themeName = !window.siyuan.config.appearance.mode
     ? window.siyuan.config.appearance.themeLight
     : window.siyuan.config.appearance.themeDark;
-  //路径生成器
+  //路径生成器，主要用于生成各种路径变量
   naive.pathConstructor = new pathConstructor(
     naive.workspaceDir,
     naive.themeName
