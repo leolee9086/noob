@@ -39,7 +39,8 @@ module.exports = {
     );
   },
   async reload(eventType, filename) {
-    if(!naive.ifDefOptions.defs.DEBUG&&naive.watchingReload){
+    
+    if(!naive.watchingReload){
       return
     }
     try {
