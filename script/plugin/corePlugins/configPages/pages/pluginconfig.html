@@ -123,9 +123,7 @@
         },
         methods: {
             重置() {
-                fetch('/naiveApi/pluginConfig').then((response) => response.json()).then(json => {
-                    this.config = Vue.reactive(json)
-                })
+                window.location.reload()
             },
             保存() {
                 const formData = new FormData()
