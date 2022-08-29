@@ -71,7 +71,7 @@ module.exports = function addNaiveApi(app) {
             return
           }
 
-          await user.create({
+          await models.user.create({
             id: Lute.NewNodeID(),
             name: json.user,
             password: json.password,
