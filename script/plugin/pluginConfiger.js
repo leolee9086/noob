@@ -1,6 +1,7 @@
 //加载插件配置在服务器环境下运行
 
 export async function updatePluginsConfig() {
+  naive.pluginStatus=[]
   const fs = require("fs");
   const path = require("path"); //解析需要遍历的文件夹
   //获取集市内容
@@ -36,9 +37,16 @@ export async function updatePluginsConfig() {
     }
     if (isDir) {
       console.log("文件夹", 文件路径); //递归，如果是文件夹，就继续遍历该文件夹下面的文件
+
       当前安装插件列表.push(文件名);
       if (插件设置[文件名] == undefined) {
         插件设置[文件名] = false;
+      }
+      try{
+      let status = fs.readFileSync(文件路径+'\\plugin.json',"utf-8")
+      naive.pluginStatus.push(status)
+      }catch(e){
+
       }
     }
   }

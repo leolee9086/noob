@@ -84,13 +84,27 @@ export default class pathConstructor {
     let fs = require("fs");
     let path = require("path");
     let mkdirp = this.requireScript("/server/node_modules/mkdirp");
-    let filePath = `${this.workspaceDir}/temp/naiveCache/uploadFile`;
+    let filePath = `${this.workspaceDir}/temp/naiveCache/uploadFiles`;
     let e = fs.existsSync(filePath);
     if (e) {
     } else {
       mkdirp(filePath);
     }
     return filePath;
+
+  }
+  downloadCachePath(){
+    let fs = require("fs");
+    let path = require("path");
+    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let filePath = `${this.workspaceDir}/temp/naiveCache/downloadFiles`;
+    let e = fs.existsSync(filePath);
+    if (e) {
+    } else {
+      mkdirp(filePath);
+    }
+    return filePath;
+
 
   }
   scriptURL() {

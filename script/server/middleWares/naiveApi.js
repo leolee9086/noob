@@ -7,6 +7,41 @@ const path = require("path");
 let realoption = window.naive.publishOption;
 console.log(realoption);
 module.exports = function addNaiveApi(app) {
+  app.use("/naiveApi/getPluginStatus", (req, res) => {
+    res.setHeader("Access-Control-Allow-Private-Network", true);
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    if(naive.publishOption.提供插件服务){
+      res.json(
+        {msg:0,
+          data:JSON.parse(naive.pluginStatus)
+        }
+        )
+    }
+    else{
+      res.json({
+        msg:1,
+        data:null,
+        error:"抱歉,站点拥有者未开放插件分享服务"
+      })
+    }
+  });
+  app.use("/naiveApi/getPlugin",async(req,res)=>{
+    res.setHeader("Access-Control-Allow-Private-Network", true);
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    if(req.body&&naive.publishOption.提供插件服务){
+      let {name} = req.body
+      await naive.compressing.zip.compressDir(naive.pathConstructor.pluginsPath()+`\\${name}`,naive.pathConstructor.downloadCachePath()+`\\${name}.zip`)
+      res.sendFile(naive.pathConstructor.downloadCachePath()+`\\${name}.zip`)
+    }
+    else{
+      res.json({
+        msg:1,
+        data:null,
+        error:"抱歉,站点拥有者未开放插件分享服务"
+      })
+    }
+  })
   app.post("/naiveApi/getPublishOption", (req, res) => {
     res.setHeader("Access-Control-Allow-Private-Network", true);
     res.setHeader("Access-Control-Allow-Origin", "*");
