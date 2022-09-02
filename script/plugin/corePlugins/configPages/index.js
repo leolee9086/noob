@@ -81,7 +81,6 @@ export class configPages extends naive.plugin {
             template: '<configer></configer>'
           });
           app.use(naive)
-
           app.mount('#app');
         </script>
       </body>
