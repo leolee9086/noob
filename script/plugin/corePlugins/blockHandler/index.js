@@ -1,11 +1,10 @@
-//获取当前块id用
 
 export class blockHandler extends naive.plugin {
   constructor() {
     super({ name: "customEvent" });
     this.setPluginsProp("当前文档id", naive.当前文档id);
-    this.setPluginsProp("获取元素绝对坐标", this.获取元素绝对坐标);
 
+    this.setPluginsProp("获取元素绝对坐标", this.获取元素绝对坐标);
     naive.事件总线.on("当前块id改变", this.获取块数组);
     document.addEventListener("click", (event) => this.判定并获取块id(event));
     document.addEventListener("keydown", (event) => this.判定并获取块id(event));
@@ -14,7 +13,7 @@ export class blockHandler extends naive.plugin {
     );
     this.同文档id = [];
     window.siyuan.ws.ws.addEventListener('message',()=>{
-      this.获取文档id(naive.当前块id)})
+    this.获取文档id(naive.当前块id)})
   }
   判定并获取块id(event) {
     if (event && event.target) {
