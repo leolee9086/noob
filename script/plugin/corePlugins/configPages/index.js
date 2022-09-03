@@ -19,7 +19,7 @@ export class configPages extends naive.plugin {
     let 服务器设置图标1 = {
       提示: "打开服务器设置窗口",
       图标: "iconPublish",
-      回调函数:()=>this.加载窗口(`http://${naive.pathConstructor.baseURL()}/naivePages/plugin/pluginConfig`,this.窗口设置),
+      回调函数:()=>this.加载窗口(`http://${naive.pathConstructor.baseURL()}/naivePages/pluginConfig`,this.窗口设置),
     };
     this.注册顶栏按钮(服务器设置图标1);
 
@@ -33,11 +33,12 @@ export class configPages extends naive.plugin {
   }
   初始化配置页面(){
     naive.expressApp.use('/components/',naive.express.static(naive.workspaceDir+'/conf/naiveConf/pages/'))
-    naive.expressApp.use("/naivePages/plugin/pluginConfig",(req,res)=>{
+    
+    naive.expressApp.use("/naivePages/pluginConfig",(req,res)=>{
       let {name} = req.query
       let url
       if(name&&name+''!=="undefined"){
-        url = `http://${naive.pathConstructor.pluginsURL()}/${name}/index.vue`
+        url = `/plugins/${name}/index.vue`
       }
       else{
         url = `/components/pluginConfig.vue`
@@ -71,9 +72,7 @@ export class configPages extends naive.plugin {
               document.head.insertBefore(style, ref);
             },
           }
-      
           const { loadModule } = window['vue3-sfc-loader'];
-      
           const app = Vue.createApp({
             components: {
               'configer': Vue.defineAsyncComponent( () => loadModule('${url}', options) )
