@@ -230,6 +230,10 @@ export class  kernelApiList{
 	this.set("POST", "/api/bazaar/installBazaarTheme", 'installBazaarTheme','安装集市主题')
 	this.set("POST", "/api/bazaar/uninstallBazaarTheme", 'uninstallBazaarTheme','卸载集市主题')
 	this.set("POST", "/api/bazaar/getBazaarPackageREAME",  'getBazaarPackageREAME','获取集市包说明')
+	//消息相关
+	this.set("POST", "/api/notification/pushMsg", 'pushMsg','发送消息')
+	this.set("POST", "/api/notification/pushErrMsg",  'pushErrMsg','发送错误消息')
+
 }
     async set(方法,路径,英文名,中文名){
         this[英文名] =this.生成方法(方法,路径).bind(this)

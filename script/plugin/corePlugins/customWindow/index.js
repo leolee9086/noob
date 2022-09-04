@@ -10,9 +10,9 @@ export class customWindow extends naive.plugin {
                     const { BrowserWindow } = require("@electron/remote");
                     // 新建窗口(Electron 环境)
                     url = this.url格式化(url);
-                    let newWin = new BrowserWindow(windowParams);
+                    var newWin = new BrowserWindow(windowParams);
+
                     newWin.loadURL(url.href);
-                    require("@electron/remote/main").enable(newWin.webContents) 
 
                     // newWin.name = name;
                     newWin.onClose =

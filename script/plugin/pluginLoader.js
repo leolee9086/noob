@@ -23,62 +23,6 @@ export async function 重载插件(event, 文件名, 插件名) {
     }
   }
 }
-/*export async function 加载插件(插件名, 环境) {
-  console.log(插件名)
-  try {
-    let manifest = await fetch(
-      `http://${naive.pathConstructor.pluginsURL()}/${插件名}/plugin.json`
-    );
-    let menifestJSON = await manifest.json();
-    if (
-      menifestJSON &&
-      menifestJSON.environment.indexOf(环境) >= 0 &&
-      环境 !== "publish" &&
-      环境 !== "CustomBlock"
-    ) {
-      try {
-        let pluginclass = await import(
-          `http://${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/plugins/${插件名}/index.js`
-        );
-        console.log(pluginclass);
-        naive.plugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
-        if (naive.plugins[插件名].environment) {
-          naive.plugins[插件名].environment[环境] = true;
-        } else {
-          naive.plugins[插件名].environment = {};
-          naive.plugins[插件名].environment[环境] = true;
-        }
-      } catch (e) {
-        console.error("加载插件", 插件名, "失败", e);
-      }
-    }
-    if (
-      menifestJSON &&
-      menifestJSON.environment.indexOf(环境) >= 0 &&
-      环境 == "publish"
-    ) {
-      let res = await fetch(
-        `http://${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/plugins/${插件名}/index.js`
-      );
-      naive.publishPlugins[插件名] = await res.text();
-      console.log(naive.publishPlugins[插件名]);
-    }
-    if (
-      menifestJSON &&
-      menifestJSON.environment == "CustomBlock" &&
-      环境 == "CustomBlock"
-    ) {
-      let pluginclass = await import(
-        `http://${naive.publishOption.发布地址}:${naive.publishOption.发布端口}/plugins/${插件名}/index.js`
-      );
-      customElements.define(驼峰转换(插件名), pluginclass[插件名]);
-      naive.customHTML[驼峰转换(插件名)] = pluginclass[插件名];
-      console.log("定义自定义HTML", 驼峰转换(插件名));
-    }
-  } catch (e) {
-    console.error("加载插件", 插件名, "失败", e);
-  }
-}*/
 export async function 加载插件(插件名){
   let options=JSON.parse(JSON.stringify(naive.ifDefOptions))
   options.verbose= false
