@@ -1,3 +1,5 @@
+import MagicString from '/deps/magic-string';
+
 export class pluginInNote extends naive.plugin {
   constructor() {
     super({ name: "pluginInNote" });
@@ -49,7 +51,7 @@ export class pluginInNote extends naive.plugin {
       });
     }
   }
-  async parseImport(code){
+   parseImport(code){
     console.force_log(naive.parseImport(code))
     let [imports,exports]=naive.parseImport(code)
     imports.forEach(
@@ -60,27 +62,24 @@ export class pluginInNote extends naive.plugin {
     )
     return code
   }
-  async 重写导入(导入声明){
+   重写导入(导入声明){
     let path = require('path')
 
     let name =导入声明.n
     name = name.replace(/\\/g,"/")
     name = name.replace("//","/")
-    if(name.startsWith('@note:')){
-        let 块id =  name.replace('@note:','')
+    if(name.startsWith('/block/')){
+        let 块id =  name.replace('/block/','')
         name = path.normalize(path.resolve(this.initFolder(),'notes/'+name)).replace(/\\/g,"/")
         let 缓存路径 = this.initFolder()+`/notes/${块id}.js`
         this.缓存笔记内脚本内容(块id,缓存路径)
     }
-    if(!name.endsWith('.js')){
-        let filepath = path.normalize(path.resolve(this.initFolder(),name)).replace(/\\/g,"/")
-        let e = naive.fs.existsSync(filepath+'.js')
-        e?name = name +'.js':name=name+'/index.js'
+    else if(name.startsWith('./')||name.startsWith('../')||name.startsWith('./')||name.startsWith('/')){
+      return name
     }
-    
-    name = path.normalize(path.resolve(this.initFolder()+'/plugins',name)).replace(/\\/g,"/").replace(/\/\//g,"/")
-    console.force_log(name)
-    return name
+    else {
+      return 'http://127.0.0.1/deps/'+ name
+    }
   }
   async 缓存笔记内脚本内容(块id,缓存路径){
     if(!this.已缓存笔记列表[缓存路径]){
@@ -124,6 +123,8 @@ export class pluginInNote extends naive.plugin {
       });
       console.log(code);
       code =await this.parseImport(code)
+      console.log(code);
+
       naive.pathConstructor.mkfilep(缓存路径, code);
       this.已缓存笔记列表[缓存路径][块id]=code
   }
@@ -143,6 +144,7 @@ export class pluginInNote extends naive.plugin {
       console.force_log(module, pluginClass);
       naive.pluginInNote[pluginClass.name] = pluginClass;
     } catch (e) {
+      console.table(e)
       console.force_table(e.stack);
       this.pluginInNoteError[块id] = e;
       this.errorstyle.innerHTML += `

@@ -34,7 +34,9 @@ export class configPages extends naive.plugin {
   }
 
   初始化配置页面(){
-    naive.expressApp.use('/components/',naive.express.static(naive.workspaceDir+'/conf/naiveConf/pages/'))
+    naive.expressApp.use('/naivePages/',naive.express.static(naive.workspaceDir+'/conf/naiveConf/pages/'))
+    naive.expressApp.use('/components',naive.express.static(naive.workspaceDir+'/conf/naiveConf/pages/components'))
+
     naive.expressApp.use("/naivePages/pluginConfig",(req,res)=>{
       let {name} = req.query
       let url
@@ -42,15 +44,16 @@ export class configPages extends naive.plugin {
         url = `/plugins/${name}/index.vue`
       }
       else{
-        url = `/components/pluginConfig.vue`
+        url = `/naivePages/pluginConfig.vue`
       }
       let html = `<html>
       <head>
       <script src="/script/public/static/vue/vue.global.js"></script>
       <script src="/components/index.js"></script>
       <script src="/script/public/static/element-plus/index.full.js"></script>
+      <script src="https://unpkg.com/naive-ui"></script>
+      
       <link rel="stylesheet" href="/script/public/static/element-plus/index.css" />
-
         <script src="https://cdn.jsdelivr.net/npm/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
         <meta charset="UTF-8" />
         <style id="editorFontSize">.b3-typography, .protyle-wysiwyg, .protyle-title {font-size:21px !important}
@@ -73,12 +76,9 @@ export class configPages extends naive.plugin {
           <link id="themeDefaultStyle" rel="stylesheet" type="text/css" href="http://localhost:6806/appearance/themes/dayLight/theme.css">
         <link rel="icon" href="favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
         <title>dataTransfer</title>
       </head>
       <body id="app" class="fn__flex-column  body--win32">
-        
-
       </body>
       <script>
       const options = {
@@ -86,7 +86,6 @@ export class configPages extends naive.plugin {
           vue: Vue
         },
         async getFile(url) {
-          
           const res = await fetch(url);
           if ( !res.ok )
             throw Object.assign(new Error(res.statusText + ' ' + url), { res });
@@ -95,7 +94,6 @@ export class configPages extends naive.plugin {
           }
         },
         addStyle(textContent) {
-  
           const style = Object.assign(document.createElement('style'), { textContent });
           const ref = document.head.getElementsByTagName('style')[0] || null;
           document.head.insertBefore(style, ref);
@@ -110,8 +108,8 @@ export class configPages extends naive.plugin {
       });
       app.use(naive)
       app.use(ElementPlus);
-
       app.mount('#app');
+      
     </script>
       </html>
       `

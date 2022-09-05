@@ -1,4 +1,5 @@
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
+import { 驼峰转换 } from "/script/public/util/name.js";
 
 export class customBlock extends naive.plugin {
   constructor() {
@@ -7,15 +8,43 @@ export class customBlock extends naive.plugin {
     this.setPluginsProp('注册自定义HTML块',this.注册自定义HTML块)
     this.setPluginsProp('hackHTMLBlockAll',this.hackHTMLBlockAll)
     this.setPluginsProp('hackHTMLBlock',this.hackHTMLBlock)
-
     let html块监听选项 = {
       监听目标: `protyle-html`,
       监听器回调:(mutationsList, observer)=> this.html块监听器回调(mutationsList, observer),
     };
+    this.注入自定义元素()
     naive.html块监听器 = new DOM监听器(html块监听选项);
     window.addEventListener("load", () => setTimeout(()=>this.hackHTMLBlockAll(), 2000));
-
     this.hackHTMLBlockAll();
+  }
+  注入自定义元素(){
+    let path = this.initFolder()
+    let array = naive.fs.readdirSync(path)
+    console.log("customBlock",array)
+    array.forEach(
+      name=>this.从文件加载自定义元素(name)
+    )
+  }
+  async  从文件加载自定义元素(name){
+    let path =""
+    if(name.endsWith('.js')){
+      path = this.initFolder()+"/"+name
+      let module = await import(path)
+      let constructor = module[name.substring(0,name.length-3)]||module['customBlock']
+      let options =  module["options"]
+      let type = 驼峰转换(name.substring(0,name.length-3))
+      this.注册自定义HTML块(type,constructor,options)
+      console.log("customBlock",module)
+    }
+    if(name.endsWith('.vue')){
+      path = this.initFolder()+"/"+name
+      let module = await import(path)
+      let constructor = module[name.substring(0,name.length-3)]||module['customBlock']
+      let options =  module["options"]
+      let type = 驼峰转换(name.substring(0,name.length-3))
+      this.注册自定义HTML块(type,constructor,options)
+      console.log("customBlock",module)
+    }
   }
   html块监听器回调(mutationsList, observer) {
     for (let mutation of mutationsList) {
@@ -27,9 +56,16 @@ export class customBlock extends naive.plugin {
     }
   }
   注册自定义HTML块(type, constructor, options) {
-    naive.customHTML ? naive.customHTML.push(type) : (naive.customHTML = []);
-    naive.customHTML.push(type) 
+    if(!naive.customHTML){
+      naive.customHTML=[]
+    } 
     window.customElements.define(type, constructor, options);
+    try{
+      document.createElement(type)
+      naive.customHTML.push(type) 
+    }catch(e){
+      console.log(`注册自定义HTML块${type}失败，但${type}仍有可能作为自定义元素使用`,e)
+    }
     this.hackHTMLBlockAll();
   }
   hackHTMLBlockAll() {
@@ -45,14 +81,16 @@ export class customBlock extends naive.plugin {
   hackHTMLBlock(htmlel) {
     for (let hacker of naive.customHTML) {
       let parent = htmlel.parentElement.parentElement;
+
       if (hacker == parent.getAttribute("custom-type")) {
-        if (htmlel.parentElement.querySelector(hacker)) {
+        if (htmlel.parentElement.querySelector(hacker)&&htmlel.parentElement.querySelector(hacker).parentElement==htmlel.parentElement) {
           let cusel = htmlel.parentElement.querySelector(hacker);
           cusel.setAttribute(
             "data-content",
             htmlel.getAttribute("data-content")
           );
         } else {
+
           let customhtml = document.createElement(hacker);
           htmlel.style.display = "none";
           customhtml.setAttribute(
@@ -65,3 +103,4 @@ export class customBlock extends naive.plugin {
     }
   }
 }
+export const dependencies = ["defaultRouter"]

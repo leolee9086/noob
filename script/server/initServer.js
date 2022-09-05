@@ -5,6 +5,7 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
+    const addDevSurppoert = require("./middleWares/dependenciesParser.js")
     const api = require("../public/siYuanApi");
     const fs = require("fs-extra");
     naive.fs = fs;
@@ -92,6 +93,8 @@ module.exports = {
     addStaticPath(app)
     //设置接口
     addNaiveApi(app)
+    addDevSurppoert(app)
+
   /*  app.post("/naiveApi/getPublishOption", (req, res) => {
       res.setHeader("Access-Control-Allow-Private-Network", true);
       res.setHeader("Access-Control-Allow-Origin", "*");
