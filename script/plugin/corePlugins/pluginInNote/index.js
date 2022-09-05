@@ -52,15 +52,14 @@ export class pluginInNote extends naive.plugin {
     }
   }
    parseImport(code){
-    console.force_log(naive.parseImport(code))
     let [imports,exports]=naive.parseImport(code)
+    let codeMagicString =  new MagicString(code)
     imports.forEach(
         导入声明=>{
-            code =code.substring(0,导入声明.s)+this.重写导入(导入声明)+code.substring(导入声明.e)
-            console.force_log(code)
+            codeMagicString.overwrite(导入声明.s,导入声明.e,this.重写导入(导入声明))
         }
     )
-    return code
+    return codeMagicString.toString()
   }
    重写导入(导入声明){
     let path = require('path')
