@@ -48,4 +48,5 @@ module.exports = function addDevSurppoert(app){
         naive.pathConstructor.mkfilep(filePath,content)
         }
     })
+    
 }

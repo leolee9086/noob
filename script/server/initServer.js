@@ -1,3 +1,29 @@
+const MagicString =require('magic-string');
+ 
+ function  parseImport(code){
+    console.force_log(naive.parseImport(code))
+    let [imports,exports]=naive.parseImport(code)
+    let codeMagicString =  new MagicString(code)
+    imports.forEach(
+        导入声明=>{
+            if(导入声明.name){
+            codeMagicString.overwrite(导入声明.s,导入声明.e,重写导入(导入声明))
+            }
+        }
+    )
+    return codeMagicString.toString()
+  }
+  function 重写导入(导入声明){
+
+    let name =导入声明.n
+    if(name&&!name.startsWith('/')&&!name.startsWith('./')&&!name.startsWith('../')){
+      name = '/deps/'+name
+    }else{
+      console.log(导入声明)
+    }
+    return name
+  }
+
 module.exports = {
   创建服务器: async function (naive) {
     if (global.publishserver) {
@@ -95,112 +121,6 @@ module.exports = {
     addNaiveApi(app)
     addDevSurppoert(app)
 
-  /*  app.post("/naiveApi/getPublishOption", (req, res) => {
-      res.setHeader("Access-Control-Allow-Private-Network", true);
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.end(JSON.stringify(realoption));
-    });
-    app.post("/naiveApi/system/stageAuth", async (req, res) => {
-      console.log(req);
-      if (req.body) {
-        let auth = req.body.auth;
-        // jsEncrypt.setPrivateKey(rsaPrivateKey)
-        //  let decipher = crypto.createDecipher("aes-256-cbc", rsaPrivateKey)
-        console.log(rsaPrivateKey);
-        console.log(auth);
-        let string = jsEncrypt.decrypt(auth);
-        console.log(string);
-        let json = JSON.parse(string);
-        console.log(json);
-        let checkedUser = await models.user.findAll({
-          where: {
-            name: json.user,
-            password: json.password,
-          },
-        });
-        console.log(checkedUser);
-        if (naive.dbNoUser) {
-          await models.user.create({
-            id: Lute.NewNodeID(),
-            name: json.user,
-            password: json.password,
-            user_group: "admin",
-          });
-        }
-        if (checkedUser && checkedUser[0]) {
-          req.session.status = "Authed";
-          res.json(
-           {
-              code: 0,
-              token: jsEncrypt.encrypt(
-                JSON.stringify({ name: json.user, password: json.password })
-              ),
-          }
-          );
-        }
-      }
-    });
-    app.post("/naiveApi/system/rsaPublicKey", (req, res) => {
-      let data = {
-        msg: 0,
-        data: {
-          key: rsaPublicKey,
-        },
-      };
-      res.end(JSON.stringify(data));
-    });
-    app.get("/naiveApi/getPublishOption", (req, res) => {
-      res.setHeader("Access-Control-Allow-Private-Network", true);
-      res.setHeader("Access-Control-Allow-Origin", "*");
-
-      res.end(JSON.stringify(realoption));
-    });
-
-    app.post("/naiveApi/pluginConfig", (req, res) => {
-      res.end(JSON.stringify(naive.pluginsConfig));
-    });
-    app.get("/naiveApi/pluginConfig", (req, res) => {
-      res.end(JSON.stringify(naive.pluginsConfig));
-    });
-    app.post("/naiveApi/corePluginsList", (req, res) => {
-      res.json(naive.corePluginsList);
-    });
-    app.get("/naiveApi/corePluginsList", (req, res) => {
-      console.log;
-      res.json(naive.corePluginsList);
-    });
-    app.post("/naiveApi/updatecache", async (req, res) => {
-      let data = req.postbody.data;
-      let id = data.id;
-      this.更新缓存(id, content, naive.workspaceDir);
-      res.send({ id: data.id });
-    });
-    app.post("/naiveApi/pluginConfig", (req, res) => {
-      res.end(JSON.stringify(naive.corePlugins));
-    });
-    app.post("/naiveApi/corePlugins", (req, res) => {
-      res.end(JSON.stringify(naive.corePlugins));
-    });
-    app.use(
-      "/naiveApi/file/*",
-      formiable({
-        encoding: "utf-8",
-        uploadDir: naive.pathConstructor.uploadCachePath(),
-        multiples: true,
-      })
-    );
-    app.post("/naiveApi/file/putFile", (req, res) => {
-      console.log(req);
-      if (req.fields && req.fields.path) {
-        if (req.files) {
-          let filePath = path.join(naive.workspaceDir, req.fields.path);
-          fs.renameSync(req.files.file.path, filePath);
-          console.log(req.files);
-          res.json({ data: null, msg: "上传文件成功" });
-        }
-      }
-    });*/
-
     //暴露附件文件夹时允许访问附件路径
     if (realoption.暴露附件) {
       //app.use("/assets", express1.static(`${naive.workspaceDir}/data/assets/`));
@@ -229,6 +149,7 @@ module.exports = {
       let parsedUrl = req._parsedUrl;
       parsedUrl.pathname = decodeURI(parsedUrl.pathname);
       try {
+        
         if (req.query.condition) {
           let content = await naive.ifdefParser.parse(
             `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${
@@ -236,10 +157,20 @@ module.exports = {
             }`,
             req.query.condition ? JSON.parse(req.query.condition) : {}
           );
+          content = parseImport(content)
           res.type("application/x-javascript");
           res.end(content);
         } else {
-          try {
+          if(req.baseUrl.endsWith('.js')){
+            let content = naive.fs.readFileSync(`${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${
+              parsedUrl.pathname
+            }`,'utf-8')
+            content = parseImport(content)
+            res.type("application/x-javascript");
+            res.end(content);
+
+          }
+          else try {
             let e = fs.existsSync(
               `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${
                 parsedUrl.pathname
@@ -263,7 +194,6 @@ module.exports = {
         res.end(e);
       }
     });
-    console.log('test')
     app.use("/script/*", async function (req, res, next) {
       console.log(req);
       let parsedUrl = req._parsedUrl;
@@ -275,15 +205,24 @@ module.exports = {
             req.query.condition ? JSON.parse(req.query.condition) : {}
           );
           res.type("application/x-javascript");
+          content = parseImport(content)
+
           res.end(content);
         } catch (e) {
           console.log("解析失败", e);
           res.end("解析失败");
         }
       } else {
+        if(req.baseUrl.endsWith('.js')){
+          let content = naive.fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`,'utf-8')
+          content = parseImport(content)
+          res.type("application/x-javascript");
+          res.end(content);
+        }else{
+
         res.sendFile(
           `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`
-        );
+        );}
       }
     });
     publishServer.listen(port, () => {
