@@ -72,7 +72,6 @@ export class blockHandler extends naive.plugin {
       return;
     }
   }
-
   获取块数组() {
     naive.当前块元素数组 = document.querySelectorAll(
       `div.protyle-wysiwyg div[data-node-id='${naive.当前块id}'`
