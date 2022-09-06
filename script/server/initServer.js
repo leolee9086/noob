@@ -41,7 +41,7 @@ module.exports = {
     const app = express1();
     const http = require("http");
     const https = require("https");
-    const addParser =require ('./middleWares/parsers.js')
+    const addBaseParser =require ('./middleWares/baseParsers.js')
     const addStaticPath = require('./middleWares/staticPath.js')
     const addNaiveApi =require ('./middleWares/naiveApi.js')
     const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
@@ -68,7 +68,7 @@ module.exports = {
     const statusMonitor = require("express-status-monitor")();
     //启用性能监控
     app.use(statusMonitor);
-    addParser(app)
+    addBaseParser(app)
     app.use(function (req, res, next) {
       console.log(req);
       res.setHeader("Access-Control-Allow-Private-Network", true);
