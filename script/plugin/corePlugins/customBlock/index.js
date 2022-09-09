@@ -1,6 +1,7 @@
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
 import { 驼峰转换 } from "/script/public/util/name.js";
 
+const {fs} = naive.serverUtil
 export class customBlock extends naive.plugin {
   constructor() {
     super({name:'customBlock'})
@@ -19,7 +20,7 @@ export class customBlock extends naive.plugin {
   }
   注入自定义元素(){
     let path = this.initFolder()
-    let array = naive.fs.readdirSync(path)
+    let array = fs.readdirSync(path)
     console.log("customBlock",array)
     array.forEach(
       name=>this.从文件加载自定义元素(name)

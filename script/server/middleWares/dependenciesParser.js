@@ -1,7 +1,7 @@
 
 const Mime = require('mime/Mime');
 const MagicString = require('magic-string');
-
+const {fs,fg} = naive.serverUtil
 function parseImport(code) {
     console.force_log(naive.parseImport(code))
     let [imports, exports] = naive.parseImport(code)
@@ -31,8 +31,8 @@ module.exports = function addDevSurppoert(app) {
         console.log(req.url)
         console.log(req.headers)
         let filePath = (naive.workspaceDir + `/conf/naiveConf/deps/esm/${req.url}`).replace(/\?/g, '.')
-        if (naive.fs.existsSync(filePath)) {
-            let content = naive.fs.readFileSync(filePath, "utf-8")
+        if (fs.existsSync(filePath)) {
+            let content = fs.readFileSync(filePath, "utf-8")
             console.log(content)
             console.log(filePath)
             let mime = content.split("\n")[0]

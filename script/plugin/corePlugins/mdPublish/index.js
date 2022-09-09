@@ -1,4 +1,4 @@
-
+const {fs,fg,mdIt} = naive.serverUtil
 export class mdPublish extends naive.plugin {
     constructor() {
         super({ "name": "mdPublish" })
@@ -6,29 +6,28 @@ export class mdPublish extends naive.plugin {
         this.lute = window.Lute.New()
         this.开始伺服()
         let rootpath = "D:/椽承知识库"
-        let list = naive.fg.sync(`**.md`, { dot: true, stats: true, cwd: rootpath })
-       let html = ""
-
+        let list = fg.sync(`**.md`, { dot: true, stats: true, cwd: rootpath })
+        let html = ""
         for (let i = 0; i < list.length; i++) {
-            html+=
-                `<naive-doc data-path='${window.Lute.EscapeHTMLStr(list[i]["path"])}}'>`+
-                naive.mdIt.render(
-                    naive.fs.readFileSync(
+            html +=
+                `<naive-doc data-path='${window.Lute.EscapeHTMLStr(list[i]["path"])}}'>` +
+                mdIt.render(
+                    fs.readFileSync(
                         rootpath + '/' + list[i]["path"], 'utf-8'
-                    ),{}
+                    ), {}
                 )
-                +"</naive-doc>"
+                + "</naive-doc>"
         }
 
-        let Vdocument= new DOMParser().parseFromString(html, "text/html")
+        let Vdocument = new DOMParser().parseFromString(html, "text/html")
         Vdocument.querySelectorAll('naive-doc').forEach(
-            doc=> doc.querySelectorAll("*").forEach(
-             el=>el.dataset.content=window.Lute.EscapeHTMLStr(el.innerHTML)
+            doc => doc.querySelectorAll("*").forEach(
+                el => el.dataset.content = window.Lute.EscapeHTMLStr(el.innerHTML)
             )
         )
         console.log(`${list.length}个文件已经转化成html文件`)
         list = null
-        window.Vdocument=Vdocument
+        window.Vdocument = Vdocument
     }
 
     开始伺服() {

@@ -1,10 +1,10 @@
+const {fs}  = naive.serverUtil
 export class publisher extends naive.plugin {
   constructor() {
     super({ name: "publisher" });
     window.siyuan.ws.ws.addEventListener('close',()=>{window.open('/')})
     ///#ifAPP
     this.realoption = naive.设置;
-    const fs = naive.fs;
     this.模板路径 = naive.pathConstructor.templatePath();
     fs.copySync(
       `${naive.pathConstructor.naivePath()}/script/publish/defaultTemplate`,
@@ -21,7 +21,6 @@ export class publisher extends naive.plugin {
     let routerTemplatesPath =
       naive.pathConstructor.templatePath() + "/routerTemplate";
     console.log("自定义路由路径", routerTemplatesPath);
-    let fs = naive.fs;
     let 路由列表 = fs.readdirSync(routerTemplatesPath);
     let baseCustomRouter = "/app";
     路由列表.forEach((路由) => {
@@ -73,7 +72,6 @@ export class publisher extends naive.plugin {
     }
   }
   async 渲染(req, res) {
-    const fs = require("fs");
     const path = require("path");
     console.log(req.url.split("/"));
     let 模板路径 = path.join(
