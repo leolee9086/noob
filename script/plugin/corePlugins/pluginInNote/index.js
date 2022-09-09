@@ -63,7 +63,6 @@ export class pluginInNote extends naive.plugin {
   }
    重写导入(导入声明){
     let path = require('path')
-
     let name =导入声明.n
     name = name.replace(/\\/g,"/")
     name = name.replace("//","/")
@@ -77,6 +76,7 @@ export class pluginInNote extends naive.plugin {
       return name
     }
     else {
+      console.log(`模块${name}重定向到naive设置文件夹/deps/esm`)
       return 'http://127.0.0.1/deps/'+ name
     }
   }

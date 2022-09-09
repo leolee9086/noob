@@ -123,14 +123,18 @@ export async function 加载所有核心插件() {
     `http://${naive.pathConstructor.baseURL()}/naiveApi/corePluginsList`
   );
   naive.corePluginsList = await naive.corePluginsList.json();
-
+  console.log("核心插件列表",naive.corePluginsList)
   for await (let 插件名 of naive.corePluginsList) {
-    
     await 加载核心插件(插件名)
   }
 }
 async function 加载核心插件(插件名) {
-  try{
+  if (naive.corePlugins&&naive.corePlugins[插件名]){
+    console.log(`核心插件${插件名}已加载,跳过当前加载`)
+    return
+  }
+
+  console.log("开始加载核心插件",插件名)
   let pluginclass = await import(
     `http://${naive.pathConstructor.corePluginsURL()}/${插件名}/index.js?condition=${JSON.stringify(
       naive.ifDefOptions
@@ -158,7 +162,5 @@ async function 加载核心插件(插件名) {
     ? (naive.corePlugins[插件名] = new pluginclass[插件名]({ name: 插件名 }))
     : null;
     pluginclass.dependencies?naive.corePlugins[插件名].dependencies=pluginclass.dependencies:null
-    }catch(e){
-      console.error(`加载核心插件${插件名}失败:`, e);
-    }
+
 }

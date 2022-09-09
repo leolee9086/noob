@@ -383,24 +383,13 @@ export class publisher extends naive.plugin {
       if (req.session && !req.session.status) {
         if (syres.data && syres.data.files && syres.data.files[0]) {
           syres.data.files = await this.批处理判定路径权限(syres.data.files);
-          /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
-        let file = syres.data.files[i];
-        let flag = await this.判定id权限(file.id, req.body);
-        //console.log(flag)
-        if(!flag){syres.data.files[i]=undefined}
-      }*/
+        
           syres.data.files = syres.data.files.filter((file) => {
             return file;
           });
         }
         if (syres.data && syres.data.blocks && syres.data.blocks[0]) {
           syres.data.blocks = await this.批处理判定路径权限(syres.data.blocks);
-          /* for  (let i = 0, len = syres.data.files.length; i < len; i++) {
-        let file = syres.data.files[i];
-        let flag = await this.判定id权限(file.id, req.body);
-        //console.log(flag)
-        if(!flag){syres.data.files[i]=undefined}
-      }*/
           syres.data.blocks = syres.data.blocks.filter((file) => {
             return file;
           });
@@ -415,15 +404,7 @@ export class publisher extends naive.plugin {
         }
         if (syres.data && syres.data.nodes && syres.data.links) {
           syres.data.nodes = await this.批处理判定路径权限(syres.data.nodes);
-          /* for (let i = 0, len = syres.data.nodes.length; i < len; i++) {
-        let file = syres.data.nodes[i];
-        console.log(file)
-        let flag = await this.判定id权限(file.id, req.body);
-        //console.log(flag)
-      
-      
-        if(!flag){syres.data.nodes[i]['label']="私有块不可访问"}
-      }*/
+        
           for (let i = 0, len = syres.data.links.length; i < len; i++) {
             let link = syres.data.links[i];
             let fromid = link.from;

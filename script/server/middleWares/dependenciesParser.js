@@ -1,10 +1,10 @@
 
 const Mime = require('mime/Mime');
 const MagicString = require('magic-string');
-const {fs,fg} = naive.serverUtil
+const {fs,fg,importParser} = naive.serverUtil
 function parseImport(code) {
-    console.force_log(naive.parseImport(code))
-    let [imports, exports] = naive.parseImport(code)
+    console.force_log(importParser.parse(code))
+    let [imports, exports] = importParser.parse(code)
     let codeMagicString = new MagicString(code)
     imports.forEach(
         导入声明 => {
@@ -36,13 +36,15 @@ module.exports = function addDevSurppoert(app) {
             console.log(content)
             console.log(filePath)
             let mime = content.split("\n")[0]
+            console.log(`模块${req.url}重定向到naive设置文件夹/deps/esm`)
+
             res.setHeader("content-type", mime.replace("/*", "").replace("*/", ""))
             res.end(content.replace(mime, ""))
         }
         else {
+            console.log(`模块${req.url}重定向到esm.sh,如果出现问题,尝试手动下载${'https://esm.sh' + req.url},或者尝试手动安装`)
             let source = await fetch('https://esm.sh' + req.url, {
                 "method": "GET",
-
                 headers:{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27"}
             })
             console.log(source)

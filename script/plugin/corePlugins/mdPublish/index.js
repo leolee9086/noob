@@ -5,6 +5,9 @@ export class mdPublish extends naive.plugin {
         this.folder = this.initFolder()
         this.lute = window.Lute.New()
         this.开始伺服()
+        //this.测试()
+    }
+    async 测试(){
         let rootpath = "D:/椽承知识库"
         let list = fg.sync(`**.md`, { dot: true, stats: true, cwd: rootpath })
         let html = ""
@@ -28,8 +31,8 @@ export class mdPublish extends naive.plugin {
         console.log(`${list.length}个文件已经转化成html文件`)
         list = null
         window.Vdocument = Vdocument
-    }
 
+    }
     开始伺服() {
         naive.expressApp.get("/md/*", (req, res) => {
             let rawpath = req._parsedUrl.pathname

@@ -42,6 +42,8 @@ function 重写导入(导入声明) {
   console.log(导入声明)
   let name = 导入声明.n
   if (name && !name.startsWith('/') && !name.startsWith('./') && !name.startsWith('../')) {
+    console.log(`模块${name}重定向到naive设置文件夹/deps/esm`)
+
     name = '/deps/' + name
   } else {
     console.log(导入声明)

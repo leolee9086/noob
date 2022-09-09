@@ -9,7 +9,7 @@ export class customWindow extends naive.plugin {
                     ///#ifAPP
                     const { BrowserWindow } = require("@electron/remote");
                     // 新建窗口(Electron 环境)
-                    url = this.url格式化(url);
+                    url = this.思源url格式化(url);
                     var newWin = new BrowserWindow(windowParams);
 
                     newWin.loadURL(url.href);

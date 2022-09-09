@@ -18,7 +18,6 @@ export class 主题插件 {
   }
  
   设置插件接口(名称对象, 接口值) {
-    console.log(名称对象)
     if(!接口值 instanceof Function){
       throw `接口必须为函数 @'file:///${naive.pathConstructor.pluginsPath()}/${this.name}'` 
 
