@@ -54,7 +54,7 @@ function 注册工具条按钮(option) {
 export class  customToolBar extends naive.plugin{
     constructor( ){
         super({name:"customToolBar"})
-        this.setPluginsProp('注册工具条按钮',注册工具条按钮)
+        this.setPluginsProp({中文:'注册工具条按钮'},注册工具条按钮)
     }
     
 }

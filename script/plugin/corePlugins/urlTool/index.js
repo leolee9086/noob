@@ -1,7 +1,7 @@
 
 export class urlTool extends naive.plugin {
   constructor() {
-    super({ name: "" });
+    super({ name: "urlTool" });
     this.打开URL中的块id();
   }
   获取url参数(参数名) {

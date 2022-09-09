@@ -4,13 +4,13 @@ export class defaultAuth extends naive.plugin {
     this.expressApp.post("/naiveApi/system/blockAuth", (req, res) =>
       this.请求鉴权(req, res)
     );
-    this.setPluginsProp("判定id权限", this.判定id权限);
-    this.setPluginsProp("解析路径", this.解析路径);
-    this.setPluginsProp("checkAccessAuth", this.checkAccessAuth);
-    this.setPluginsProp("生成路径权限表", this.生成路径权限表);
-    this.setPluginsProp("判定路径权限", this.判定路径权限);
-    this.setPluginsProp("批处理判定路径权限", this.批处理判定路径权限);
-    this.setPluginsProp("批处理判定id权限", this.批处理判定id权限);
+    this.setPluginsProp({中文:"判定id权限"}, this.判定id权限);
+    this.setPluginsProp({中文:"解析路径"}, this.解析路径);
+    this.setPluginsProp({中文:"校验权限",en:"checkAccessAuth"}, this.checkAccessAuth);
+    this.setPluginsProp({中文:"生成路径权限表"}, this.生成路径权限表);
+    this.setPluginsProp({中文:"判定路径权限"}, this.判定路径权限);
+    this.setPluginsProp({中文:"批处理判定路径权限"}, this.批处理判定路径权限);
+    this.setPluginsProp({中文:"批处理判定id权限"}, this.批处理判定id权限);
 
   }
   pipe = [this.生成文档元数据, this.鉴权];

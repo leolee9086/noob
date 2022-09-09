@@ -22,7 +22,7 @@ function url格式化(url, ssl = true) {
 
 export class siyuanURL extends naive.plugin {
   constructor() {
-    super({ name: "" });
-    this.setPluginsProp("url格式化", url格式化);
+    super({ name: "siyuanURL" });
+    this.setPluginsProp({中文:"思源url格式化"}, url格式化);
   }
 }

@@ -63,7 +63,7 @@ function 注入全部预览按钮() {
   export class cutomPreviewerButton extends naive.plugin {
     constructor() {
       super({name:"cutomPreviewerButton"})
-      this.setPluginsProp("注册预览按钮",this.注册预览按钮)
+      this.setPluginsProp({中文:"注册预览按钮"},this.注册预览按钮)
     }
     注册预览按钮(option){
         naive.自定义预览按钮?null:naive.自定义预览按钮=[]

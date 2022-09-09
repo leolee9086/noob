@@ -57,7 +57,7 @@ function 添加所有头图按钮(){
 export class customBackgroundButton extends naive.plugin {
   constructor() {
     super({ name: "customBackgroundButton" });
-    this.setPluginsProp("注册头图按钮", this.注册头图按钮);
+    this.setPluginsProp({中文:"注册头图按钮"}, this.注册头图按钮);
     this.注册自定义事件({target:document,type:"mouseover"},'鼠标聚焦到头图',判定并获取目标)
   }
   注册头图按钮(option) {

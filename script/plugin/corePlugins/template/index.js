@@ -11,12 +11,14 @@ const domTemplate = {
 }
 export class template extends naive.plugin {
     constructor() {
-      super({ name: "" });
+      super({ name: "template" });
       ///#ifAPP
       const templateParser = require(naive.pathConstructor.naivePath()+`/script/public/node_modules/art-template`)
-      this.setPluginsProp('templateParser',templateParser)
+      this.setPluginsProp(
+        {中文:"模板解析器",en:'templateParser'},templateParser)
       ///#endif
-      this.setPluginsProp('dom模板',domTemplate)
+      this.setPluginsProp(
+        {中文:'dom模板'},domTemplate)
     }
 }
   

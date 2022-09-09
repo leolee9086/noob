@@ -1,11 +1,11 @@
 export class customWindow extends naive.plugin {
     constructor(){
-        super({name:""})
+        super({name:"customWindow"})
         this.注入窗口构造器()
     }
     注入窗口构造器(){
         this.setPluginsProp(
-            '加载窗口',function(url, windowParams, closeCallback){
+            {中文:'加载窗口'},function(url, windowParams, closeCallback){
                     ///#ifAPP
                     const { BrowserWindow } = require("@electron/remote");
                     // 新建窗口(Electron 环境)

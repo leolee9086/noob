@@ -1,12 +1,10 @@
 export class naiveIcon extends naive.plugin {
   constructor() {
-    super({ name: "" });
+    super({ name: "naiveIcon" });
     this.加载图标();
-    this.setPluginsProp('注册图标',this.注册图标)
-    this.setPluginsProp('registIcon',this.注册图标)
-    this.setPluginsProp('getIconByType',this.getIconByType)
-    this.setPluginsProp('getIconByElement',this.getIconByElement)
-
+    this.setPluginsProp({中文:'注册图标',en:"registIcon"},this.注册图标)
+    this.setPluginsProp({中文:"根据块类型获取图标",en:'getIconByType'},this.getIconByType)
+    this.setPluginsProp({中文:'以元素获取块图标',en:'getIconByElement'},this.getIconByElement)
   }
   加载图标() {
     document.body.insertAdjacentHTML(

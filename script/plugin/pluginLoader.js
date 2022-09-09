@@ -1,5 +1,4 @@
 //加载插件配置在服务器环境下运行
-import { 驼峰转换 } from "../public/util/name.js";
 export function 监听插件(插件名) {
   let 插件主文件 = `${naive.workspaceDir}/data/${naive.插件文件夹url}/${插件名}`;
   naive.fs.watch(插件主文件, { recursive: true }, (event, filname) =>
@@ -122,32 +121,5 @@ async function 加载核心插件(插件名) {
       console.error(`加载核心插件${插件名}失败:`, e);
     }
 }
-/* try {
-   let manifest = await fetch(
-      `${this.核心插件文件夹url}/${插件名}/plugin.json`
-    );
-    let menifestJSON = await manifest.json();
-    if (menifestJSON && menifestJSON.environment.indexOf(环境) >= 0) {
-      try {
-        let pluginclass = await import(
-          `${this.核心插件文件夹url}/${插件名}/index.js`
-        );
-        this.corePlugins[插件名] = new pluginclass[插件名]({ name: 插件名 });
-      } catch (e) {
-        console.error("加载核心插件", 插件名, "失败", e);
-      }
-    } else {
-      console.error("加载核心插件", 插件名, "失败", `非${环境}环境插件`);
-    }
-  } catch (e) {
-    console.error("加载核心插件", 插件名, "失败", e);
-  }
+export  function 安装插件依赖(插件名){
 }
-export async function 加载笔记内插件(){
-  let stmt = `select * from blocks where id in (select block_id  from attributes where name='custom-plugin') and type ='d'`
-  let docs = await naive.核心API.sql({stmt:stmt},"")
-  docs.forEach(
-    doc=>{
-
-    }
-  )*/

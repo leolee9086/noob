@@ -44,13 +44,27 @@ export async function initNaive() {
   }
   //app环境下直接读取配置文件
   if (naive.ifDefOptions.defs.APP) {
+    const realRequire = require
+    const re = function (moduleName) {
+      try {
+        return realRequire(moduleName)
+      } catch (e) {
+        console.error(e)
+        if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
+          moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`
+        }
+        return realRequire(moduleName)
+      }
+    }
+    window.require = re
+
     const fs = require("fs");
     let option = {}
     try {
       option =
-      JSON.parse(
-        fs.readFileSync(naive.pathConstructor.cusoptionPath(), "utf-8")
-      )
+        JSON.parse(
+          fs.readFileSync(naive.pathConstructor.cusoptionPath(), "utf-8")
+        )
     } catch (e) { }
     naive.publishOption = 生成默认设置(
       option,
@@ -64,19 +78,6 @@ export async function initNaive() {
       fs.readFileSync(naive.pathConstructor.pluginConfigPath(), "utf-8")
     );
     naive.ifDefOptions.verbose = naive.publishOption.develop;
-    const realRequire=require
-    const re = function (moduleName) {
-      try {
-        return realRequire(moduleName)
-      } catch (e) {
-        if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
-          moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`
-
-        }
-        return realRequire(moduleName)
-      }
-    }
-    window.require = re
   }
   //这里的代码会在服务器创建完成之后运行,ifdef这时已经启用了
   naive.eventBus.on("message", async (m) => {

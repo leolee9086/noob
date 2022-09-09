@@ -1,30 +1,33 @@
-const MagicString =require('magic-string');
-const {npmCmd} = require('./util/shell.js')
-naive.npmCmd = npmCmd
- function  parseImport(code){
-    console.force_log(naive.parseImport(code))
-    let [imports,exports]=naive.parseImport(code)
-    let codeMagicString =  new MagicString(code)
-    imports.forEach(
-        导入声明=>{
-            if(导入声明.n){
-            codeMagicString.overwrite(导入声明.s,导入声明.e,重写导入(导入声明))
-            }
-        }
-    )
-    return codeMagicString.toString()
-  }
-  function 重写导入(导入声明){
-    console.log(导入声明)
-    let name =导入声明.n
-    if(name&&!name.startsWith('/')&&!name.startsWith('./')&&!name.startsWith('../')){
-      name = '/deps/'+name
-    }else{
-      console.log(导入声明)
+const MagicString = require('magic-string');
+const fg = require('fast-glob')
+const mdIt = require('markdown-it')();
+const fs = require("fs-extra");
+naive.MagicString = MagicString
+naive.fg = fg
+naive.mdIt=mdIt
+function parseImport(code) {
+  console.force_log(naive.parseImport(code))
+  let [imports, exports] = naive.parseImport(code)
+  let codeMagicString = new MagicString(code)
+  imports.forEach(
+    导入声明 => {
+      if (导入声明.n) {
+        codeMagicString.overwrite(导入声明.s, 导入声明.e, 重写导入(导入声明))
+      }
     }
-    return name
+  )
+  return codeMagicString.toString()
+}
+function 重写导入(导入声明) {
+  console.log(导入声明)
+  let name = 导入声明.n
+  if (name && !name.startsWith('/') && !name.startsWith('./') && !name.startsWith('../')) {
+    name = '/deps/' + name
+  } else {
+    console.log(导入声明)
   }
-
+  return name
+}
 module.exports = {
   创建服务器: async function (naive) {
     if (global.publishserver) {
@@ -35,7 +38,6 @@ module.exports = {
 
     const addDevSurppoert = require("./middleWares/dependenciesParser.js")
     const api = require("../public/siYuanApi");
-    const fs = require("fs-extra");
     naive.fs = fs;
     const path = require("path");
     const formiable = require("express-formidable");
@@ -43,16 +45,16 @@ module.exports = {
     const app = express1();
     const http = require("http");
     const https = require("https");
-    const addBaseParser =require ('./middleWares/baseParsers.js')
+    const addBaseParser = require('./middleWares/baseParsers.js')
     const addStaticPath = require('./middleWares/staticPath.js')
-    const addNaiveApi =require ('./middleWares/naiveApi.js')
-    const {jsEncrypt,rsaPublicKey,rsaPrivateKey} = require ('./keys/index.js')
-    const {checkAdmin} = require('./models/index') 
-    const addSiyuanProxy =require('./middleWares/siyuanApi.js')
-    const {parse} =require('es-module-lexer')
-    naive.parseImport= parse
+    const addNaiveApi = require('./middleWares/naiveApi.js')
+    const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
+    const { checkAdmin } = require('./models/index')
+    const addSiyuanProxy = require('./middleWares/siyuanApi.js')
+    const { parse } = require('es-module-lexer')
+    naive.parseImport = parse
     await checkAdmin()
-    
+
     //这里需要根据请求的来源判定返回的参数
     let scriptLoader = naive.ifdefParser;
     this.scriptLoader = scriptLoader;
@@ -97,7 +99,7 @@ module.exports = {
       naive.sslOpen = false;
     }
 
-    naive.publishServer=publishServer
+    naive.publishServer = publishServer
     this.空页面 = "";
     console.log(
       realoption.空页面内容.slice(5, realoption.空页面内容.length),
@@ -122,7 +124,14 @@ module.exports = {
     //设置接口
     addNaiveApi(app)
     addDevSurppoert(app)
-
+    /*  const vite = await createViteServer({
+        root:"d:/test/index.html",
+        server:{
+          middlewareMode: 'html' 
+        }
+      })
+  
+      app.use("/hmr/*",vite.middlewares)*/
     //暴露附件文件夹时允许访问附件路径
     if (realoption.暴露附件) {
       //app.use("/assets", express1.static(`${naive.workspaceDir}/data/assets/`));
@@ -151,11 +160,10 @@ module.exports = {
       let parsedUrl = req._parsedUrl;
       parsedUrl.pathname = decodeURI(parsedUrl.pathname);
       try {
-        
+
         if (req.query.condition) {
           let content = await naive.ifdefParser.parse(
-            `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${
-              parsedUrl.pathname
+            `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
             }`,
             req.query.condition ? JSON.parse(req.query.condition) : {}
           );
@@ -163,10 +171,9 @@ module.exports = {
           res.type("application/x-javascript");
           res.end(content);
         } else {
-          if(req.baseUrl.endsWith('.js')){
-            let content = naive.fs.readFileSync(`${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${
-              parsedUrl.pathname
-            }`,'utf-8')
+          if (req.baseUrl.endsWith('.js')) {
+            let content = naive.fs.readFileSync(`${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
+              }`, 'utf-8')
             content = parseImport(content)
             res.type("application/x-javascript");
             console.log(content)
@@ -175,8 +182,7 @@ module.exports = {
           }
           else try {
             let e = fs.existsSync(
-              `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${
-                parsedUrl.pathname
+              `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
               }`
             );
             if (e) {
@@ -216,16 +222,17 @@ module.exports = {
           res.end("解析失败");
         }
       } else {
-        if(req.baseUrl.endsWith('.js')){
-          let content = naive.fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`,'utf-8')
+        if (req.baseUrl.endsWith('.js')) {
+          let content = naive.fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`, 'utf-8')
           content = parseImport(content)
           res.type("application/x-javascript");
           res.end(content);
-        }else{
+        } else {
 
-        res.sendFile(
-          `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`
-        );}
+          res.sendFile(
+            `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`
+          );
+        }
       }
     });
     publishServer.listen(port, () => {

@@ -1,10 +1,15 @@
-
 export class blockHandler extends naive.plugin {
   constructor() {
-    super({ name: "customEvent" });
-    this.setPluginsProp("当前文档id", naive.当前文档id);
-
-    this.setPluginsProp("获取元素绝对坐标", this.获取元素绝对坐标);
+    super({ name: "blockHandler" });
+    this.setPluginsProp(
+      {
+        中文:"当前文档id"
+      }
+      , naive.当前文档id);
+    this.setPluginsProp(
+      {中文:"获取元素绝对坐标"}
+      , this.获取元素绝对坐标
+      );
     naive.事件总线.on("当前块id改变", this.获取块数组);
     document.addEventListener("click", (event) => this.判定并获取块id(event));
     document.addEventListener("keydown", (event) => this.判定并获取块id(event));
@@ -67,7 +72,7 @@ export class blockHandler extends naive.plugin {
         naive.当前文档id = data[0].root_id;
         console.log(naive.当前文档id,data[0].hpath)
         naive.事件总线.emit("当前文档id改变", naive.当前块id);
-        this.setPluginsProp("当前文档id", naive.当前文档id);
+        this.setPluginsProp({中文:"当前文档id"}, naive.当前文档id);
       }
       return;
     }

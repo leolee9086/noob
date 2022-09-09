@@ -5,9 +5,9 @@ export class customBlock extends naive.plugin {
   constructor() {
     super({name:'customBlock'})
     naive.customHTML = []
-    this.setPluginsProp('注册自定义HTML块',this.注册自定义HTML块)
-    this.setPluginsProp('hackHTMLBlockAll',this.hackHTMLBlockAll)
-    this.setPluginsProp('hackHTMLBlock',this.hackHTMLBlock)
+    this.setPluginsProp({中文:'注册自定义HTML块'},this.注册自定义HTML块)
+    this.setPluginsProp({中文:"劫持所有自定义HTML块",en:'hackHTMLBlockAll'},this.hackHTMLBlockAll)
+    this.setPluginsProp({中文:"劫持自定义块",en:'hackHTMLBlock'},this.hackHTMLBlock)
     let html块监听选项 = {
       监听目标: `protyle-html`,
       监听器回调:(mutationsList, observer)=> this.html块监听器回调(mutationsList, observer),

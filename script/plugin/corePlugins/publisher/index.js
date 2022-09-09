@@ -92,6 +92,7 @@ export class publisher extends naive.plugin {
   }
   设置默认发布() {
     this.expressApp.get("/block/:blockid", (req, res) =>
+      
       this.管线渲染(req, res)
     );
     this.expressApp.get("/block/", (req, res) => this.管线渲染(req, res));
@@ -135,6 +136,17 @@ export class publisher extends naive.plugin {
     });
   }
   async 管线渲染(req, res) {
+    let blockid =
+    req.params.blockid ||
+    req.query.blockid ||
+    req.query.id ||
+    naive.设置.首页.思源文档id;
+    let blockStats = await this.核心api.getDocInfo(
+      { id: blockid},
+      ""
+    );
+    
+    console.error(blockStats)
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
     let 渲染管线 = this.生成渲染管线();
     console.log(渲染管线);

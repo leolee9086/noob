@@ -261,3 +261,4 @@ export class publishContent extends naive.plugin {
 }
 export const dependencies = ["defaultAuth", "template", "unAuthedPage",];
 export const environments = ["APP"];
+export const condition = ["APP"];

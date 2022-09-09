@@ -1,13 +1,13 @@
 export class defaultRouter extends naive.plugin {
   constructor() {
-    super({ name: "" });
+    super({ name: "defaultRouter" });
     ///#ifAPP
     //这里不知道为什么不能使用router作为属性名
-    this.setPluginsProp('expressApp',naive.expressApp)
-    this.setPluginsProp('initFolder',this.initFolder)
-    this.setPluginsProp('publishServer',naive.publishServer)
-    this.setPluginsProp('initFile',this.initFile)
-    this.setPluginsProp('initDir',this.initDir)
+    this.setPluginsProp({中文:"发布路由",en:'expressApp'},naive.expressApp)
+    this.setPluginsProp({中文:"初始化文件夹",en:'initFolder'},this.initFolder)
+    this.setPluginsProp({中文:"发布服务器",en:'publishServer'},naive.publishServer)
+    this.setPluginsProp({中文:"初始化文件",en:'initFile'},this.initFile)
+    this.setPluginsProp({中文:'初始化外部路径',en:"initDir"},this.initDir)
 
     this.setRouter();
     ///#endif

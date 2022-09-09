@@ -256,13 +256,13 @@ const 生成列表菜单项目 = function (菜单项目) {
 };
 export class commonMenu extends naive.plugin {
   constructor() {
-    super({ name: "" });
+    super({ name: "commonMenu" });
     naive.自定义图片菜单 = {};
     naive.自定义块标菜单 = {};
     naive.自定义标签页右上角菜单 = {};
-    this.setPluginsProp("注册块标菜单", 注册块标菜单);
-    this.setPluginsProp("注册文档右上角菜单", 注册文档右上角菜单);
-    this.setPluginsProp("注册图片菜单", 注册图片菜单);
-    this.setPluginsProp("注册文档树菜单", 注册文档树菜单);
+    this.设置插件接口({中文:"注册块标菜单"}, 注册块标菜单);
+    this.设置插件接口({中文:"注册文档右上角菜单"}, 注册文档右上角菜单);
+    this.设置插件接口({中文:"注册图片菜单"}, 注册图片菜单);
+    this.设置插件接口({中文:"注册文档树菜单"}, 注册文档树菜单);
   }
 }

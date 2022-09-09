@@ -10,8 +10,7 @@ export class  reloader extends  naive.plugin  {
 
         this.注册顶栏按钮(重置按钮图标);
         ///#endif
-        this.setPluginsProp("forceReload",this.重新加载)
-        this.setPluginsProp("重新加载",this.重新加载)
+        this.setPluginsProp({中文:"重新加载",en:"forceReload"},this.重新加载)
 
     }
     async 重新加载(){

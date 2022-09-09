@@ -16,6 +16,7 @@ export default class pathConstructor {
   }
   requireScript(filepath) {
     let path = require("path");
+    console.log(path.join(this.naivePath() + "/script", filepath))
     return require(path.join(this.naivePath() + "/script", filepath));
   }
   cusoptionPath() {
