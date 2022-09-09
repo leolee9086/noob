@@ -28,13 +28,10 @@ naive.ifDefOptions.defs.APP=window.require ? true : false,
 naive.ifDefOptions.defs.PUBLISH=!window.siyuan,
 naive.ifDefOptions.defs.MOBILE=!window.siyuan.mobileEditor ? false : true,
 naive.ifDefOptions.defs.DEBUG= true,
-
-
 naive.ifdefParser = new ifdefParser(naive.ifDefOptions);
 await initNaive();
-console.log(naive.workspaceDir+'')
+//仅仅在桌面端加载服务端代码
 if (naive.ifDefOptions.defs.APP) {
-  //这里只利用了import函数的副作用
   await import("./script/server/severIndex.js");
 }
 
