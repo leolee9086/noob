@@ -2,9 +2,39 @@ const MagicString = require('magic-string');
 const fg = require('fast-glob')
 const mdIt = require('markdown-it')();
 const fs = require("fs-extra");
+const addDevSurppoert = require("./middleWares/dependenciesParser.js")
+const addBaseParser = require('./middleWares/baseParsers.js')
+const addStaticPath = require('./middleWares/staticPath.js')
+const addNaiveApi = require('./middleWares/naiveApi.js')
+const addSiyuanProxy = require('./middleWares/siyuanApi.js')
+const api = require("../public/siYuanApi");
+naive.fs = fs;
+const path = require("path");
+const formiable = require("express-formidable");
+const express1 = require("express");
+const app = express1();
+const http = require("http");
+const https = require("https");
+const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
+const { checkAdmin } = require('./models/index')
+const { parse } = require('es-module-lexer')
+const statusMonitor = require("express-status-monitor")();
+naive.parseImport = parse
 naive.MagicString = MagicString
 naive.fg = fg
 naive.mdIt=mdIt
+
+
+naive.Handle=function(method,pattern,...args){
+  method=="ALL"?method="use":null
+  console.log(method,pattern,...args)
+  let pipes = [...args]
+  console.log(pipes)
+  console.log(app[method])
+  pipes.forEach(
+    middle=>app[method](pattern,(req,res,next)=>middle(req,res,next))
+  )
+}
 function parseImport(code) {
   console.force_log(naive.parseImport(code))
   let [imports, exports] = naive.parseImport(code)
@@ -35,24 +65,7 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
-
-    const addDevSurppoert = require("./middleWares/dependenciesParser.js")
-    const api = require("../public/siYuanApi");
-    naive.fs = fs;
-    const path = require("path");
-    const formiable = require("express-formidable");
-    const express1 = require("express");
-    const app = express1();
-    const http = require("http");
-    const https = require("https");
-    const addBaseParser = require('./middleWares/baseParsers.js')
-    const addStaticPath = require('./middleWares/staticPath.js')
-    const addNaiveApi = require('./middleWares/naiveApi.js')
-    const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
-    const { checkAdmin } = require('./models/index')
-    const addSiyuanProxy = require('./middleWares/siyuanApi.js')
-    const { parse } = require('es-module-lexer')
-    naive.parseImport = parse
+    //检查是否存在管理员权限
     await checkAdmin()
 
     //这里需要根据请求的来源判定返回的参数
@@ -69,9 +82,9 @@ module.exports = {
     //启用gzip压缩
     //app.use(express1.json())
     //https://zhuanlan.zhihu.com/p/409813376
-    const statusMonitor = require("express-status-monitor")();
     //启用性能监控
-    app.use(statusMonitor);
+
+    //app.use(statusMonitor);
     addBaseParser(app)
     app.use(function (req, res, next) {
       console.log(req);
@@ -139,6 +152,8 @@ module.exports = {
     }
 
     //emojis文件夹默认能够访问
+    naive.Handle("ALL","/status",express1.static("D:/test"))
+
     app.use(
       "/emojis",
       express1.static(`${naive.workspaceDir}/conf/appearance/emojis`)
