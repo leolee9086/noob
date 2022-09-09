@@ -13,6 +13,7 @@
     "body-parser": "^1.20.0",
     "compressing": "^1.6.2",
     "compression": "^1.7.4",
+    "cross-spawn": "^7.0.3",
     "es-module-lexer": "^1.0.3",
     "esbuild": "^0.15.7",
     "express": "^4.18.1",

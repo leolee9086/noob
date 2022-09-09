@@ -1,12 +1,13 @@
 const MagicString =require('magic-string');
- 
+const {npmCmd} = require('./util/shell.js')
+naive.npmCmd = npmCmd
  function  parseImport(code){
     console.force_log(naive.parseImport(code))
     let [imports,exports]=naive.parseImport(code)
     let codeMagicString =  new MagicString(code)
     imports.forEach(
         导入声明=>{
-            if(导入声明.name){
+            if(导入声明.n){
             codeMagicString.overwrite(导入声明.s,导入声明.e,重写导入(导入声明))
             }
         }
@@ -14,7 +15,7 @@ const MagicString =require('magic-string');
     return codeMagicString.toString()
   }
   function 重写导入(导入声明){
-
+    console.log(导入声明)
     let name =导入声明.n
     if(name&&!name.startsWith('/')&&!name.startsWith('./')&&!name.startsWith('../')){
       name = '/deps/'+name
@@ -31,6 +32,7 @@ module.exports = {
       await global.publishserver.close();
       global.publishserver.listen(null);
     }
+
     const addDevSurppoert = require("./middleWares/dependenciesParser.js")
     const api = require("../public/siYuanApi");
     const fs = require("fs-extra");
@@ -167,6 +169,7 @@ module.exports = {
             }`,'utf-8')
             content = parseImport(content)
             res.type("application/x-javascript");
+            console.log(content)
             res.end(content);
 
           }

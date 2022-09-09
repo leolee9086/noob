@@ -215,6 +215,5 @@ export const dependencies = [
   "template",
   "defaultRouter",
   "publisher",
-  "publisher",
 ];
 export const environments = ["APP"];

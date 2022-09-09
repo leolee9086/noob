@@ -1,3 +1,4 @@
+
 export class urlTool extends naive.plugin {
   constructor() {
     super({ name: "" });

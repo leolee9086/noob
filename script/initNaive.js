@@ -21,9 +21,9 @@ export async function initNaive() {
   );
 
   //获取用户信息
-  naive.user={}
-  if(window.siyuan.user){
-  naive.user = window.siyuan.user;
+  naive.user = {}
+  if (window.siyuan.user) {
+    naive.user = window.siyuan.user;
   }
   //获取websocket
   naive.ws = window.siyuan.ws;
@@ -38,19 +38,20 @@ export async function initNaive() {
     if (console.hasOwnProperty(属性名)) {
       console["force_" + 属性名] = console[属性名];
       if (!naive.ifDefOptions.defs.DEBUG) {
-        console[属性名] = function(){};
+        console[属性名] = function () { };
       }
     }
   }
-//app环境下直接读取配置文件
-  if ( naive.ifDefOptions.defs.APP) {
+  //app环境下直接读取配置文件
+  if (naive.ifDefOptions.defs.APP) {
     const fs = require("fs");
     let option = {}
-    try {option =
+    try {
+      option =
       JSON.parse(
         fs.readFileSync(naive.pathConstructor.cusoptionPath(), "utf-8")
       )
-    }catch(e){}
+    } catch (e) { }
     naive.publishOption = 生成默认设置(
       option,
       naive.workspaceDir,
@@ -63,6 +64,19 @@ export async function initNaive() {
       fs.readFileSync(naive.pathConstructor.pluginConfigPath(), "utf-8")
     );
     naive.ifDefOptions.verbose = naive.publishOption.develop;
+    const realRequire=require
+    const re = function (moduleName) {
+      try {
+        return realRequire(moduleName)
+      } catch (e) {
+        if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
+          moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`
+
+        }
+        return realRequire(moduleName)
+      }
+    }
+    window.require = re
   }
   //这里的代码会在服务器创建完成之后运行,ifdef这时已经启用了
   naive.eventBus.on("message", async (m) => {
@@ -70,16 +84,16 @@ export async function initNaive() {
       return;
     }
     console.log(window.location);
-   /* naive.publishOption = await (
-      await fetch(
-        `http://${window.location.hostname}/naiveApi/getPublishOption`
-      )
-    ).json();*/
+    /* naive.publishOption = await (
+       await fetch(
+         `http://${window.location.hostname}/naiveApi/getPublishOption`
+       )
+     ).json();*/
     //这里为了防止设置出错时无法通过naiveApi获取配置，使用了思源自身的api来获取文件
-    naive.publishOption =await naive.核心api.getFile.raw({path:'conf/naiveConf/config/publish.json'},'')
+    naive.publishOption = await naive.核心api.getFile.raw({ path: 'conf/naiveConf/config/publish.json' }, '')
     console.log(naive.publishOption);
     //校验发布地址是否有效
-    
+
     naive.plugin = await (
       await import(
         `http://${naive.pathConstructor.scriptURL()}/plugin/plugin.js?condition=${JSON.stringify(
