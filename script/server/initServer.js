@@ -1,25 +1,11 @@
-//magicstring用于替换文字等
-const MagicString = require('magic-string');
-naive.MagicString = MagicString
-//fast-glob用于遍历文件夹
-const fg = require('fast-glob')
-naive.fg = fg
-//markdown-it用于解析markdown
-const mdIt = require('markdown-it')();
-naive.mdIt=mdIt
-//用于解析em模块导入
-const { parse } = require('es-module-lexer')
-naive.parseImport = parse
 
-//fs-extra比自带的fs模块要好用一点
-const fs = require("fs-extra");
+const {fs,importParser,MagicString} =  naive.serverUtil
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addBaseParser = require('./middleWares/baseParsers.js')
 const addStaticPath = require('./middleWares/staticPath.js')
 const addNaiveApi = require('./middleWares/naiveApi.js')
 const addSiyuanProxy = require('./middleWares/siyuanApi.js')
 const api = require("../public/siYuanApi");
-naive.fs = fs;
 const path = require("path");
 const formiable = require("express-formidable");
 const express1 = require("express");
@@ -40,8 +26,8 @@ naive.Handle=function(method,pattern,...args){
   )
 }
 function parseImport(code) {
-  console.force_log(naive.parseImport(code))
-  let [imports, exports] = naive.parseImport(code)
+  console.force_log(importParser.parse(code))
+  let [imports, exports] = importParser.parse(code)
   let codeMagicString = new MagicString(code)
   imports.forEach(
     导入声明 => {
@@ -242,7 +228,7 @@ module.exports = {
         }
       } else {
         if (req.baseUrl.endsWith('.js')) {
-          let content = naive.fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`, 'utf-8')
+          let content = fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`, 'utf-8')
           content = parseImport(content)
           res.type("application/x-javascript");
           res.end(content);
