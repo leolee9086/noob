@@ -1,6 +1,17 @@
+//magicstring用于替换文字等
 const MagicString = require('magic-string');
+naive.MagicString = MagicString
+//fast-glob用于遍历文件夹
 const fg = require('fast-glob')
+naive.fg = fg
+//markdown-it用于解析markdown
 const mdIt = require('markdown-it')();
+naive.mdIt=mdIt
+//用于解析em模块导入
+const { parse } = require('es-module-lexer')
+naive.parseImport = parse
+
+//fs-extra比自带的fs模块要好用一点
 const fs = require("fs-extra");
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addBaseParser = require('./middleWares/baseParsers.js')
@@ -17,12 +28,8 @@ const http = require("http");
 const https = require("https");
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
 const { checkAdmin } = require('./models/index')
-const { parse } = require('es-module-lexer')
+
 const statusMonitor = require("express-status-monitor")();
-naive.parseImport = parse
-naive.MagicString = MagicString
-naive.fg = fg
-naive.mdIt=mdIt
 
 
 naive.Handle=function(method,pattern,...args){

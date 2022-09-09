@@ -1,11 +1,9 @@
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../keys/index.js");
 const { models, checkAdmin, sequelize } = require("../models/index");
-
 const fs = naive.fs;
 const formiable = require("express-formidable");
 const path = require("path");
 let realoption = window.naive.publishOption;
-console.log(realoption);
 module.exports = function addNaiveApi(app) {
   app.use("/plugin/config",(req,res)=>{
     let {name} = req.query
@@ -64,7 +62,6 @@ module.exports = function addNaiveApi(app) {
     `
     res.end(html)
   })
-
   app.use("/naiveApi/getPluginStatus", (req, res) => {
     res.setHeader("Access-Control-Allow-Private-Network", true);
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -86,7 +83,6 @@ module.exports = function addNaiveApi(app) {
   app.use("/naiveApi/getPlugin",async(req,res)=>{
     res.setHeader("Access-Control-Allow-Private-Network", true);
     res.setHeader("Access-Control-Allow-Origin", "*");
-
     if(req.body&&naive.publishOption.提供插件服务){
       let {name} = req.body
       await naive.compressing.zip.compressDir(naive.pathConstructor.pluginsPath()+`\\${name}`,naive.pathConstructor.downloadCachePath()+`\\${name}.zip`)
@@ -199,7 +195,6 @@ module.exports = function addNaiveApi(app) {
       }
     }
   });
-
   app.post("/naiveApi/system/stageAuth", async (req, res) => {
     console.log(req);
     if(req.session&&req.session.failed&&req.session.nextAllowedTry){
