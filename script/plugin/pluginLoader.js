@@ -22,6 +22,32 @@ export async function 重载插件(event, 文件名, 插件名) {
     }
   }
 }
+
+
+
+
+export async function 加载所有客户插件(){
+  naive.pluginsConfig = await fetch(
+    `http://${naive.pathConstructor.pluginConfigURL()}`
+  );
+  naive.pluginsConfig = await naive.pluginsConfig.json();
+  naive.plugins = {};
+
+  for (let 插件名 in naive.pluginsConfig) {
+    console.error(插件名)
+    if(!插件名){
+      return
+    }
+    try {
+      if (naive.pluginsConfig[插件名]) {
+        await naive.加载客户插件(插件名);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+}
 export async function 加载插件(插件名){
   let options=JSON.parse(JSON.stringify(naive.ifDefOptions))
   options.verbose= false
@@ -70,7 +96,9 @@ export async function 加载插件(插件名){
         try{
         await 加载核心插件(插件名);
         await 加载插件(插件名);
-        }catch(e){}
+        }catch(e){
+          console.log(e)
+        }
       }
     }
     naive.plugins ? null : (naive.plugins = {});
@@ -83,8 +111,21 @@ export async function 加载插件(插件名){
         console.error(`加载插件${插件名}失败:`, e);
       }
 }
+
+
+
+
+
+
+
 export async function 加载所有核心插件() {
+  naive.corePluginsList = await fetch(
+    `http://${naive.pathConstructor.baseURL()}/naiveApi/corePluginsList`
+  );
+  naive.corePluginsList = await naive.corePluginsList.json();
+
   for await (let 插件名 of naive.corePluginsList) {
+    
     await 加载核心插件(插件名)
   }
 }
@@ -120,6 +161,4 @@ async function 加载核心插件(插件名) {
     }catch(e){
       console.error(`加载核心插件${插件名}失败:`, e);
     }
-}
-export  function 安装插件依赖(插件名){
 }

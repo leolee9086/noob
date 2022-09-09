@@ -2,8 +2,9 @@ import pathConstructor from "./server/util/pathConstructor.js";
 import { 生成默认设置 } from "./public/configer.js";
 import { 事件总线 } from "./public/eventBus.js";
 import { kernelApiList } from "./public/kernelApi.js";
-import { 加载插件 } from "./plugin/pluginLoader.js";
-import { 加载所有核心插件 } from "./plugin/pluginLoader.js";
+//插件机制，集中到一个入口文件里面去
+//除了util不允许跨模块引用
+import { 加载插件 } from "./plugin/index.js";
 import { corePluginList } from "./plugin/pluginConfiger.js";
 import { updatePluginsConfig } from "./plugin/pluginConfiger.js";
 export async function initNaive() {
@@ -79,7 +80,7 @@ export async function initNaive() {
     );
     naive.ifDefOptions.verbose = naive.publishOption.develop;
   }
-  //这里的代码会在服务器创建完成之后运行,ifdef这时已经启用了
+  //这里的代码会在服务器创建完成之后运行,ifdef这时已经启用了,因此后面可以从这里开始加载插件
   naive.eventBus.on("message", async (m) => {
     if (m.type !== "serverStart") {
       return;
@@ -94,45 +95,8 @@ export async function initNaive() {
     naive.publishOption = await naive.核心api.getFile.raw({ path: 'conf/naiveConf/config/publish.json' }, '')
     console.log(naive.publishOption);
     //校验发布地址是否有效
-
-    naive.plugin = await (
-      await import(
-        `http://${naive.pathConstructor.scriptURL()}/plugin/plugin.js?condition=${JSON.stringify(
-          naive.ifDefOptions
-        )}`
-      )
-    ).主题插件;
-    naive.corePluginsList = await fetch(
-      `http://${naive.pathConstructor.baseURL()}/naiveApi/corePluginsList`
-    );
-    naive.corePluginsList = await naive.corePluginsList.json();
-    await 加载所有核心插件();
-    console.log(naive.router + "");
-    naive.pluginsConfig = await fetch(
-      `http://${naive.pathConstructor.pluginConfigURL()}`
-    );
-    naive.pluginsConfig = await naive.pluginsConfig.json();
-    /*await import(
-      `http://${naive.pathConstructor.scriptURL()}/app/appIndex.js?condition=${JSON.stringify(
-        naive.ifDefOptions
-      )}`
-    );*/
-    naive.plugins = {};
-    console.log(m);
-    naive.加载插件 = 加载插件;
-    naive.loadPlugin = 加载插件;
-    console.log(naive);
-    console.log(naive.plugin.prototype);
-
-    for (let 插件名 in naive.pluginsConfig) {
-      try {
-        if (naive.pluginsConfig[插件名]) {
-          await naive.加载插件(插件名);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
+    //加载插件
+    await 加载插件()
     if (naive.ifDefOptions.defs.DEBUG) {
       console.force_warn(
         "当前为开发模式,改动插件代码并保存后思源界面将自动重启"

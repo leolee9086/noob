@@ -28,10 +28,7 @@ const http = require("http");
 const https = require("https");
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
 const { checkAdmin } = require('./models/index')
-
 const statusMonitor = require("express-status-monitor")();
-
-
 naive.Handle=function(method,pattern,...args){
   method=="ALL"?method="use":null
   console.log(method,pattern,...args)
@@ -218,11 +215,11 @@ module.exports = {
               res.end();
             }
           } catch (e) {
-            res.end(e);
+            res.end(e.message);
           }
         }
       } catch (e) {
-        res.end(e);
+        res.end(e.message);
       }
     });
     app.use("/script/*", async function (req, res, next) {

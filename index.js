@@ -2,13 +2,12 @@
 //条件加载器
 import ifdefParser from "./script/public/util/ifdef/index.js";
 import {initNaive} from "./script/initNaive.js";
-
 //创建naive对象
 window.naive = {};
 let naive = window.naive;
-
 //初始化naive对象
 //条件加载器
+//这里应该放到别的部分去
 naive.ifDefOptions = {
   defs:{
     BROWSER: window.require ? false : true,

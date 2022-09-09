@@ -20,7 +20,6 @@ export class mdPublish extends naive.plugin {
                 +"</naive-doc>"
         }
 
-        console.error(html)
         let Vdocument= new DOMParser().parseFromString(html, "text/html")
         Vdocument.querySelectorAll('naive-doc').forEach(
             doc=> doc.querySelectorAll("*").forEach(
