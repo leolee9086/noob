@@ -246,7 +246,6 @@ export class publisher extends naive.plugin {
   flex-direction:column !important;
   width:100% !important
 }
-
 `;
 
       渲染结果.querySelector(".publishNavi").style.marginTop = "10px";
@@ -277,7 +276,6 @@ export class publisher extends naive.plugin {
   }
   生成渲染管线() {
     naive.renders = {};
-
     let 渲染管线 = [];
     let 主要渲染管线 = [];
     let 次要渲染管线 = [];
