@@ -12,4 +12,5 @@ module.exports = function (app) {
       `${naive.pathConstructor.naivePath()}/script/public/static/`
     )
   );
+
 };

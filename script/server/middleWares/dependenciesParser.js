@@ -27,7 +27,6 @@ function 重写导入(导入声明) {
 
 module.exports = function addDevSurppoert(app) {
     app.use('/deps', async (req, res) => {
-        console.log(req, res)
         console.log(req.url)
         console.log(req.headers)
         let filePath = (naive.workspaceDir + `/conf/naiveConf/deps/esm/${req.url}`).replace(/\?/g, '.')
@@ -42,7 +41,7 @@ module.exports = function addDevSurppoert(app) {
             res.end(content.replace(mime, ""))
         }
         else {
-            console.log(`模块${req.url}重定向到esm.sh,如果出现问题,尝试手动下载${'https://esm.sh' + req.url},或者尝试手动安装`)
+            console.log(`本地未找到模块${req.url}重定向到esm.sh,如果出现问题,尝试手动下载${'https://esm.sh' + req.url},或者尝试手动安装`)
             let source = await fetch('https://esm.sh' + req.url, {
                 "method": "GET",
                 headers:{"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27"}

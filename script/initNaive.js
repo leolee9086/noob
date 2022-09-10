@@ -50,11 +50,21 @@ export async function initNaive() {
       try {
         return realRequire(moduleName)
       } catch (e) {
-        console.error(e)
-        if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
-          moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`
+        if (error.message.indexOf('Cannot find module')) {
+          console.log(`模块${moduleName}未找到,重定向到naive设置文件deps/node`)
+          if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
+            moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`
+          }
+          try{
+          return realRequire(moduleName)
+          }
+          catch (e){
+            throw e
+          }
         }
-        return realRequire(moduleName)
+        else {
+          console.error(e)
+        }
       }
     }
     window.require = re

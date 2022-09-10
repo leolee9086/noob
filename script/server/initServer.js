@@ -151,10 +151,41 @@ module.exports = {
       express1.static(`${naive.workspaceDir}/conf/appearance/emojis`)
     );
     //只有暴露挂件选项开启时,能够访问挂件
+    //此接口下的挂件可以使用裸模块导入
     if (realoption.暴露挂件) {
       app.use(
         "/widgets",
-        express1.static(`${naive.workspaceDir}/data/widgets/`)
+        async function (req, res, next) {
+          console.log(req);
+          let parsedUrl = req._parsedUrl;
+          console.log(req.query);
+          if (req.query.condition) {
+            try {
+              let content = await naive.ifdefParser.parse(
+                `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`,
+                req.query.condition ? JSON.parse(req.query.condition) : {}
+              );
+              res.type("application/x-javascript");
+              content = parseImport(content)
+              res.end(content);
+            } catch (e) {
+              console.log("解析失败", e);
+              res.end("解析失败");
+            }
+          } else {
+            if (req.baseUrl.endsWith('.js')) {
+              let content = fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`, 'utf-8')
+              content = parseImport(content)
+              res.type("application/x-javascript");
+              res.end(content);
+            } else {
+    
+              res.sendFile(
+                `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`
+              );
+            }
+          }
+        }
       );
     }
     //静态路径伺服块id
@@ -167,7 +198,6 @@ module.exports = {
       let parsedUrl = req._parsedUrl;
       parsedUrl.pathname = decodeURI(parsedUrl.pathname);
       try {
-
         if (req.query.condition) {
           let content = await naive.ifdefParser.parse(
             `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
@@ -185,7 +215,6 @@ module.exports = {
             res.type("application/x-javascript");
             console.log(content)
             res.end(content);
-
           }
           else try {
             let e = fs.existsSync(
@@ -241,7 +270,8 @@ module.exports = {
           );
         }
       }
-    });
+    }
+    );
     publishServer.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
     });
