@@ -1,3 +1,5 @@
+const { shellCmd,npmCmd } = require('./shell');
+
 module.exports = {
         //magicstring用于替换文字等
         MagicString: require('magic-string'),
@@ -8,6 +10,9 @@ module.exports = {
         //用于解析em模块导入
         importParser: require('es-module-lexer'),
         //fs-extra比自带的fs模块要好用一点
-        fs: require("fs-extra")
-    
+        fs: require("fs-extra"),
+        //用于执行命令
+        shellCmd:shellCmd,
+        npmCmd:npmCmd
+        
 }

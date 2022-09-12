@@ -22,8 +22,10 @@ function shellCmd(target,cmd,path){
             processer.on("close", (code) => {
             if (!code) {
                 resolve({ code: 0, data: output }); // 如果没有报错就输出正常日志
+                return output
             } else {
                 reject({ code: code, data: output }); // 如果报错就输出报错日志
+                return null
             }
         });
     });
@@ -61,6 +63,7 @@ function npmCmd(cmd, path) {
 }
 
 module.exports={ 
-    npmCmd:npmCmd
+    npmCmd:npmCmd,
+    shellCmd:shellCmd
 }
 

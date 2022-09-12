@@ -209,7 +209,7 @@ module.exports = {
           res.end(content);
         } else {
           if (req.baseUrl.endsWith('.js')) {
-            let content = naive.fs.readFileSync(`${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
+            let content = naive.serverUtil.fs.readFileSync(`${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
               }`, 'utf-8')
             content = parseImport(content)
             res.type("application/x-javascript");

@@ -7,14 +7,15 @@ export class 主题插件 {
       this.插件名 = option.插件名
       this.name = option.name;
     }
+    
     else{
       throw `插件必须提供名称`
     }
+    this.selfPath=naive.workspaceDir + '\\conf\\naiveConf\\plugins\\' + this.name
     this.setPluginsProp = this.设置插件接口
     this.批量设置插件接口([
       { 名称: { 中文: "主题对象", en: "naive", alias: "app" }, 接口值: naive },
       { 名称: { 中文: "核心api", en: "kernelApi" }, 接口值: naive.kernelApi },
-      { 名称: { 中文: "自身路径", en: "selfPath" }, 接口值: naive.workspaceDir + '\\conf\\naiveConf\\plugins\\' + this.name },
       { 名称: { 中文: "消息信道", en: "ws" }, 接口值: () => new model(this) }
     ])
     this.初始化事件总线()
@@ -26,9 +27,9 @@ export class 主题插件 {
     this.设置插件接口({中文:"触发事件",en:"emit"},_事件总线.emit)
   }
   设置插件接口(名称对象, 接口值) {
-    if(!(接口值 instanceof Function)){
-      throw `接口必须为函数 @'file:///${naive.pathConstructor.pluginsPath()}/${this.name}'` 
-    }
+    //if(!(接口值 instanceof Function)){
+     // throw `接口必须为函数 @'file:///${naive.pathConstructor.pluginsPath()}/${this.name}'` 
+   // }
     if (名称对象['中文']) { naive.plugin.prototype[名称对象['中文']] = 接口值 }
     else { 
       throw `接口必须提供中文名 @'file:///${naive.pathConstructor.pluginsPath()}/${this.name}'` 

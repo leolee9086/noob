@@ -4,10 +4,7 @@ let 通用菜单监听器选项 = {
   监听目标: ".protyle-toolbar",
   监听器回调: 工具条回调,
 };
-
-
 new DOM监听器(通用菜单监听器选项);
-
 function 工具条回调(mutationsList, observer) {
     for (let mutation of mutationsList) {
       if (mutation.target) {
@@ -40,7 +37,6 @@ function 注入工具条按钮(target){
         }
     }  
 }
-
 function 注册工具条按钮(option) {
     let { 提示, 图标, 回调函数 } = option;
     if(!naive.自定义工具条){

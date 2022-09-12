@@ -119,7 +119,7 @@ export default class naive {
     if (window.require) {
       this.fs = require("fs");
       try {
-        json = JSON.parse(naive.fs.readFileSync(路径, "utf-8"));
+        json = JSON.parse(naive.serverUtil.fs.readFileSync(路径, "utf-8"));
       } catch (e) {
         console.log("获取文件失败", e);
       }

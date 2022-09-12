@@ -1,6 +1,6 @@
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../keys/index.js");
 const { models, checkAdmin, sequelize } = require("../models/index");
-const fs = naive.fs;
+const fs = naive.serverUtil.fs;
 const formiable = require("express-formidable");
 const path = require("path");
 let realoption = window.naive.publishOption;

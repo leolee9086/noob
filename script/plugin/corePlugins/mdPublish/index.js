@@ -40,8 +40,8 @@ export class mdPublish extends naive.plugin {
 
             let content = ''
             let filePath = path.join(this.initFolder(), rawpath.replace('/md', ''))
-            if (naive.fs.existsSync(filePath)) {
-                content = naive.fs.readFileSync(filePath, 'utf-8')
+            if (naive.serverUtil.fs.existsSync(filePath)) {
+                content = naive.serverUtil.fs.readFileSync(filePath, 'utf-8')
             }
             console.error(filePath)
             let htmlstr = this.lute.Md2HTML(content)
@@ -90,7 +90,7 @@ export class mdPublish extends naive.plugin {
             res.json(
                 {
                     msg: 0,
-                    content: naive.fs.readFileSync(filePath, 'utf-8')
+                    content: naive.serverUtil.fs.readFileSync(filePath, 'utf-8')
                 }
             )
         })

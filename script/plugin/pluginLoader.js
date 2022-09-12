@@ -1,7 +1,7 @@
 //加载插件配置在服务器环境下运行
 export function 监听插件(插件名) {
   let 插件主文件 = `${naive.workspaceDir}/data/${naive.插件文件夹url}/${插件名}`;
-  naive.fs.watch(插件主文件, { recursive: true }, (event, filname) =>
+  naive.serverUtil.fs.watch(插件主文件, { recursive: true }, (event, filname) =>
     重载插件(event, filname, 插件名)
   );
 }
@@ -40,7 +40,7 @@ export async function 加载所有客户插件(){
     }
     try {
       if (naive.pluginsConfig[插件名]) {
-        await naive.加载客户插件(插件名);
+        await 加载插件(插件名);
       }
     } catch (e) {
       console.log(e);
@@ -49,6 +49,7 @@ export async function 加载所有客户插件(){
 
 }
 export async function 加载插件(插件名){
+  console.error(插件名)
   let options=JSON.parse(JSON.stringify(naive.ifDefOptions))
   options.verbose= false
   options.defs=JSON.parse(JSON.stringify(naive.ifDefOptions.defs))
@@ -135,6 +136,8 @@ async function 加载核心插件(插件名) {
   }
 
   console.log("开始加载核心插件",插件名)
+  try{
+
   let pluginclass = await import(
     `http://${naive.pathConstructor.corePluginsURL()}/${插件名}/index.js?condition=${JSON.stringify(
       naive.ifDefOptions
@@ -162,5 +165,8 @@ async function 加载核心插件(插件名) {
     ? (naive.corePlugins[插件名] = new pluginclass[插件名]({ name: 插件名 }))
     : null;
     pluginclass.dependencies?naive.corePlugins[插件名].dependencies=pluginclass.dependencies:null
-
+}catch(e){
+  console.log(`加载核心插件${插件名}错误:${e}`)
+  
+  }
 }
