@@ -1,9 +1,4 @@
-export class publishFileTree extends naive.plugin {
-  constructor() {
-    super({ name: "publishFileTree" });
-  }
-  pipe = [this.生成文档树];
-  生成文档树(req, res, 渲染结果) {
+export function 生成文档树(req, res, 渲染结果) {
     let 文档树 = 渲染结果.querySelector('#panelLeft [data-type="navigation"]');
     let 文档树容器 = 渲染结果.createElement("div");
     文档树容器.setAttribute("class", "fn__flex-1");
@@ -13,12 +8,12 @@ export class publishFileTree extends naive.plugin {
     let 笔记本列表 = window.siyuan.notebooks;
     笔记本列表.forEach((笔记本数据) => {
       if (笔记本数据) {
-        文档树容器.innerHTML += this.生成笔记本条目(笔记本数据);
+        文档树容器.innerHTML += 生成笔记本条目(笔记本数据);
       }
     });
     return 渲染结果;
   }
-  生成笔记本条目(笔记本数据) {
+export function  生成笔记本条目(笔记本数据) {
     return `
     <ul class="b3-list b3-list--background" data-url="${笔记本数据.id}" data-type="notebook" data-sort="12">
 
@@ -37,6 +32,3 @@ export class publishFileTree extends naive.plugin {
 </ul>
 `;
   }
-}
-export const dependencies = ["publishContent"];
-export const environments = ["APP"];
