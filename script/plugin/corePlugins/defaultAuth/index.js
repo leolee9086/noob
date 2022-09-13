@@ -11,7 +11,6 @@ export class defaultAuth extends naive.plugin {
     this.setPluginsProp({中文:"判定路径权限"}, this.判定路径权限);
     this.setPluginsProp({中文:"批处理判定路径权限"}, this.批处理判定路径权限);
     this.setPluginsProp({中文:"批处理判定id权限"}, this.批处理判定id权限);
-
   }
   pipe = [this.生成文档元数据, this.鉴权];
 

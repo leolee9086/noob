@@ -1,3 +1,5 @@
+import {pipe} from "./pipe.js"
+
 const {fs}  = naive.serverUtil
 export class publisher extends naive.plugin {
   constructor() {
@@ -12,6 +14,8 @@ export class publisher extends naive.plugin {
     );
     let 模板列表 = fs.readdirSync(this.模板路径);
     console.log(this.模板路径, 模板列表);
+    this.pipe =pipe
+
     this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
     this.设置默认发布();
     this.加载发布路由();
@@ -90,12 +94,10 @@ export class publisher extends naive.plugin {
   }
   设置默认发布() {
     this.expressApp.get("/block/:blockid", (req, res) =>
-      
       this.管线渲染(req, res)
     );
     this.expressApp.get("/block/", (req, res) => this.管线渲染(req, res));
     this.expressApp.get("/", (req, res) => this.管线渲染(req, res));
-
     //允许搜索时,能够访问文档树
     this.expressApp.post("/api/notebook/lsNotebooks", (req, res) => {
       if (this.realoption.允许搜索) {
@@ -132,6 +134,44 @@ export class publisher extends naive.plugin {
         res.sendStatus(404);
       }
     });
+    //通过这里查询渲染块数据权限
+    this.expressApp.use('/naiveApi/getPrivateBlock',(req,res)=>{
+      let data = req.body
+      console.log(req)
+      if(data&&data.id){
+          if(naive.私有块字典[data.id]){
+              if(data.token==naive.私有块字典[data.id]['token']){
+                  res.end(JSON.stringify(
+                      {
+                          msg:0,
+                          data:{
+                              content:naive.私有块字典[data.id]['content']
+                          }
+                      })
+                  )
+              }
+              else{
+                  res.end(JSON.stringify(
+                      {
+                          msg:0,
+                          data:{
+                              content:`<div>鉴权码错误</div>`
+                          }
+                      }
+                  ))
+              }
+          }
+      }else{
+      res.end(JSON.stringify(
+          {
+              msg:0,
+              data:{
+                  content:`<div>鉴权码错误</div>`
+              }
+          }
+      ))
+      }
+  })
   }
   async 管线渲染(req, res) {
     let blockid =
@@ -143,18 +183,21 @@ export class publisher extends naive.plugin {
       { id: blockid},
       ""
     );
-    
     console.error(blockStats)
+    
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
+
     let 渲染管线 = this.生成渲染管线();
     console.log(渲染管线);
     let 渲染结果 = new DOMParser().parseFromString("", "text/html");
     for await (let 渲染函数 of 渲染管线) {
       try {
-        if (res.finished) {
-          return;
+        if (渲染结果.完成) {
+          return 渲染结果;
         }
+        if(渲染函数 instanceof Function){
         渲染结果 = (await 渲染函数(req, res, 渲染结果)) || "";
+        }
         let 文字渲染结果 = "";
         console.error(渲染结果)
         try {
@@ -266,7 +309,6 @@ export class publisher extends naive.plugin {
     ${渲染结果.querySelector("html").innerHTML}
     </html>
     `;
-
     res.end(渲染结果);
   }
   async 渲染函数(req, res, 渲染结果) {
@@ -318,10 +360,17 @@ export class publisher extends naive.plugin {
         渲染管线[渲染管线.length - 1].provider = 插件名;
       }
       let 插件管线 = 插件列表[插件名].pipe;
+      console.log(插件管线,插件名)
       if (插件管线) {
-        插件管线.forEach((渲染函数, index) => {
-          插件管线[index] = 渲染函数.bind(插件列表[插件名]);
+        插件管线.forEach((管线渲染函数, index) => {
+          try{
+          插件管线[index] = 管线渲染函数.bind(插件列表[插件名]);
           插件管线[index].provider = 插件名;
+          }
+          catch(e){
+            插件管线[index]="error:"+e
+            console.error(`插件${插件名}的渲染管线中第${index}个渲染函数存在错误`)
+          }
         });
         console.log(插件管线);
         渲染管线 = 渲染管线.concat(插件管线);

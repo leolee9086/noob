@@ -7,46 +7,9 @@ export class publishContent extends naive.plugin {
         naive.私有块字典={}
     }
 
-    this.expressApp.use('/naiveApi/getPrivateBlock',(req,res)=>{
-        let data = req.body
-        console.log(req)
-        if(data&&data.id){
-            if(naive.私有块字典[data.id]){
-                if(data.token==naive.私有块字典[data.id]['token']){
-                    res.end(JSON.stringify(
-                        {
-                            msg:0,
-                            data:{
-                                content:naive.私有块字典[data.id]['content']
-                            }
-                        })
-                    )
-                }
-                else{
-                    res.end(JSON.stringify(
-                        {
-                            msg:0,
-                            data:{
-                                content:`<div>鉴权码错误</div>`
-                            }
-                        }
-                    ))
-                }
-            }
-        }else{
-        res.end(JSON.stringify(
-            {
-                msg:0,
-                data:{
-                    content:`<div>鉴权码错误</div>`
-                }
-            }
-        ))
-        }
-    })
+    
   }
   pipe = [
-    this.注入块属性,
     this.生成发布文档头,
     this.生成发布文档内容,
     this.生成文档标题,
@@ -191,32 +154,7 @@ export class publishContent extends naive.plugin {
     }
     return div;
   }
-  async 注入块属性(req, res, 渲染结果) {
-    let blockid =
-      req.params.blockid ||
-      req.query.blockid ||
-      req.query.id ||
-      naive.设置.首页.思源文档id;
-    if(blockid=="unidefined"){
-      blockid=''
-    }
-    let block = await this.核心api.getDoc(
-      { id: blockid, k: "", size: 102400, mode: 0 },
-      ""
-    );
-    
-    if(block){
-    let docInfor = await this.核心api.getDocInfo({ id: blockid });
-    block.docInfor = docInfor;
-    渲染结果.block = block;
-    return 渲染结果
-    }
-    else{
-      let emptyPage = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/empty.html','utf8')
-      res.end(emptyPage)
-      return 渲染结果
-    }
-  }
+
   生成文档标题(req, res, 渲染结果) {
     let 标题元素 = 渲染结果.querySelector(".protyle-title__input");
     let 标题内容 = 渲染结果.block.docInfor.ial.title;
@@ -266,6 +204,6 @@ export class publishContent extends naive.plugin {
     return 渲染结果;
   }
 }
-export const dependencies = ["defaultAuth", "template", "unAuthedPage",];
+export const dependencies = ["defaultAuth", "template", "unAuthedPage","publisher"];
 export const environments = ["APP"];
 export const condition = ["APP"];
