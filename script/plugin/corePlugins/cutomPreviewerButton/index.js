@@ -38,12 +38,10 @@ function 注入全部预览按钮() {
   
   function 预览按钮监听回调(mutationsList, observer) {
     for (let mutation of mutationsList) {
-      console.log(mutation.target);
       if (mutation.target) {
         let 预览按钮组 = mutation.target.querySelector(
           ".protyle-preview__action"
         );
-        console.log(mutation.target);
         for (let 预览按钮名称 in naive.自定义预览按钮) {
           let 预览按钮项目 = naive.自定义预览按钮[预览按钮名称];
           let 预览按钮 = 生成导出栏项目(预览按钮项目);

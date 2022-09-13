@@ -13,7 +13,6 @@ export class publisher extends naive.plugin {
       naive.pathConstructor.templatePath()
     );
     let 模板列表 = fs.readdirSync(this.模板路径);
-    console.log(this.模板路径, 模板列表);
     this.pipe =pipe
 
     this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
@@ -40,7 +39,7 @@ export class publisher extends naive.plugin {
             try {
               this.加载路由文件(routerIndexPath, "index.js", 路由);
             } catch (e) {
-              console.force_error(`用户插件${路由}加载失败` + ":\n" + e);
+              console.error(`用户插件${路由}加载失败` + ":\n" + e);
             }
           }
         }
@@ -77,7 +76,6 @@ export class publisher extends naive.plugin {
   }
   async 渲染(req, res) {
     const path = require("path");
-    console.log(req.url.split("/"));
     let 模板路径 = path.join(
       this.initDir(`/templates/`),
       req.url.split("/")[1] + ".js"
@@ -108,27 +106,23 @@ export class publisher extends naive.plugin {
     this.expressApp.post("/api/filetree/listDocsByPath", (req, res) => {
       if (this.realoption.允许搜索) {
         this.转发JSON请求(req, res, true);
-        console.log(req.body, 1);
       }
     });
     //允许搜索时,能够搜索所有文档,这里需要加上鉴权
     this.expressApp.post("/api/search/fullTextSearchBlock", (req, res) => {
       if (this.realoption.允许搜索) {
-        console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够嵌入所有块,这里需要加入鉴权
     this.expressApp.post("/api/search/searchEmbedBlock", (req, res) => {
       if (this.realoption.允许搜索) {
-        console.log(req.body);
         this.转发JSON请求(req, res, true);
       }
     });
     //暴露api时,能够访问大部分api
     this.expressApp.post("/api/*", (req, res) => {
       if (this.realoption.暴露api) {
-        console.log(req);
         this.转发JSON请求(req, res, false);
       } else {
         res.sendStatus(404);
@@ -137,7 +131,6 @@ export class publisher extends naive.plugin {
     //通过这里查询渲染块数据权限
     this.expressApp.use('/naiveApi/getPrivateBlock',(req,res)=>{
       let data = req.body
-      console.log(req)
       if(data&&data.id){
           if(naive.私有块字典[data.id]){
               if(data.token==naive.私有块字典[data.id]['token']){
@@ -183,12 +176,10 @@ export class publisher extends naive.plugin {
       { id: blockid},
       ""
     );
-    console.error(blockStats)
     
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
 
     let 渲染管线 = this.生成渲染管线();
-    console.log(渲染管线);
     let 渲染结果 = new DOMParser().parseFromString("", "text/html");
     for await (let 渲染函数 of 渲染管线) {
       try {
@@ -199,7 +190,6 @@ export class publisher extends naive.plugin {
         渲染结果 = (await 渲染函数(req, res, 渲染结果)) || "";
         }
         let 文字渲染结果 = "";
-        console.error(渲染结果)
         try {
           文字渲染结果 = 渲染结果.querySelector("body").innerHTML;
         } catch (e) {
@@ -218,7 +208,6 @@ export class publisher extends naive.plugin {
         continue;
       }
     }
-    console.log(渲染结果.reqHeaders["user-agent"]);
     if (
       渲染结果.reqHeaders &&
       渲染结果.reqHeaders["user-agent"] &&
@@ -331,7 +320,6 @@ export class publisher extends naive.plugin {
   }
   去重(数组, 属性名) {
     let res = {};
-    console.log(数组, 属性名);
     return 数组.filter((数组项目) => {
       return (
         !(res[数组项目[属性名]] == 数组项目["name"]) &&
@@ -340,13 +328,10 @@ export class publisher extends naive.plugin {
     });
   }
   加载渲染管线(插件名, 插件列表, 渲染管线) {
-    console.log(插件名);
     if (插件列表[插件名]) {
-      console.log(插件列表[插件名]);
       let 渲染函数 =
         插件列表[插件名].publishRender || 插件列表[插件名]["渲染函数"];
       if (!渲染函数 && !插件列表[插件名].pipe) {
-        console.log(插件名);
         return 渲染管线;
       } else if (插件列表[插件名]["dependencies"] && 渲染函数) {
         for (let 依赖插件名 of 插件列表[插件名]["dependencies"]) {
@@ -360,7 +345,6 @@ export class publisher extends naive.plugin {
         渲染管线[渲染管线.length - 1].provider = 插件名;
       }
       let 插件管线 = 插件列表[插件名].pipe;
-      console.log(插件管线,插件名)
       if (插件管线) {
         插件管线.forEach((管线渲染函数, index) => {
           try{
@@ -372,27 +356,21 @@ export class publisher extends naive.plugin {
             console.error(`插件${插件名}的渲染管线中第${index}个渲染函数存在错误`)
           }
         });
-        console.log(插件管线);
         渲染管线 = 渲染管线.concat(插件管线);
       }
     }
     naive.renders[插件名] = true;
-    console.log(渲染管线);
     return 渲染管线;
   }
   async 转发JSON请求(req, res, unAuth) {
-    console.log(req);
     if (!unAuth && !req.session) {
       res.statue(403);
       res.end("请首先登录或提供token");
     }
     if(req.session && req.session.user_group === "admin"&&(!((req.rawHeaders.indexOf("application/json;charset=UTF-8"))>=0))){
-      console.log(req.rawHeaders)
-      console.log(req.rawHeaders.indexOf("application/json;charset=UTF-8"))
       await this.转发请求(req,res)
       return
     }
-      console.log(req.url, req);
       if (req.url.indexOf("account") >= 0) {
         res.end("不可访问账户api");
         return;
@@ -415,7 +393,6 @@ export class publisher extends naive.plugin {
       }
     
     var { connection, host, ...originHeaders } = req.headers;
-    console.log(req.headers);
     // 构造请求报文
     //    console.log(req.url, req.body);
     let resData = {};
@@ -496,7 +473,6 @@ export class publisher extends naive.plugin {
     const http = require("http");
     var { connection, host, ...originHeaders } = req.headers;
     // 构造请求报文
-    console.log(req.url, req.body);
     var options = {
       method: req.method,
       hostname: this.realoption.思源伺服地址,

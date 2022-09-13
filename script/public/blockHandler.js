@@ -16,10 +16,6 @@ export class blockHandler {
     ];
     this.id = id;
   }
-  getCurrentBlocks() {
-    let 当前块元素数组 = document.querySelectorAll(".protyle-wysiwyg--select");
-    return 当前块元素数组;
-  }
   块元素转块对象(块元素) {
     let 块对象 = {};
     块对象.id = 块元素.id;

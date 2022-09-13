@@ -23,14 +23,11 @@ export class defaultAuth extends naive.plugin {
     });
   }
   生成文档元数据(req, res, 渲染结果) {
-    console.log(req.headers)
     if(req.headers["user-agent"]){
         渲染结果.reqHeaders= req.headers
     }
 
-    console.log(req);
     let id = req.params.blockid || req.query.blockid || req.query.id;
-    console.log(id);
     let meta = 渲染结果.createElement("meta");
     if (id) {
       meta.setAttribute("data-node-id", id);
@@ -41,7 +38,6 @@ export class defaultAuth extends naive.plugin {
       );
     }
     meta.setAttribute("charset", "UTF-8");
-    console.log(meta);
     渲染结果.head.appendChild(meta);
     return 渲染结果;
   }
@@ -58,27 +54,19 @@ export class defaultAuth extends naive.plugin {
     return 渲染结果;
   }
   async 判定路径权限(路径, accessedArray,multi) {
-    console.log(路径, accessedArray,multi)
     if (!accessedArray) {
       accessedArray = await this.生成路径权限表();
     }
     let 鉴权块 = { path: "" };
-    console.log(accessedArray);
     for (let i = 0; i < accessedArray.length; i++) {
       let block = accessedArray[i];
       //如果块的路径包含了鉴权序列中的某个路径,说明这个块在这个路径下
-      console.log(路径,block.path)
       if (路径.replace(".sy", "").indexOf(block.path.replace(".sy", "")) >= 0) {
-        console.log(block,鉴权块)
         if (block.path.length >= 鉴权块.path.length) {
-          console.log(路径, 鉴权块.path);
-          console.log(鉴权块);
           鉴权块 = block;
-          console.log(鉴权块);
         }
       }
     }
-    console.log(鉴权块);
     if(!multi){
      if(鉴权块.value == "public"){
       return true
@@ -110,7 +98,6 @@ export class defaultAuth extends naive.plugin {
             if(块数据.hasOwnProperty(attr)){
                 if(!(['path','type','subType','subFileCount','id','color','size','box','rootID','root_id',].indexOf(attr)>=0)){
                     块数据[attr]="私有块不可访问"
-                    console.log(attr)
                     if(attr=='color'){
                         块数据[attr]={background: "red"}
                     }
@@ -123,7 +110,6 @@ export class defaultAuth extends naive.plugin {
       }
     }
     
-    console.log(块数组);
     return 块数组;
   }
   async 批处理判定id权限(块数组,query,multi){
@@ -144,11 +130,9 @@ export class defaultAuth extends naive.plugin {
       )
       }
     )
-    console.error(块数组)
     return await this.批处理判定路径权限(块数组)
   }
   async 判定id权限(块id,query,multi) {
-    console.log(块id,query,multi)
     let flag = false;
     let 块信息数组 = await 思源api.以sql向思源请求块数据(
       `${naive.设置.思源伺服地址}:${naive.设置.思源伺服端口}`,
@@ -158,7 +142,6 @@ export class defaultAuth extends naive.plugin {
         select block_id from attributes where name = 'custom-publish-token'
       )`
     );
-    console.log(块信息数组)
     if (块信息数组 && 块信息数组[0]) {
       let 路径 = 块信息数组[0].path;
       flag = await this.判定路径权限(路径,"",multi);

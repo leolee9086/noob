@@ -97,9 +97,7 @@
             this.config = customfig
             for(let 插件名 in this.config){
                 fetch(`/plugins/${插件名}/plugin.json`).then((response) => response.json()).then(json => {
-                    console.log(json)
                     this.插件描述[插件名]=json.describe
-                    console.log(this.插件描述)
                 })
                 fetch(`/plugins/${插件名}/index.html`).then((res)=>res.status!==404?this.插件设置[插件名]=true:null)
             }

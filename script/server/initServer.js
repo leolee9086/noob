@@ -15,6 +15,17 @@ const https = require("https");
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
 const { checkAdmin } = require('./models/index')
 const statusMonitor = require("express-status-monitor")();
+naive.Authregistry=[
+  {
+    匹配函数:function(req){
+      return (req.url.startsWith('/stage'))
+    },
+    安全策略函数:function(req){
+      return req.session
+    }
+  }
+]
+naive.safePath=[]
 naive.Handle=function(method,pattern,...args){
   method=="ALL"?method="use":null
   console.log(method,pattern,...args)
@@ -71,12 +82,6 @@ module.exports = {
     this.realoption = realoption;
     naive.设置 = realoption;
     思源api = new api(realoption);
-    //启用gzip压缩
-    //app.use(express1.json())
-    //https://zhuanlan.zhihu.com/p/409813376
-    //启用性能监控
-
-    //app.use(statusMonitor);
     addBaseParser(app)
     app.use(function (req, res, next) {
       console.log(req);

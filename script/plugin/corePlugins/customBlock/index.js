@@ -21,7 +21,6 @@ export class customBlock extends naive.plugin {
   注入自定义元素(){
     let path = this.initFolder()
     let array = fs.readdirSync(path)
-    console.log("customBlock",array)
     array.forEach(
       name=>this.从文件加载自定义元素(name)
     )
@@ -35,7 +34,6 @@ export class customBlock extends naive.plugin {
       let options =  module["options"]
       let type = 驼峰转换(name.substring(0,name.length-3))
       this.注册自定义HTML块(type,constructor,options)
-      console.log("customBlock",module)
     }
     if(name.endsWith('.vue')){
       path = this.initFolder()+"/"+name
@@ -44,7 +42,6 @@ export class customBlock extends naive.plugin {
       let options =  module["options"]
       let type = 驼峰转换(name.substring(0,name.length-3))
       this.注册自定义HTML块(type,constructor,options)
-      console.log("customBlock",module)
     }
   }
   html块监听器回调(mutationsList, observer) {

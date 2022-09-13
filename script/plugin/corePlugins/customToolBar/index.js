@@ -15,7 +15,6 @@ function 工具条回调(mutationsList, observer) {
     }
   }
 function 注入工具条按钮(target){
-    console.log(target)
     for(let 按钮名称 in naive.自定义工具条){
         let 按钮设置 = naive.自定义工具条[按钮名称]
         let button = document.createElement("button");

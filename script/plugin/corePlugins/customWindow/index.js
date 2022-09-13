@@ -23,7 +23,6 @@ export class customWindow extends naive.plugin {
                           : null;
                         // naive.子窗口[newWin.name] = null
                         newWin = null;
-                        console.log(naive);
                       });
                     ///#else
                     window.open(url);

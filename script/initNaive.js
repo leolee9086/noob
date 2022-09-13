@@ -35,7 +35,7 @@ export async function initNaive() {
       try {
         return realRequire(moduleName)
       } catch (e) {
-        if (error.message.indexOf('Cannot find module')) {
+        if (e.message.indexOf('Cannot find module')) {
           console.log(`模块${moduleName}未找到,重定向到naive设置文件deps/node`)
           if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
             moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`

@@ -38,7 +38,6 @@ export class defaultRouter extends naive.plugin {
   ///#ifAPP
   initFolder(){
     let pluginFoldr = naive.pathConstructor.initDirp(`${naive.pathConstructor.workspaceDir}/conf/naiveConf/pluginFolders/${this.name}`)
-    console.log(pluginFoldr)
     return pluginFoldr
   }
   initFile(filePath, data){
@@ -49,7 +48,6 @@ export class defaultRouter extends naive.plugin {
   }
   initDir(dirpath){
     let FolderPath = this.initFolder()
-
     let path = require('path')
     let realPath =  path.join(FolderPath,dirpath)
     return naive.pathConstructor.initDirp(realPath)

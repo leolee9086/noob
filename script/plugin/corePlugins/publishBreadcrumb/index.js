@@ -11,8 +11,6 @@ export class publishBreadcrumb extends naive.plugin {
     面包屑内容.forEach((面包屑条目) => {
       html += this.生成面包屑条目(面包屑条目, 渲染结果);
     });
-    console.log(面包屑元素);
-    console.log(面包屑内容);
     面包屑元素.innerHTML=html
     return 渲染结果;
   }

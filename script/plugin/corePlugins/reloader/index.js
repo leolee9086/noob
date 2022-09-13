@@ -28,7 +28,6 @@ export class  reloader extends  naive.plugin  {
             }
         ///#else
         window.location.reload()
-
         ///#endif
         }
 }

@@ -103,11 +103,9 @@ function findBacklinks(customTab) {
     let { backlinkListElement } = customTab
     let stmt = `select * from spans`
     naive.kernelApi.sql({ stmt: stmt }, '', (data) => {
-        console.log(data)
         let backlinkList = data.filter(item => {
             return /\[[\s\S]*?\]\([\s\S]*?\)/gm.test(item.markdown) && item.markdown.indexOf(`(${url})`) > 0
         })
-        console.log(backlinkList)
         backlinkListElement.innerHTML = ""
         backlinkList.forEach(
             item => {
@@ -141,7 +139,6 @@ function bindframeEvent(customTab) {
     findBacklinks(customTab)
 
     frame.addEventListener("dom-ready", () => {
-        console.error(frame.getWebContentsId())
         fetch(urlInputter.value).then(
             res => {
                 return res.text()
@@ -161,7 +158,6 @@ function bindframeEvent(customTab) {
         e.preventDefault()
         const protocol = (new URL(e.url)).protocol
         let url = e.url + ""
-        console.log(e.url)
         if (protocol === 'http:' || protocol === 'https:') {
             let newtab = iframeTab(customTab.constructor,
                 {

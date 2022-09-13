@@ -19,11 +19,9 @@ export class naiveBazzar extends naive.plugin {
   转移已安装的插件(){
     let 模块路径 = this.pluginCachePath.replace(/\\/g,'/')+'/node_modules'
     let 文件夹列表 = fg.sync(`${模块路径}/**`,{onlyDirectories:true,deep:1,dot:true,stats:true})
-    console.error(文件夹列表)
     //仅仅复制插件,其他复制到deps文件夹中
     文件夹列表.forEach(
       文件夹=>{
-        console.error(文件夹)
         //如果不存在plugin.json,说明不是插件而是依赖
         if(!fs.existsSync(`${文件夹.name}/plugin.json`)){
           if(!fs.existsSync(`/conf/naiveConf/deps/node_modules/${文件夹.name}`)){
@@ -33,7 +31,6 @@ export class naiveBazzar extends naive.plugin {
         }
         else{
           let json = fs.readJsonSync(`${文件夹}/plugin.json`)
-          console.log(json)
           if(json.naiveVersion){
             if(json.naiveVersion)
             fs.copySync(文件夹.path,naive.workspaceDir + `/conf/naiveConf/plugins/${文件夹.name}`)
@@ -58,7 +55,6 @@ export class naiveBazzar extends naive.plugin {
     bazzar.模板列表 = await this.搜索npm包列表('siyuan-template')
     bazzar.主题列表 = await this.搜索npm包列表('siyuan-theme')
     bazzar.css片段列表 = await this.搜索npm包列表('siyuan-css')*/
-    console.error(naive.bazzar)
   }
   async 搜索npm包列表(搜索表达式){
     let output = await naive.serverUtil.shellCmd('npm',`search ${搜索表达式} -long -json -parseable -registry=https://registry.npmjs.org/`,naive.pathConstructor.pluginsPath())
@@ -69,48 +65,6 @@ export class naiveBazzar extends naive.plugin {
       return []
     }
   }
- /* async 获取插件列表() {
-    let bazzarOss = "https://ccds-1300128285.cos.ap-guangzhou.myqcloud.com";
-    let pluginListPath = "/bazzar/plugins.json";
-    let pluginsPath = "/bazzar/plugins";
-    this.插件列表 = JSON.parse(
-      await (await fetch(bazzarOss + pluginListPath)).text()
-    );
-    !naive.bazzar ? (naive.bazzar = {}) : null;
-    !naive.bazzar.plugins ? (naive.bazzar.plugins = {}) : null;
-    console.log("bazzar", this.插件列表);
-    this.插件列表.repos.forEach((插件名) => {
-      console.log(插件名);
-      let 用户名 = 插件名.split("/")[0];
-      let 正式插件名 = 插件名.split("/")[1].split("@")[0];
-      let 提交hash = 插件名.split("/")[1].split("@")[1];
-      let 插件说明文件路径 = `${
-        bazzarOss + pluginsPath
-      }/${用户名}/${正式插件名}/README.md'`;
-      let 插件预览图路径 = `${
-        bazzarOss + pluginsPath
-      }/${用户名}/${正式插件名}/preview.png`;
-      let 插件包路径 = `${
-        bazzarOss + pluginsPath
-      }/${用户名}/${正式插件名}/${正式插件名}-${提交hash}.zip`;
-      console.log(
-        插件说明文件路径,
-        插件预览图路径,
-        用户名,
-        正式插件名,
-        插件包路径
-      );
-      naive.bazzar.plugins[正式插件名] = {
-        预览路径: 插件预览图路径,
-        说明路径: 插件说明文件路径,
-        作者: 用户名,
-        插件包路径: 插件包路径,
-        插件名: 正式插件名,
-        hash: 提交hash,
-      };
-      console.log(naive.bazzar.plugins);
-    });
-  }*/
   async 卸载插件(插件名) {
     let flag = naive.ifDefOptions.defs.DEBUG ? true : false;
     naive.ifDefOptions.defs.DEBUG

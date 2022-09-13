@@ -67,10 +67,8 @@ export const newCenterEmptyTab = (Tab) => {
 export class customTab extends naive.plugin {
     constructor() {
         super({ name: "customTab" })
-        console.error(this.getFirstTab())
         this.tabClass = this.getFirstTab().constructor
         let wndClass = siyuan.layout.centerLayout.children[0].constructor
-        console.error(this.tabClass, wndClass, siyuan.layout.centerLayout.children[0])
 
         window.addEventListener('mousedown', (e) => this.onclick(e))
         this.hackLayout()
@@ -116,7 +114,6 @@ export class customTab extends naive.plugin {
     }
     getFirstTab() {
         let array = this.falttenLayout()
-        console.error(array)
         return array.filter(
             item => { return item.addModel }
         )[0]
@@ -140,7 +137,6 @@ export class customTab extends naive.plugin {
     }
     getLayoutByElement(el, layout) {
         let array = this.falttenLayout()
-        console.error(array)
         let target
         target = array.filter(
             item => {
@@ -150,13 +146,9 @@ export class customTab extends naive.plugin {
         return target[0]
     }
     onclick(e) {
-        console.error(e)
         if (e.target.dataset && e.target.dataset.type == 'a') {
-            console.error(e.target)
             let wndElement = this.findWndParent(e.target)
-            console.error(wndElement)
             let layout = this.getLayoutByElement(wndElement, siyuan.layout.centerLayout)
-            console.error(layout)
             layout.addTab(iframeTab(this.tabClass, { url: e.target.dataset.href, title: e.target.dataset.tilte || e.target.innerHTML }))
         }
     }
@@ -170,7 +162,6 @@ export class customTab extends naive.plugin {
 
                     switch (type) {
                         case "naiveBrowser":
-                            console.error("naiveBrowser")
                             layout.parent.addTab(iframeTab(
                                 this.tabClass,
                                 {

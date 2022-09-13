@@ -56,7 +56,6 @@ function 注册块标菜单(option, 目标) {
   自定义块标菜单[块类型][菜单文字]["菜单图标"] = 菜单图标;
   自定义块标菜单[块类型][菜单文字]["注册插件"] = this;
   自定义块标菜单[块类型][菜单文字]["显示判断函数"] = 显示判断函数;
-  console.log(option, 自定义块标菜单);
 }
 function 注册图片菜单(option) {
   naive.自定义图片菜单 ? null : (naive.自定义图片菜单 = {});
@@ -76,7 +75,6 @@ function 注册文档树菜单(option) {
 function 通用菜单监听器回调(mutationsList, observer) {
   for (let mutation of mutationsList) {
     if (mutation.target) {
-      console.log("text");
       if (mutation.target.getAttribute("class") == "b3-menu") {
         naive.事件总线.emit("通用菜单显示", mutation.target);
         判定通用菜单(mutation.target);
@@ -202,11 +200,6 @@ function 注入菜单项目(菜单项目, 块标菜单数据, 自定义块标菜
         自定义块标菜单[当前块类型][菜单项目]["注册插件"]
       )();
   }
-  console.log(
-    块标菜单数据.菜单.innerHTML.indexOf(
-      元素转字符串(生成列表菜单项目(自定义块标菜单[当前块类型][菜单项目]))
-    )
-  );
   if (
     块标菜单数据.菜单.innerHTML &&
     块标菜单数据.菜单.innerHTML.indexOf(

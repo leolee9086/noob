@@ -43,7 +43,6 @@ export class pluginInNote extends naive.plugin {
     }
     stmt += ` and type = "${块类型}"`;
     let res = await this.核心api.sql({ stmt: stmt }, "");
-    console.log(res);
     if (res && res[0]) {
       res.forEach((block) => {
         let 缓存路径 = this.initFolder()+`/notes/${block.id}.js`
@@ -94,14 +93,11 @@ export class pluginInNote extends naive.plugin {
         { id: 块id, mode: 0, size: 102400, k: "" },
         ""
       );
-      console.log(doc);
       let div = document.createElement("div");
       div.innerHTML = doc.content;
-      console.log(div);
       let codeBlocks = div.querySelectorAll(
         "div[data-node-id]:not(div[data-node-id] div[data-node-id])"
       );
-      console.log(codeBlocks);
       let code = "";
       codeBlocks.forEach((el) => {
         if (
@@ -120,10 +116,7 @@ export class pluginInNote extends naive.plugin {
           });
         }
       });
-      console.log(code);
       code =await this.parseImport(code)
-      console.log(code);
-
       naive.pathConstructor.mkfilep(缓存路径, code);
       this.已缓存笔记列表[缓存路径][块id]=code
   }
@@ -132,19 +125,10 @@ export class pluginInNote extends naive.plugin {
     let filePath = cachePath + `/plugins/plugin-${块id}.js`;
     await this.缓存笔记内脚本内容(块id,filePath)
     try {
-      let module =await import(filePath)/*.then((module, error) => {
-        if (error) {
-          console.force_log(error);
-        } else {
-          return module;
-        }
-      });*/
+      let module =await import(filePath)
       let pluginClass = new module["plugin"]();
-      console.force_log(module, pluginClass);
       naive.pluginInNote[pluginClass.name] = pluginClass;
     } catch (e) {
-      console.table(e)
-      console.force_table(e.stack);
       this.pluginInNoteError[块id] = e;
       this.errorstyle.innerHTML += `
             .protyle-background[data-node-id="${块id}"] ~ [data-doc-type="NodeDocument"]::before{

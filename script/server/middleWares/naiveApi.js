@@ -3,9 +3,10 @@ const { models, checkAdmin, sequelize } = require("../models/index");
 const fs = naive.serverUtil.fs;
 const formiable = require("express-formidable");
 const path = require("path");
+const router  = require('express')
 let realoption = window.naive.publishOption;
 module.exports = function addNaiveApi(app) {
-  app.use("/plugin/config",(req,res)=>{
+  app.use("pluins/config",(req,res)=>{
     let {name} = req.query
     let url
     if(name&&name+''!=="undefined"){

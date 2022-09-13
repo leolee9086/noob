@@ -14,13 +14,10 @@ function parseImport(code) {
     return codeMagicString.toString()
 }
 function 重写导入(导入声明) {
-
     let name = 导入声明.n
     if (name.startsWith('/')) {
-
         name = '/deps' + name
     }
-
     name = name.replace(/https\:\/\/esm.sh/g, "/deps/")
     return name
 }
