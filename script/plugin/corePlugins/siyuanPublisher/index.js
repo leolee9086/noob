@@ -90,6 +90,7 @@ export class siyuanPublisher extends naive.plugin {
     this.注册发布用菜单();
   }
   设置默认发布() {
+    
     this.expressApp.get("/block/:blockid", (req, res) =>
       this.管线渲染(req, res)
     );

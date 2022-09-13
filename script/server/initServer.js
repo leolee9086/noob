@@ -1,4 +1,6 @@
 
+const express1 = require("express");
+naive.serverUtil.router =  express1.Router
 const {fs,importParser,MagicString} =  naive.serverUtil
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addBaseParser = require('./middleWares/baseParsers.js')
@@ -8,7 +10,6 @@ const addSiyuanProxy = require('./middleWares/siyuanApi.js')
 const api = require("../public/siYuanApi");
 const path = require("path");
 const formiable = require("express-formidable");
-const express1 = require("express");
 const app = express1();
 const http = require("http");
 const https = require("https");

@@ -1,12 +1,12 @@
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../keys/index.js");
 const { models, checkAdmin, sequelize } = require("../models/index");
-const fs = naive.serverUtil.fs;
+const {fs,router} = naive.serverUtil;
 const formiable = require("express-formidable");
 const path = require("path");
-const router  = require('express')
 let realoption = window.naive.publishOption;
 module.exports = function addNaiveApi(app) {
-  app.use("pluins/config",(req,res)=>{
+  app.use("/plugins",router())
+  app.use("plugins/config",(req,res)=>{
     let {name} = req.query
     let url
     if(name&&name+''!=="undefined"){
