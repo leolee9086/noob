@@ -9,25 +9,10 @@ import { corePluginList } from "./plugin/pluginConfiger.js";
 import { updatePluginsConfig } from "./plugin/pluginConfiger.js";
 export async function initNaive() {
   let naive = window.naive;
-  //从siyuan对象获取工作空间路径
-  naive.workspaceDir = window.siyuan.config.system.workspaceDir;
-  //从siyuan对象获取主题名称
-  naive.themeName = !window.siyuan.config.appearance.mode
-    ? window.siyuan.config.appearance.themeLight
-    : window.siyuan.config.appearance.themeDark;
-  //路径生成器，主要用于生成各种路径变量
   naive.pathConstructor = new pathConstructor(
     naive.workspaceDir,
     naive.themeName
   );
-
-  //获取用户信息
-  naive.user = {}
-  if (window.siyuan.user) {
-    naive.user = window.siyuan.user;
-  }
-  //获取websocket
-  naive.ws = window.siyuan.ws;
 
   //事件总线用于向插件发送事件数据
   naive.eventBus = new 事件总线();
@@ -90,6 +75,10 @@ export async function initNaive() {
     );
     naive.ifDefOptions.verbose = naive.publishOption.develop;
   }
+  //仅仅在桌面端加载服务端代码
+if (naive.ifDefOptions.defs.APP) {
+  await import("./server/severIndex.js");
+}
   //这里的代码会在服务器创建完成之后运行,ifdef这时已经启用了,因此后面可以从这里开始加载插件
   naive.eventBus.on("message", async (m) => {
     if (m.type !== "serverStart") {

@@ -28,9 +28,22 @@ naive.ifDefOptions.defs.PUBLISH=!window.siyuan,
 naive.ifDefOptions.defs.MOBILE=!window.siyuan.mobileEditor ? false : true,
 naive.ifDefOptions.defs.DEBUG= true,
 naive.ifdefParser = new ifdefParser(naive.ifDefOptions);
+  //从siyuan对象获取工作空间路径
+  naive.workspaceDir = window.siyuan.config.system.workspaceDir;
+  //从siyuan对象获取主题名称
+  naive.themeName = !window.siyuan.config.appearance.mode
+    ? window.siyuan.config.appearance.themeLight
+    : window.siyuan.config.appearance.themeDark;
+  //路径生成器，主要用于生成各种路径变量
+  //获取用户信息
+  naive.user = {}
+  if (window.siyuan.user) {
+    naive.user = window.siyuan.user;
+  }
+  //获取websocket
+  naive.ws = window.siyuan.ws;
+
+
 await initNaive();
-//仅仅在桌面端加载服务端代码
-if (naive.ifDefOptions.defs.APP) {
-  await import("./script/server/severIndex.js");
-}
+
 
