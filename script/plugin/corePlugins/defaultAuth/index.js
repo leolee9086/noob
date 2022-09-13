@@ -195,7 +195,7 @@ export class defaultAuth extends naive.plugin {
 }
 export const dependencies = [
   "template",
-  "defaultRouter",
-  "publisher",
+  "siyuanRouter",
+  "siyuanPublisher",
 ];
 export const environments = ["APP"];

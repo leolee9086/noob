@@ -6,6 +6,6 @@ export class  extensionLoader extends  naive.plugin  {
     }
 }
 export const dependencies = [
-    "defaultRouter",
+    "siyuanRouter",
 ];
   

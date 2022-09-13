@@ -87,4 +87,4 @@ export class naiveBazzar extends naive.plugin {
   }
 }
 export const environment = ["APP"];
-export const dependencies = ["publisher"];
+export const dependencies = ["siyuanPublisher"];

@@ -8,7 +8,7 @@ import {生成面包屑} from "./renders/breadcrumb.js"
 import {修改发布主题} from "./renders/themes.js"
 import {生成文档树} from "./renders/fileTree.js"
 import {生成文档大纲} from "./renders/outline.js"
-
+import {生成导航栏,生成脚注} from "./renders/slots.js"
 export const pipe = [
   注入块属性,
   生成发布文档头,
@@ -21,6 +21,8 @@ export const pipe = [
   生成面包屑,
   修改发布主题,
   生成文档树,
-  生成文档大纲
+  生成文档大纲,
+  生成导航栏,
+  生成脚注
 ]
 

@@ -1,9 +1,8 @@
 import {pipe} from "./pipe.js"
-
 const {fs}  = naive.serverUtil
-export class publisher extends naive.plugin {
+export class siyuanPublisher extends naive.plugin {
   constructor() {
-    super({ name: "publisher" });
+    super({ name: "siyuanPublisher" });
     window.siyuan.ws.ws.addEventListener('close',()=>{window.open('/')})
     ///#ifAPP
     this.realoption = naive.设置;
@@ -167,18 +166,7 @@ export class publisher extends naive.plugin {
   })
   }
   async 管线渲染(req, res) {
-    let blockid =
-    req.params.blockid ||
-    req.query.blockid ||
-    req.query.id ||
-    naive.设置.首页.思源文档id;
-    let blockStats = await this.核心api.getDocInfo(
-      { id: blockid},
-      ""
-    );
-    
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-
     let 渲染管线 = this.生成渲染管线();
     let 渲染结果 = new DOMParser().parseFromString("", "text/html");
     for await (let 渲染函数 of 渲染管线) {
@@ -524,5 +512,5 @@ export class publisher extends naive.plugin {
     );
   }
 }
-export const dependencies = ["template", "defaultRouter", "commonMenu"];
+export const dependencies = ["template", "siyuanRouter", "commonMenu"];
 export const environments = ["APP",'BROWSER'];

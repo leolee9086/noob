@@ -14,10 +14,10 @@ export async function 重载插件(event, 文件名, 插件名) {
     let menifestJSON = await manifest.json();
     let 插件环境配置 = menifestJSON.environment;
     if (插件环境配置 == "publish") {
-      await 加载插件(插件名, 插件环境配置);
+      await 加载插件(插件名);
     } else {
       for (let 环境名 of 插件环境配置) {
-        await 加载插件(插件名, 环境名);
+        await 加载插件(插件名);
       }
     }
   }
@@ -34,7 +34,6 @@ export async function 加载所有客户插件(){
   naive.plugins = {};
 
   for (let 插件名 in naive.pluginsConfig) {
-    console.error(插件名)
     if(!插件名){
       return
     }
@@ -49,7 +48,7 @@ export async function 加载所有客户插件(){
 
 }
 export async function 加载插件(插件名){
-  console.error(插件名)
+  console.log(`开始加载插件${插件名}`)
   let options=JSON.parse(JSON.stringify(naive.ifDefOptions))
   options.verbose= false
   options.defs=JSON.parse(JSON.stringify(naive.ifDefOptions.defs))
@@ -93,12 +92,12 @@ export async function 加载插件(插件名){
       }
     }
     if (pluginclass.dependencies&&pluginclass.dependencies instanceof Array) {
-        for await( let 插件名 of pluginclass.dependencies) {
+        for await( let 依赖插件名 of pluginclass.dependencies) {
         try{
-        await 加载核心插件(插件名);
-        await 加载插件(插件名);
+        await 加载核心插件(依赖插件名);
+        await 加载插件(依赖插件名);
         }catch(e){
-          console.error(e)
+          console.error(`插件${依赖插件名}加载依赖插件失败:${e}`)
         }
       }
     }
@@ -109,7 +108,7 @@ export async function 加载插件(插件名){
       pluginclass.dependencies?naive.plugins[插件名].dependencies=pluginclass.dependencies:null
     console.log(`加载插件${插件名}成功`)
       }catch(e){
-        console.error(`加载插件${插件名}失败:`, e);
+        throw new Error(`加载插件${插件名}失败:${e}`)
       }
 }
 
@@ -157,7 +156,9 @@ async function 加载核心插件(插件名) {
   if (pluginclass.dependencies&&pluginclass.dependencies instanceof Array) {
       for await( let 依赖插件名 of pluginclass.dependencies) {
       console.log(依赖插件名)
-      await 加载核心插件(依赖插件名);
+      try{ await 加载核心插件(依赖插件名);}catch(e){
+        console.error(`核心插件${插件名}加载依赖插件失败:${e}`)
+      }
     }
   }
   naive.corePlugins ? null : (naive.corePlugins = {});
@@ -166,7 +167,7 @@ async function 加载核心插件(插件名) {
     : null;
     pluginclass.dependencies?naive.corePlugins[插件名].dependencies=pluginclass.dependencies:null
 }catch(e){
-  console.log(`加载核心插件${插件名}错误:${e}`)
+  throw new Error(`加载核心插件${插件名}失败:${e}`)
   
   }
 }

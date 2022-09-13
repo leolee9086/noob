@@ -122,5 +122,4 @@
 export function 注册竖线菜单(option){
   let {id,数据值,菜单图标,菜单文字,回调函数,唤起词列表} = option
   window.naive.竖线菜单配置.id = option
-  
 }

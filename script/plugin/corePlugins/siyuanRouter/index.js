@@ -1,6 +1,6 @@
-export class defaultRouter extends naive.plugin {
+export class siyuanRouter extends naive.plugin {
   constructor() {
-    super({ name: "defaultRouter" });
+    super({ name: "siyuanRouter" });
     ///#ifAPP
     //这里不知道为什么不能使用router作为属性名
     this.setPluginsProp({中文:"发布路由",en:'expressApp'},naive.expressApp)

@@ -101,4 +101,4 @@ export class customBlock extends naive.plugin {
     }
   }
 }
-export const dependencies = ["defaultRouter"]
+export const dependencies = ["siyuanRouter"]
