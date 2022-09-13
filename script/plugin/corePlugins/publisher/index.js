@@ -156,7 +156,7 @@ export class publisher extends naive.plugin {
         }
         渲染结果 = (await 渲染函数(req, res, 渲染结果)) || "";
         let 文字渲染结果 = "";
-        console.log(渲染结果)
+        console.error(渲染结果)
         try {
           文字渲染结果 = 渲染结果.querySelector("body").innerHTML;
         } catch (e) {

@@ -43,7 +43,7 @@ export async function 加载所有客户插件(){
         await 加载插件(插件名);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -98,7 +98,7 @@ export async function 加载插件(插件名){
         await 加载核心插件(插件名);
         await 加载插件(插件名);
         }catch(e){
-          console.log(e)
+          console.error(e)
         }
       }
     }
