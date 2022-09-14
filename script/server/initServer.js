@@ -5,7 +5,6 @@ const {fs,importParser,MagicString} =  naive.serverUtil
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addBaseParser = require('./middleWares/baseParsers.js')
 const addStaticPath = require('./middleWares/staticPath.js')
-const addNaiveApi = require('./middleWares/naiveApi.js')
 const addSiyuanProxy = require('./middleWares/siyuanApi.js')
 const api = require("../public/siYuanApi");
 const path = require("path");
@@ -17,8 +16,7 @@ const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
 const { checkAdmin } = require('./models/index')
 const statusMonitor = require("express-status-monitor")();
 naive.serverUtil.getRouters=function(){
-  var route, routes = [];
-
+  let route, routes = [];
     app._router.stack.forEach(function(middleware){
         if(middleware.route){ 
             routes.push(middleware.route);
@@ -30,6 +28,9 @@ naive.serverUtil.getRouters=function(){
         }
     });
   return routes
+}
+naive.serverUtil.getRouteStack=function(){
+  return app._router.stack
 }
 naive.Authregistry=[
   {
@@ -148,7 +149,9 @@ module.exports = {
     //stage文件夹使用副本的方式访问
     addStaticPath(app)
     //设置接口
-    addNaiveApi(app)
+  //  console.log(apiRouter)
+   app.use('/naiveApi/',require("./naiveApi/index.js")   )
+   // addNaiveApi(app)
     addDevSurppoert(app)
     /*  const vite = await createViteServer({
         root:"d:/test/index.html",

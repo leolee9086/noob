@@ -1,0 +1,25 @@
+const express = require('express');
+const router = express.Router();
+const util = naive.serverUtil
+const {CheckAuth} = util
+router.post("/getBlockInfo", CheckAuth, getBlockInfo)
+router.post("/getBlockDOM", CheckAuth, getBlockDOM)
+router.post("/getBlockKramdown", CheckAuth, getBlockKramdown)
+router.post("/getBlockBreadcrumb", CheckAuth, getBlockBreadcrumb)
+router.post("/getRefIDs", CheckAuth, getRefIDs)
+router.post("/getRefIDsByFileAnnotationID", CheckAuth, getRefIDsByFileAnnotationID)
+router.post("/getBlockDefIDsByRefText", CheckAuth, getBlockDefIDsByRefText)
+router.post("/getRefText", CheckAuth, getRefText)
+router.post("/getBlockWordCount", CheckAuth, getBlockWordCount)
+router.post("/getBlocksWordCount", CheckAuth, getBlocksWordCount)
+router.post("/getContentWordCount", CheckAuth, getContentWordCount)
+router.post("/getRecentUpdatedBlocks", CheckAuth, getRecentUpdatedBlocks)
+router.post("/getDocInfo", CheckAuth, getDocInfo)
+router.post("/checkBlockExist", CheckAuth, checkBlockExist)
+router.post("/checkBlockFold", CheckAuth, checkBlockFold)
+router.post("/insertBlock", CheckAuth, insertBlock)
+router.post("/prependBlock", CheckAuth, prependBlock)
+router.post("/appendBlock", CheckAuth, appendBlock)
+router.post("/updateBlock", CheckAuth, updateBlock)
+router.post("/deleteBlock", CheckAuth, deleteBlock)
+router.post("/setBlockReminder", CheckAuth, setBlockReminder)

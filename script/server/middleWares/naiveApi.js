@@ -6,7 +6,7 @@ const path = require("path");
 let realoption = window.naive.publishOption;
 module.exports = function addNaiveApi(app) {
   app.use("/plugins",router())
-  app.use("plugins/config",(req,res)=>{
+  router().use("/config",(req,res)=>{
     let {name} = req.query
     let url
     if(name&&name+''!=="undefined"){
