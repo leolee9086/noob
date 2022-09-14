@@ -16,6 +16,21 @@ const https = require("https");
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
 const { checkAdmin } = require('./models/index')
 const statusMonitor = require("express-status-monitor")();
+naive.serverUtil.getRouters=function(){
+  var route, routes = [];
+
+    app._router.stack.forEach(function(middleware){
+        if(middleware.route){ 
+            routes.push(middleware.route);
+        } else if(middleware.name === 'router'){ 
+            middleware.handle.stack.forEach(function(handler){
+                route = handler.route;
+                route && routes.push(route);
+            });
+        }
+    });
+  return routes
+}
 naive.Authregistry=[
   {
     匹配函数:function(req){
@@ -289,7 +304,6 @@ module.exports = {
       });
     }
     addSiyuanProxy(app)
-
     naive.router = express1.Router();
     naive.expressApp = app;
     naive.express = express1;
