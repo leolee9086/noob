@@ -1,5 +1,5 @@
-const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../keys/index.js");
-const { models, checkAdmin, sequelize } = require("../models/index");
+const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../script/server/keys/index.js");
+const { models, checkAdmin, sequelize } = require("../script/server/models/index");
 const {fs,router} = naive.serverUtil;
 const formiable = require("express-formidable");
 const path = require("path");

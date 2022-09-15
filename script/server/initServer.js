@@ -1,9 +1,9 @@
-
+const middlewares = require("./middleWares/index.js")
+naive.middlewares=middlewares
 const express1 = require("express");
 naive.serverUtil.router =  express1.Router
 const {fs,importParser,MagicString} =  naive.serverUtil
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
-const addBaseParser = require('./middleWares/baseParsers.js')
 const addStaticPath = require('./middleWares/staticPath.js')
 const addSiyuanProxy = require('./middleWares/siyuanApi.js')
 const api = require("../public/siYuanApi");
@@ -13,7 +13,8 @@ const app = express1();
 const http = require("http");
 const https = require("https");
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
-const { checkAdmin } = require('./models/index')
+const { checkAdmin } = require('./models/index');
+const { allowCors } = require("./middleWares/index.js");
 const statusMonitor = require("express-status-monitor")();
 naive.serverUtil.getRouters=function(){
   let route, routes = [];
@@ -87,25 +88,23 @@ module.exports = {
     }
     //检查是否存在管理员权限
     await checkAdmin()
-
     //这里需要根据请求的来源判定返回的参数
     let scriptLoader = naive.ifdefParser;
     this.scriptLoader = scriptLoader;
-    let cusoption = JSON.parse(
-      fs.readFileSync(naive.pathConstructor.cusoptionPath(), "utf-8")
-    );
-    console.log(naive.workspaceDir);
     let realoption = naive.publishOption;
     this.realoption = realoption;
     naive.设置 = realoption;
     思源api = new api(realoption);
-    addBaseParser(app)
-    app.use(function (req, res, next) {
-      console.log(req);
-      res.setHeader("Access-Control-Allow-Private-Network", true);
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      next();
-    });
+    //使用session
+    app.use(middlewares.session)
+    //解析json
+    app.use(middlewares.json); //body-parser 解析json格式数据
+    //解析url
+    app.use(middlewares.urlencoded);
+    //压缩gzip
+    app.use(middlewares.compression);
+    //允许跨域请求
+    app.use(middlewares.allowCors);
     //获取设置
     let res4 = await fs.readFileSync(naive.pathConstructor.cusoptionPath());
     const port = realoption.发布端口;
@@ -150,7 +149,7 @@ module.exports = {
     addStaticPath(app)
     //设置接口
   //  console.log(apiRouter)
-   app.use('/naiveApi/',require("./naiveApi/index.js")   )
+   app.use('/naiveApi/',require("./routers/naiveApi/index.js")   )
    // addNaiveApi(app)
     addDevSurppoert(app)
     /*  const vite = await createViteServer({
@@ -215,7 +214,6 @@ module.exports = {
     //静态路径伺服块id
     //允许客户端刷新缓存内容
     //为发布端提供插件支持
-    console.log(naive.pathConstructor.pluginsURL());
     //plugins文件夹启用ifdef,除了默认的状态之外,还会加上插件里定义的condition,
     app.use("/plugins/*", async function (req, res, next) {
       console.log(req);

@@ -120,7 +120,7 @@ export async function 加载插件(插件名){
 
 export async function 加载所有核心插件() {
   naive.corePluginsList = await fetch(
-    `http://${naive.pathConstructor.baseURL()}/naiveApi/corePluginsList`
+    `http://${naive.pathConstructor.baseURL()}/naiveApi/plugin/corePluginsList`
   );
   naive.corePluginsList = await naive.corePluginsList.json();
   console.log("核心插件列表",naive.corePluginsList)
