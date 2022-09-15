@@ -149,7 +149,7 @@ module.exports = {
     addStaticPath(app)
     //设置接口
   //  console.log(apiRouter)
-   app.use('/naiveApi/',require("./routers/naiveApi/index.js")   )
+  app.use('/',require("./routers/index.js"))
    // addNaiveApi(app)
     addDevSurppoert(app)
     /*  const vite = await createViteServer({

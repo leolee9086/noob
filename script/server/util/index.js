@@ -1,4 +1,5 @@
 const { shellCmd,npmCmd } = require('./shell');
+const proxy = require("express-http-proxy")
 
 module.exports = {
         //magicstring用于替换文字等
@@ -13,6 +14,6 @@ module.exports = {
         fs: require("fs-extra"),
         //用于执行命令
         shellCmd:shellCmd,
-        npmCmd:npmCmd
-        
+        npmCmd:npmCmd,
+        proxy:proxy       
 }
