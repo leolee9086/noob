@@ -46,6 +46,22 @@ export class 主题插件 {
       接口对象 => 设置接口(接口对象[0]||接口对象.名称, 接口对象[1]||接口对象.接口值)
     )
   }
+  //#ifApp
+  router(){
+    return {
+      get:(middleware)=>naive.pluginsApiRouter.use(`/${this.name}`,middleware),
+      head:(middleware)=>naive.pluginsApiRouter.head(`/${this.name}`,middleware),
+      post:(middleware)=>naive.pluginsApiRouter.post(`/${this.name}`,middleware),
+      put:(middleware)=>naive.pluginsApiRouter.put(`/${this.name}`,middleware),
+      delete:(middleware)=>naive.pluginsApiRouter.delete(`/${this.name}`,middleware),
+      connect:(middleware)=>naive.pluginsApiRouter.connect(`/${this.name}`,middleware),
+      options:(middleware)=>naive.pluginsApiRouter.options(`/${this.name}`,middleware),
+      trace:(middleware)=>naive.pluginsApiRouter.trace(`/${this.name}`,middleware),
+      patch:(middleware)=>naive.pluginsApiRouter.patch(`/${this.name}`,middleware),
+      use:(middleware)=>naive.pluginsApiRouter.use(`/${this.name}`,middleware),
+    }
+  }
+  //#endif
 }
 export { 主题插件 as plugin };
 

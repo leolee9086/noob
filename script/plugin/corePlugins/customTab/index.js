@@ -68,6 +68,7 @@ export class customTab extends naive.plugin {
     constructor() {
         super({ name: "customTab" })
         this.tabClass = this.getFirstTab().constructor
+        naive.siyuanTab = this.tabclass
         let wndClass = siyuan.layout.centerLayout.children[0].constructor
 
         window.addEventListener('mousedown', (e) => this.onclick(e))
@@ -159,7 +160,6 @@ export class customTab extends naive.plugin {
                 if (layout.docIcon) {
                     try { JSON.parse(layout.docIcon) } catch (e) { return }
                     let { type, url } = JSON.parse(layout.docIcon)
-
                     switch (type) {
                         case "naiveBrowser":
                             layout.parent.addTab(iframeTab(
@@ -173,8 +173,6 @@ export class customTab extends naive.plugin {
                             layout.parent.removeTab(layout.id)
                             break
                     }
-
-
                 }
             }
         )

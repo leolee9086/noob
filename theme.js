@@ -4,6 +4,7 @@
 //使用立即执行函数避免污染全局对象
 //async是为了能够在函数中使用await
 //只有下面这段代码是必须的
+let styleList = Array.from(document.styleSheets)
 
 
 if(window.frameElement){

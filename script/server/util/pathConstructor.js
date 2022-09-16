@@ -108,21 +108,6 @@ export default class pathConstructor {
 
 
   }
-  scriptURL() {
-    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/script`;
-  }
-  pluginsURL() {
-    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/plugins`;
-  }
-  pluginConfigURL() {
-    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/naiveApi/pluginConfig`;
-  }
-  corePluginsURL() {
-    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}/script/plugin/corePlugins`;
-  }
-  baseURL(){
-    return `${naive.publishOption.思源伺服地址}:${naive.publishOption.发布端口}`
-  }
   mkfilep(filePath, data) {
     let fs = require("fs");
     let mkdirp = this.requireScript("/server/node_modules/mkdirp");

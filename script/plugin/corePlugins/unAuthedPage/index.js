@@ -2,34 +2,8 @@ export class unAuthedPage extends naive.plugin {
   constructor() {
     super({ name: "unAuthedPage", sort: 2 });
     this.fs = require("fs");
-    this.设定登录路由()
   }
-  设定登录路由(){
-    let app = naive.expressApp
-    app.get("/user/regist", async (req, res) => {
-      let unAuthedPageTemplate = this.fs.readFileSync(
-        naive.pathConstructor.templatePath() + "/login.html",
-        "utf8"
-      );
-      let adminPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/admin.html','utf8')
-
-      if(naive.dbNoUser){
-        res.end(adminPageTemplate)
-      }
-      else res.end(unAuthedPageTemplate);
-      console.log(res);
-    });
-    app.get("/user/login",async(req,res)=>{
-      let loginPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/unAuthedPage.html','utf8')
-      let adminPageTemplate = this.fs.readFileSync(naive.pathConstructor.templatePath()+'/admin.html','utf8')
-      if(naive.dbNoUser){
-        res.end(adminPageTemplate)
-      }
-      else{ 
-        res.end(loginPageTemplate)
-      }
-    })  
-  }
+ 
   pipe = [this.判定并生成空页面];
   async 判定并生成空页面(req, res, 渲染结果) {
     if (渲染结果 && req.session) {
@@ -43,19 +17,23 @@ export class unAuthedPage extends naive.plugin {
       if (req.session.status !== "Authed") {
         //已经设置了access的路径,根据access鉴权
         if (access == "protected") {
+         /* res.redirect('/UnAthorized/private')
+
           let unAuthedPageTemplate = this.fs.readFileSync(
             naive.pathConstructor.templatePath() + "/unAuthedPage.html",
             "utf8"
-          );
-          res.end(unAuthedPageTemplate);
+          );*/
+          res.end(naive.unAuthedPageTemplate.protected);
           console.log(res);
           return 渲染结果;
         } else if (access == "private") {
+          /*res.redirect('/UnAthorized/protected')
+
           let unAuthedPageTemplate = this.fs.readFileSync(
             naive.pathConstructor.templatePath() + "/private.html",
             "utf8"
-          );
-          res.end(unAuthedPageTemplate);
+          );*/
+          res.end(naive.unAuthedPageTemplate.private);
           console.log(res);
           return 渲染结果;
         } else if (access == "public") {
@@ -64,12 +42,14 @@ export class unAuthedPage extends naive.plugin {
         //没有设置或者为其他值的,根据默认设置鉴权
         else {
             if (!naive.设置.默认发布设置 || naive.设置.默认发布设置 == "private") {
-              let unAuthedPageTemplate = this.fs.readFileSync(
+              console.error('test')
+              res.redirect('/UnAthorized/private')
+              /*let unAuthedPageTemplate = this.fs.readFileSync(
                 naive.pathConstructor.templatePath() + "/private.html",
                 "utf8"
               );
               res.end(unAuthedPageTemplate);
-              console.log(res);
+              console.log(res);*/
             } else if (naive.设置.默认发布设置 == "protected") {
               let unAuthedPageTemplate = this.fs.readFileSync(
                 naive.pathConstructor.templatePath() + "/unAuthedPage.html",

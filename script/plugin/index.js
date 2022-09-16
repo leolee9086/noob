@@ -2,7 +2,7 @@ import {加载所有客户插件,加载所有核心插件} from "./pluginLoader.
 export async function 加载插件(){
     naive.plugin = await (
         await import(
-          `http://${naive.pathConstructor.scriptURL()}/plugin/plugin.js?condition=${JSON.stringify(
+          `http://${naive.设置.发布地址}:${naive.设置.发布端口}/script/plugin/plugin.js?condition=${JSON.stringify(
             naive.ifDefOptions
           )}`
         )

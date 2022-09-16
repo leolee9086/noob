@@ -22,13 +22,9 @@ export async function 重载插件(event, 文件名, 插件名) {
     }
   }
 }
-
-
-
-
 export async function 加载所有客户插件(){
   naive.pluginsConfig = await fetch(
-    `http://${naive.pathConstructor.pluginConfigURL()}`
+    `http://${naive.设置.发布地址}:${naive.设置.发布端口}/naiveApi/plugin/getConfig`
   );
   naive.pluginsConfig = await naive.pluginsConfig.json();
   naive.plugins = {};
@@ -45,7 +41,6 @@ export async function 加载所有客户插件(){
       console.error(e);
     }
   }
-
 }
 export async function 加载插件(插件名){
   console.log(`开始加载插件${插件名}`)
@@ -54,12 +49,11 @@ export async function 加载插件(插件名){
   options.defs=JSON.parse(JSON.stringify(naive.ifDefOptions.defs))
   try{
     let {condition} = await import(
-      `http://${naive.pathConstructor.pluginsURL()}/${插件名}/index.js
+      `http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js
       `
     );
     let pluginclass
     let defs =options.defs
-
     if (condition){
        for(let name in options.defs){
         condition[name]= defs[name]!==undefined?defs[name]:condition[name]
@@ -68,19 +62,18 @@ export async function 加载插件(插件名){
       }
 
        pluginclass = await import(
-        `http://${naive.pathConstructor.pluginsURL()}/${插件名}/index.js?condition=${JSON.stringify(
+        `http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js?condition=${JSON.stringify(
           options
         )}`
       );
     }
     else{
        pluginclass = await import(
-        `http://${naive.pathConstructor.pluginsURL()}/${插件名}/index.js?condition=${JSON.stringify(
+        `http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js?condition=${JSON.stringify(
           options
         )}`
       );
     }
-
     if(pluginclass.environments&&pluginclass.environments instanceof Array){
       let flag = false
       pluginclass.environments.forEach(en => {
@@ -120,7 +113,7 @@ export async function 加载插件(插件名){
 
 export async function 加载所有核心插件() {
   naive.corePluginsList = await fetch(
-    `http://${naive.pathConstructor.baseURL()}/naiveApi/plugin/corePluginsList`
+    `http://${naive.设置.发布地址}:${naive.设置.发布端口}/naiveApi/plugin/corePluginsList`
   );
   naive.corePluginsList = await naive.corePluginsList.json();
   console.log("核心插件列表",naive.corePluginsList)
@@ -138,7 +131,7 @@ async function 加载核心插件(插件名) {
   try{
 
   let pluginclass = await import(
-    `http://${naive.pathConstructor.corePluginsURL()}/${插件名}/index.js?condition=${JSON.stringify(
+    `http://${naive.设置.发布地址}:${naive.设置.发布端口}/script/plugin/coreplugins/${插件名}/index.js?condition=${JSON.stringify(
       naive.ifDefOptions
     )}`
   )

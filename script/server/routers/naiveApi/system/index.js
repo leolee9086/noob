@@ -1,6 +1,16 @@
 const express = require('express');
-
 const router = express.Router();
+const {rsaPublicKey} =require("../../../keys/index.js")
+router.post("/rsaPublicKey", (req, res) => {
+  let data = {
+      msg: 0,
+      data: {
+          key: rsaPublicKey,
+      },
+  };
+  res.end(JSON.stringify(data));
+});
+
 router.use("/config", (req, res) => {
     let { name } = req.query
     let url

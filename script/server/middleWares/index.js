@@ -1,8 +1,8 @@
 const compression = require("compression");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-
-module.exports={
+const auth = require('./auth.js')
+ const  middlewares = {
     compression:compression(),
     json:bodyParser.json(),
     session:session({
@@ -21,5 +21,15 @@ module.exports={
         res.setHeader("Access-Control-Allow-Private-Network", true);
         res.setHeader("Access-Control-Allow-Origin", "*");
         next();
-    }
+    },
+    checkFileAccess:function(req,res,next){
+        console.log(req)
+        if(req.session){
+            console.error(req.session)
+        }
+        next()
+    },
+    auth:auth
 }
+module.exports=middlewares 
+

@@ -65,7 +65,7 @@ async function checkAdmin(){
     naive.dbNoUser = true;
   }
 }
-  
+
 module.exports={
   sequelize:sequelize,
   checkAdmin:checkAdmin,

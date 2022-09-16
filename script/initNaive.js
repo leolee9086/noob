@@ -13,7 +13,6 @@ export async function initNaive() {
     naive.workspaceDir,
     naive.themeName
   );
-
   //事件总线用于向插件发送事件数据
   naive.eventBus = new 事件总线();
   naive.事件总线 = new 事件总线();
@@ -53,7 +52,6 @@ export async function initNaive() {
       }
     }
     window.require = re
-
     const fs = require("fs");
     let option = {}
     try {

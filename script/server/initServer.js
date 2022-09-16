@@ -7,15 +7,11 @@ const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addStaticPath = require('./middleWares/staticPath.js')
 const addSiyuanProxy = require('./middleWares/siyuanApi.js')
 const api = require("../public/siYuanApi");
-const path = require("path");
-const formiable = require("express-formidable");
 const app = express1();
 const http = require("http");
 const https = require("https");
-const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require('./keys/index.js')
-const { checkAdmin } = require('./models/index');
-const { allowCors } = require("./middleWares/index.js");
-const statusMonitor = require("express-status-monitor")();
+const { checkAdmin,models } = require('./models/index');
+naive.dbModels=models
 naive.serverUtil.getRouters=function(){
   let route, routes = [];
     app._router.stack.forEach(function(middleware){
@@ -79,7 +75,7 @@ function 重写导入(导入声明) {
   }
   return name
 }
-module.exports = {
+module.exports =  {
   创建服务器: async function (naive) {
     if (global.publishserver) {
       console.log(global.publishserver);
@@ -105,6 +101,8 @@ module.exports = {
     app.use(middlewares.compression);
     //允许跨域请求
     app.use(middlewares.allowCors);
+    //向请求写入auth
+    app.use(middlewares.auth)
     //获取设置
     let res4 = await fs.readFileSync(naive.pathConstructor.cusoptionPath());
     const port = realoption.发布端口;

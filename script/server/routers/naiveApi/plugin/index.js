@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const formiable = require("express-formidable");
 const path =require('path')
+const {checkFileAccess} = require("../../../middleWares/index.js")
 router.use("/getPluginStatus", (req, res) => {
     res.setHeader("Access-Control-Allow-Private-Network", true);
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -37,20 +38,15 @@ router.use("/getPlugin", async (req, res) => {
         })
     }
 })
-router.post("/pluginConfig", (req, res) => {
+router.use("/getConfig", checkFileAccess,(req, res) => {
     res.end(JSON.stringify(naive.pluginsConfig));
 });
-router.get("/pluginConfig", (req, res) => {
-    res.end(JSON.stringify(naive.pluginsConfig));
+router.post("/setConfig", (req, res) => {
+    let json = req.body
+    fs.writeFileSync(naive.pathConstructor.pluginsConfigPath,JSON.stringify(json.data))
 });
-router.post("/corePluginsList", (req, res) => {
+router.use("/corePluginsList", (req, res) => {
     res.json(naive.corePluginsList);
-});
-router.get("/corePluginsList", (req, res) => {
-    res.json(naive.corePluginsList);
-});
-router.post("/pluginConfig", (req, res) => {
-    res.end(JSON.stringify(naive.corePlugins));
 });
 router.post("/corePlugins", (req, res) => {
     res.end(JSON.stringify(naive.corePlugins));
