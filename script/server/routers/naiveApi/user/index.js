@@ -1,7 +1,6 @@
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../../../keys/index.js");
 const express = require('express');
 const router = express.Router();
-
 router.post("/regist", async (req, res) => {
     if (req.body) {
         let auth = req.body.auth;
@@ -56,6 +55,15 @@ router.post("/regist", async (req, res) => {
                         {
                             code: 3,
                             msg: "抱歉,访问鉴权码错误"
+                        }
+                    )
+                    return
+                }
+                if (json.apiToken !== window.siyuan.config.api.token) {
+                    res.json(
+                        {
+                            code: 3,
+                            msg: "抱歉,apiToken错误"
                         }
                     )
                     return
