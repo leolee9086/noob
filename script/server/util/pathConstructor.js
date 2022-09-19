@@ -4,7 +4,6 @@ const path =require("path")
 if(realRequire){
 function re(moduleName){
   let that =window
-  console.log(this)
   if(this){
     that =this
   }
@@ -15,12 +14,9 @@ function re(moduleName){
       return window.require(moduleName)
     }
   } catch (e) {
-    console.warn(e)
     if (e.message.indexOf('Cannot find module')>=0) {
-      console.log(moduleName,that)
       if (!(moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../"))) {
         console.warn(`模块${moduleName}未找到,重定向到naive设置文件deps/node_modules`)
-
         moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node_modules/${moduleName}`
       }
       else if(that &&that instanceof naive.plugin){

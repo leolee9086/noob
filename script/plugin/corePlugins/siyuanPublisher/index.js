@@ -1,5 +1,7 @@
 import {pipe} from "./pipeRender.js/index.js"
-const {fs}  = naive.serverUtil
+//#ifAPP
+const fs  = require("fs-extra")
+//#endif
 export class siyuanPublisher extends naive.plugin {
   constructor() {
     super({ name: "siyuanPublisher" });
@@ -13,11 +15,9 @@ export class siyuanPublisher extends naive.plugin {
     );
     let 模板列表 = fs.readdirSync(this.模板路径);
     this.pipe =pipe
-    console.error(this)
-    this.SetRouter =this.require("./backend/router/index.js")
+    this.初始化后端 =(this.require("./backend/index.js")).bind(this)
     this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
-    this.设置默认发布();
-    this.加载发布路由();
+    this.初始化后端()
     ///#endif
   }
   async 加载发布路由() {
