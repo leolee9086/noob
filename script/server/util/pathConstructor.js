@@ -1,4 +1,59 @@
 import { 生成默认设置 } from "../../public/configer.js";
+const realRequire = window.require
+const path =require("path")
+if(realRequire){
+function re(moduleName){
+  let that =window
+  console.log(this)
+  if(this){
+    that =this
+  }
+  try {
+    if(that.realRequire){
+    return that.realRequire(moduleName)}
+    else{
+      return window.require(moduleName)
+    }
+  } catch (e) {
+    console.warn(e)
+    if (e.message.indexOf('Cannot find module')>=0) {
+      console.log(moduleName,that)
+      if (!(moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../"))) {
+        console.warn(`模块${moduleName}未找到,重定向到naive设置文件deps/node_modules`)
+
+        moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node_modules/${moduleName}`
+      }
+      else if(that &&that instanceof naive.plugin){
+        try{
+          moduleName = path.resolve(that.selfPath,moduleName)
+          return window.require(moduleName)
+        }
+        catch(e){
+          throw e
+        }
+      }
+      try{ 
+        
+        let module =  that.realRequire(moduleName)
+        return module 
+      }
+      catch (e){
+        throw e
+      }
+    }
+    else {
+      console.error(e)
+    }
+  }
+}
+console.log(realRequire.cache.electron.__proto__.require)
+realRequire.cache.electron.__proto__.realRequire=realRequire.cache.electron.__proto__.require
+realRequire.cache.electron.__proto__.require=re
+
+window.realRequire = realRequire
+window.require = re
+
+}
 export default class pathConstructor {
   constructor(workspaceDir, themeName) {
     this.workspaceDir = workspaceDir;
@@ -48,7 +103,7 @@ export default class pathConstructor {
   sslPath() {
     let fs = require("fs");
     let path = require("path");
-    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let mkdirp = require("mkdirp");
     let filePath = `${this.workspaceDir}/conf/naiveConf/ssl`;
     let e = fs.existsSync(filePath);
     fs.existsSync(filePath);
@@ -72,7 +127,7 @@ export default class pathConstructor {
   cachePath() {
     let fs = require("fs");
     let path = require("path");
-    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let mkdirp = require("mkdirp");
     let filePath = `${this.workspaceDir}/temp/naiveCache`;
     let e = fs.existsSync(filePath);
     if (e) {
@@ -84,7 +139,7 @@ export default class pathConstructor {
   uploadCachePath(){
     let fs = require("fs");
     let path = require("path");
-    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let mkdirp = require("mkdirp");
     let filePath = `${this.workspaceDir}/temp/naiveCache/uploadFiles`;
     let e = fs.existsSync(filePath);
     if (e) {
@@ -97,7 +152,7 @@ export default class pathConstructor {
   downloadCachePath(){
     let fs = require("fs");
     let path = require("path");
-    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let mkdirp = require("mkdirp");
     let filePath = `${this.workspaceDir}/temp/naiveCache/downloadFiles`;
     let e = fs.existsSync(filePath);
     if (e) {
@@ -110,7 +165,7 @@ export default class pathConstructor {
   }
   mkfilep(filePath, data) {
     let fs = require("fs");
-    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let mkdirp = require("mkdirp");
     let lastSlashIndex = filePath.lastIndexOf("/");
     let dirPath = filePath.slice(0, lastSlashIndex);
     mkdirp.sync(dirPath);
@@ -134,7 +189,7 @@ export default class pathConstructor {
   }
   initDirp(dirpath) {
     let fs = require("fs");
-    let mkdirp = this.requireScript("/server/node_modules/mkdirp");
+    let mkdirp = require("mkdirp");
     let e = fs.existsSync(dirpath);
     if (!e) {
       mkdirp.sync(dirpath);

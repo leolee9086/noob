@@ -1,7 +1,6 @@
-export function addRouter(app){
-    app.use("/publish", (req, res) => this.渲染(req, res));
-}
-
-	// 不需要鉴权
-
+const express= naive.express
+const router = express.Router()
+import publish from "./publish/index.js"
+router.use("/publish", (req, res) => publish);
+module.exports= router
 	

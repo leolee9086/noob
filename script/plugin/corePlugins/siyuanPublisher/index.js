@@ -1,4 +1,4 @@
-import {pipe} from "./pipe.js"
+import {pipe} from "./pipeRender.js/index.js"
 const {fs}  = naive.serverUtil
 export class siyuanPublisher extends naive.plugin {
   constructor() {
@@ -13,7 +13,8 @@ export class siyuanPublisher extends naive.plugin {
     );
     let 模板列表 = fs.readdirSync(this.模板路径);
     this.pipe =pipe
-
+    console.error(this)
+    this.SetRouter =this.require("./backend/router/index.js")
     this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
     this.设置默认发布();
     this.加载发布路由();
@@ -90,38 +91,45 @@ export class siyuanPublisher extends naive.plugin {
     this.注册发布用菜单();
   }
   设置默认发布() {
-    
-    this.expressApp.get("/block/:blockid", (req, res) =>
+    let router =  this.router()
+   // console.error(router)
+    function SetRouter(router){
+      router.use('*',(req,res)=>{
+          res.end("测试")
+      })
+      }
+  
+    /*router.get("/block/:blockid",(req,res)=>naive.middlewares.auth(req,res,{user_group:'admin'}), (req, res) =>
       this.管线渲染(req, res)
     );
-    this.expressApp.get("/block/", (req, res) => this.管线渲染(req, res));
-    this.expressApp.get("/", (req, res) => this.管线渲染(req, res));
+    router.get("/block/", (req, res) => this.管线渲染(req, res));
+    router.get("/", (req, res) => this.管线渲染(req, res));
     //允许搜索时,能够访问文档树
-    this.expressApp.post("/api/notebook/lsNotebooks", (req, res) => {
+    router.post("/api/notebook/lsNotebooks", (req, res) => {
       if (this.realoption.允许搜索) {
         this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够列出所有文档
-    this.expressApp.post("/api/filetree/listDocsByPath", (req, res) => {
+    router.post("/api/filetree/listDocsByPath", (req, res) => {
       if (this.realoption.允许搜索) {
         this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够搜索所有文档,这里需要加上鉴权
-    this.expressApp.post("/api/search/fullTextSearchBlock", (req, res) => {
+    router.post("/api/search/fullTextSearchBlock", (req, res) => {
       if (this.realoption.允许搜索) {
         this.转发JSON请求(req, res, true);
       }
     });
     //允许搜索时,能够嵌入所有块,这里需要加入鉴权
-    this.expressApp.post("/api/search/searchEmbedBlock", (req, res) => {
+    router.post("/api/search/searchEmbedBlock", (req, res) => {
       if (this.realoption.允许搜索) {
         this.转发JSON请求(req, res, true);
       }
     });
     //暴露api时,能够访问大部分api
-    this.expressApp.post("/api/*", (req, res) => {
+    router.post("/api/*", (req, res) => {
       if (this.realoption.暴露api) {
         this.转发JSON请求(req, res, false);
       } else {
@@ -129,7 +137,7 @@ export class siyuanPublisher extends naive.plugin {
       }
     });
     //通过这里查询渲染块数据权限
-    this.expressApp.use('/naiveApi/getPrivateBlock',(req,res)=>{
+    router.use('/naiveApi/getPrivateBlock',(req,res)=>{
       let data = req.body
       if(data&&data.id){
           if(naive.私有块字典[data.id]){
@@ -164,7 +172,7 @@ export class siyuanPublisher extends naive.plugin {
           }
       ))
       }
-  })
+  })*/
   }
   async 管线渲染(req, res) {
     res.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });

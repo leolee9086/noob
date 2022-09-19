@@ -29,18 +29,18 @@ export async function initNaive() {
   }
   //app环境下直接读取配置文件
   if (naive.ifDefOptions.defs.APP) {
-    const realRequire = require
+   /* const realRequire = window.require
     const re = function (moduleName) {
       try {
         return realRequire(moduleName)
       } catch (e) {
-        if (e.message.indexOf('Cannot find module')) {
-          console.log(`模块${moduleName}未找到,重定向到naive设置文件deps/node`)
+        if (e.message.indexOf('Cannot find module')>=0) {
+          console.warn(`模块${moduleName}未找到,重定向到naive设置文件deps/node_modules`)
           if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
-            moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node/node_modules/${moduleName}`
+            moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node_modules/${moduleName}`
           }
-          try{
-          return realRequire(moduleName)
+          try{ 
+            return realRequire(moduleName)
           }
           catch (e){
             throw e
@@ -51,7 +51,7 @@ export async function initNaive() {
         }
       }
     }
-    window.require = re
+    window.require = re*/
     const fs = require("fs");
     let option = {}
     try {

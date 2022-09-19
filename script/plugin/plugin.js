@@ -7,11 +7,18 @@ export class 主题插件 {
       this.插件名 = option.插件名
       this.name = option.name;
     }
-    
+    if(window.require){
+      this.require = window.require.bind(this)
+    }
     else{
       throw `插件必须提供名称`
     }
+   
     this.selfPath=naive.workspaceDir + '\\conf\\naiveConf\\plugins\\' + this.name
+    if(naive.corePluginsList.indexOf(this.name)>=0){
+      this.selfPath=naive.workspaceDir + '\\conf\\appearance\\themes\\naive\\script\\plugin\\corePlugins\\' + this.name
+
+    }
     this.setPluginsProp = this.设置插件接口
     this.批量设置插件接口([
       { 名称: { 中文: "主题对象", en: "naive", alias: "app" }, 接口值: naive },
@@ -48,18 +55,21 @@ export class 主题插件 {
   }
   //#ifApp
   router(){
-    return {
-      get:(middleware)=>naive.pluginsApiRouter.use(`/${this.name}`,middleware),
-      head:(middleware)=>naive.pluginsApiRouter.head(`/${this.name}`,middleware),
-      post:(middleware)=>naive.pluginsApiRouter.post(`/${this.name}`,middleware),
-      put:(middleware)=>naive.pluginsApiRouter.put(`/${this.name}`,middleware),
-      delete:(middleware)=>naive.pluginsApiRouter.delete(`/${this.name}`,middleware),
-      connect:(middleware)=>naive.pluginsApiRouter.connect(`/${this.name}`,middleware),
-      options:(middleware)=>naive.pluginsApiRouter.options(`/${this.name}`,middleware),
-      trace:(middleware)=>naive.pluginsApiRouter.trace(`/${this.name}`,middleware),
-      patch:(middleware)=>naive.pluginsApiRouter.patch(`/${this.name}`,middleware),
-      use:(middleware)=>naive.pluginsApiRouter.use(`/${this.name}`,middleware),
-    }
+    let router= naive.pluginsApiRouter()
+   /*  {
+      get:(pattern,...middleware)=>naive.pluginsApiRouter.use(`${pattern}`,...middleware),
+      head:(pattern,...middleware)=>naive.pluginsApiRouter.head(`${pattern}`,...middleware),
+      post:(pattern,...middleware)=>naive.pluginsApiRouter.post(`${pattern}`,...middleware),
+      put:(pattern,...middleware)=>naive.pluginsApiRouter.put(`${pattern}`,...middleware),
+      delete:(pattern,...middleware)=>naive.pluginsApiRouter.delete(`${pattern}`,...middleware),
+      connect:(pattern,...middleware)=>naive.pluginsApiRouter.connect(`${pattern}`,...middleware),
+      options:(pattern,...middleware)=>naive.pluginsApiRouter.options(`${pattern}`,...middleware),
+      trace:(pattern,...middleware)=>naive.pluginsApiRouter.trace(`${pattern}`,...middleware),
+      patch:(pattern,...middleware)=>naive.pluginsApiRouter.patch(`${pattern}`,...middleware),
+      use:(pattern,...middleware)=>naive.pluginsApiRouter.use(`${pattern}`,...middleware),
+    }*/
+    naive.expressApp.use(`/${this.name}`,router)
+    return router
   }
   //#endif
 }

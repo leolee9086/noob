@@ -17,7 +17,6 @@ router.get('/regist', (req, res) => {
         res.end(adminPageTemplate)
     }
     }
-   
     else res.end(unAuthedPageTemplate);
     console.log(res);
 });

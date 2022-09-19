@@ -14,17 +14,8 @@ const apiProxy = createProxyMiddleware ({
 
 
 module.exports= function addSiyuanProxy(app){
-    app.use('/editor',(req,res,next)=>{
-        if(!req.session){
-            res.redirect('/')
-        }
-        if(req.session&&req.session.user_group=='admin'){
-            next()
-        }
-
-    })
 
     app.use('/editor',proxy)
-    naive.publishServer.on('upgrade', proxy.upgrade)
+    app.on('upgrade', proxy.upgrade)
     naive.siyuanProxy=proxy
 }

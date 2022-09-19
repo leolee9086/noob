@@ -17,12 +17,9 @@ naive.unAuthedPageTemplate = {
     })()
 }
 router.get("/protected", (req, res) => {
-   
     res.end(unAuthedPageTemplate.protected);
-
 })
 router.get("/private", (req, res) => {
-  
     res.end(unAuthedPageTemplate.private);
 })
 module.exports = router

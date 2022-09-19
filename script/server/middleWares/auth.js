@@ -7,7 +7,6 @@ function authByParams(req, res, params,next) {
             if (req.session) {
                 if(req.session&&params instanceof Object){
                     let flag = true
-
                     Object.getOwnPropertyNames(params).forEach(
                         prop=>{
                             if (params[prop] !== req.session[prop]){
@@ -18,6 +17,7 @@ function authByParams(req, res, params,next) {
                             }
                         }
                     )
+                    console.error(flag)
                     if(flag){
                         next()
                     }
@@ -62,4 +62,4 @@ function authByParams(req, res, params,next) {
         break
     }
 }
-module.exports = auth
+module.exports = authByParams

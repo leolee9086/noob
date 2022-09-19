@@ -1,9 +1,9 @@
 export class defaultAuth extends naive.plugin {
   constructor() {
     super({ name: "defaultAuth", sort: 2 });
-    this.expressApp.post("/naiveApi/system/blockAuth", (req, res) =>
+  /*  this.expressApp.post("/naiveApi/system/blockAuth", (req, res) =>
       this.请求鉴权(req, res)
-    );
+    );*/
     this.setPluginsProp({中文:"判定id权限"}, this.判定id权限);
     this.setPluginsProp({中文:"解析路径"}, this.解析路径);
     this.setPluginsProp({中文:"校验权限",en:"checkAccessAuth"}, this.checkAccessAuth);

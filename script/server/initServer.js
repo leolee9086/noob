@@ -101,8 +101,10 @@ module.exports =  {
     app.use(middlewares.compression);
     //允许跨域请求
     app.use(middlewares.allowCors);
+    addSiyuanProxy(app)
+
     //向请求写入auth
-    app.use(middlewares.auth)
+   // app.use(middlewares)
     //获取设置
     let res4 = await fs.readFileSync(naive.pathConstructor.cusoptionPath());
     const port = realoption.发布端口;
@@ -302,7 +304,6 @@ module.exports =  {
         console.log(`sslPublish app listening on port ${443}`);
       });
     }
-    addSiyuanProxy(app)
     naive.router = express1.Router();
     naive.expressApp = app;
     naive.express = express1;
