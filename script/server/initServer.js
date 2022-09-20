@@ -146,21 +146,10 @@ module.exports =  {
     //stage文件夹使用副本的方式访问
     addStaticPath(app)
     //设置接口
-  //  console.log(apiRouter)
   app.use('/',require("./routers/index.js"))
-   // addNaiveApi(app)
     addDevSurppoert(app)
-    /*  const vite = await createViteServer({
-        root:"d:/test/index.html",
-        server:{
-          middlewareMode: 'html' 
-        }
-      })
-  
-      app.use("/hmr/*",vite.middlewares)*/
     //暴露附件文件夹时允许访问附件路径
     if (realoption.暴露附件) {
-      //app.use("/assets", express1.static(`${naive.workspaceDir}/data/assets/`));
       app.use("/assets", (req, res) => this.转发请求(req, res));
     }
 
@@ -175,39 +164,7 @@ module.exports =  {
     //此接口下的挂件可以使用裸模块导入
     if (realoption.暴露挂件) {
       app.use(
-        "/widgets",
-        async function (req, res, next) {
-          console.log(req);
-          let parsedUrl = req._parsedUrl;
-          console.log(req.query);
-          if (req.query.condition) {
-            try {
-              let content = await naive.ifdefParser.parse(
-                `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`,
-                req.query.condition ? JSON.parse(req.query.condition) : {}
-              );
-              res.type("application/x-javascript");
-              content = parseImport(content)
-              res.end(content);
-            } catch (e) {
-              console.log("解析失败", e);
-              res.end("解析失败");
-            }
-          } else {
-            if (req.baseUrl.endsWith('.js')) {
-              let content = fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`, 'utf-8')
-              content = parseImport(content)
-              res.type("application/x-javascript");
-              res.end(content);
-            } else {
-    
-              res.sendFile(
-                `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`
-              );
-            }
-          }
-        }
-      );
+        "/widgets",express1.static(`${naive.workspaceDir}/data/widgets`))
     }
     //静态路径伺服块id
     //允许客户端刷新缓存内容
