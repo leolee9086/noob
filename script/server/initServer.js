@@ -149,20 +149,11 @@ module.exports =  {
   app.use('/',require("./routers/index.js"))
     addDevSurppoert(app)
     //暴露附件文件夹时允许访问附件路径
-
     //emojis文件夹默认能够访问
     naive.Handle("ALL","/status",express1.static("D:/test"))
-
-    app.use(
-      "/emojis",
-      express1.static(`${naive.workspaceDir}/conf/appearance/emojis`)
-    );
     //只有暴露挂件选项开启时,能够访问挂件
     //此接口下的挂件可以使用裸模块导入
-    if (realoption.暴露挂件) {
-      app.use(
-        "/widgets",express1.static(`${naive.workspaceDir}/data/widgets`))
-    }
+   
     //静态路径伺服块id
     //允许客户端刷新缓存内容
     //为发布端提供插件支持
