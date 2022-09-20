@@ -9,9 +9,9 @@ function authByParams(params) {
                     let flag = true
                     Object.getOwnPropertyNames(params).forEach(
                         prop=>{
-                            if (params[prop] !== req.session[prop]){
+                            let array = params[prop].split(',')
+                            if (array.indexOf(req.session[prop]<0)){
                                 flag = false
-
                                 res.redirect("/unauthorized/protected")
                                 res.end()
                             }
@@ -22,10 +22,12 @@ function authByParams(params) {
                         next()
                     }
                 }
+
                 else{
                     next()
                 }
             }
+            
             else{
                 res.redirect("/unauthorized/protected")
                 res.end()
@@ -36,8 +38,9 @@ function authByParams(params) {
                 let flag = true
                 Object.getOwnPropertyNames(params).forEach(
                     prop=>{
-                        if (params[prop] !== req.session[prop]){
-                            flag =false
+                        let array = params[prop].split(',')
+                        if (array.indexOf(req.session[prop]<0)){
+                        flag =false
                             res.json({
                                 msg:"抱歉,你无权访问此地址",
                                 data:null,
@@ -67,5 +70,31 @@ function authByParams(params) {
     }
 }
 return ret
+}
+naive.syAuthConfig={
+    api:{
+        insertBlock:{user_group:'admin'},
+        prependBlock:{user_group:'admin'},
+        appendBlock:{user_group:'admin'},
+        updateBlock:{user_group:'admin'},
+        deleteBlock:{user_group:'admin'},
+        setBlockReminder:{user_group:'admin'},
+        setBlockAttrs:{user_group:'admin'},
+        upload:{user_group:'admin'}
+
+    }
+}
+
+
+authByParams.apiAuth = function apiAuth(req,res,next){
+    let apiName = req.route.path.replace('/','')
+    if(naive.syAuthConfig&&naive.syAuthConfig.api&&naive.syAuthConfig.api[apiName]){
+        let params = naive.syAuthConfig.api[apiName]
+        let func =authByParams(params)
+        func(req,res,next)
+    }
+    else{
+        next()
+    }
 }
 module.exports = authByParams

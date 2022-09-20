@@ -11,7 +11,6 @@ const sequelize = new Sequelize("database", null, null, {
     freezeTableName: true,
   },
   host: "localhost",
-  // dialectModule: sqlite3
 });
 
 const user = sequelize.define("user", {
@@ -44,6 +43,7 @@ const user = sequelize.define("user", {
     defaultValue: "visitor",
   },
 });
+
 const   models={
   user:user
 }

@@ -1,5 +1,6 @@
 const express =require('express')
 const jsonReq = require('./middlewares/jsonReq.js')
+const auth =naive.middlewares.auth
 module.exports = function 初始化后端(){
     console.log(this)
     let router =  this.router()
