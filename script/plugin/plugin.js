@@ -7,12 +7,13 @@ export class 主题插件 {
       this.插件名 = option.插件名
       this.name = option.name;
     }
-    if(window.require){
-      this.require = window.require.bind(this)
-    }
     else{
       throw `插件必须提供名称`
     }
+    if(window.require){
+      this.require = window.require.bind(this)
+    }
+   
    
     this.selfPath=naive.workspaceDir + '\\conf\\naiveConf\\plugins\\' + this.name
     if(naive.corePluginsList.indexOf(this.name)>=0){

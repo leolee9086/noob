@@ -90,7 +90,7 @@ if (naive.ifDefOptions.defs.APP) {
      ).json();*/
     //这里为了防止设置出错时无法通过naiveApi获取配置，使用了思源自身的api来获取文件
     naive.publishOption = await naive.核心api.getFile.raw({ path: 'conf/naiveConf/config/publish.json' }, '')
-    console.log(naive.publishOption);
+    naive.设置 =new Proxy(naive.publishOption,{})
     //校验发布地址是否有效
     //加载插件
     await 加载插件()

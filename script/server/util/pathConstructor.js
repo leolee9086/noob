@@ -1,7 +1,8 @@
 import { 生成默认设置 } from "../../public/configer.js";
 const realRequire = window.require
-const path =require("path")
 if(realRequire){
+  const path =require("path")
+
 function re(moduleName,base){
   let that =window
   if(base){
@@ -49,10 +50,8 @@ function re(moduleName,base){
 console.log(realRequire.cache.electron.__proto__.require)
 realRequire.cache.electron.__proto__.realRequire=realRequire.cache.electron.__proto__.require
 realRequire.cache.electron.__proto__.require=re
-
 window.realRequire = realRequire
 window.require = re
-
 }
 export default class pathConstructor {
   constructor(workspaceDir, themeName) {
