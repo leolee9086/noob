@@ -1,6 +1,7 @@
 const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../../../keys/index.js");
 const express = require('express');
 const router = express.Router();
+const {models} = require("../../../models/index.js")
 router.post("/regist", async (req, res) => {
     if (req.body) {
         let auth = req.body.auth;
@@ -104,7 +105,7 @@ router.post("/regist", async (req, res) => {
         }
     }
 });
-router.post("login", async (req, res) => {
+router.post("/login", async (req, res) => {
     console.log(req);
     if (req.session && req.session.failed && req.session.nextAllowedTry) {
         let date = new Date()
