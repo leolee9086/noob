@@ -1,7 +1,8 @@
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
 import { 驼峰转换 } from "/script/public/util/name.js";
-
+///#ifAPP
 const {fs} = naive.serverUtil
+///#endif
 export class customBlock extends naive.plugin {
   constructor() {
     super({name:'customBlock'})
@@ -13,10 +14,13 @@ export class customBlock extends naive.plugin {
       监听目标: `protyle-html`,
       监听器回调:(mutationsList, observer)=> this.html块监听器回调(mutationsList, observer),
     };
+    ///#ifAPP
     this.注入自定义元素()
     naive.html块监听器 = new DOM监听器(html块监听选项);
     window.addEventListener("load", () => setTimeout(()=>this.hackHTMLBlockAll(), 2000));
     this.hackHTMLBlockAll();
+        ///#endif
+
   }
   注入自定义元素(){
     let path = this.initFolder()

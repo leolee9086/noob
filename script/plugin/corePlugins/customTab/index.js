@@ -70,7 +70,6 @@ export class customTab extends naive.plugin {
         this.tabClass = this.getFirstTab().constructor
         naive.siyuanTab = this.tabclass
         let wndClass = siyuan.layout.centerLayout.children[0].constructor
-
         window.addEventListener('mousedown', (e) => this.onclick(e))
         this.hackLayout()
         /*this.addCustomDock({

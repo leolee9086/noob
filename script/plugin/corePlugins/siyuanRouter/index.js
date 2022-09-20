@@ -55,3 +55,4 @@ export class siyuanRouter extends naive.plugin {
   ///#endif
   
 }
+export const environment = ["APP"];

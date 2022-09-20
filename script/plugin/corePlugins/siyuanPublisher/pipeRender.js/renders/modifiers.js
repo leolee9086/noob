@@ -80,7 +80,7 @@ export function 修改块链接(req, res, div) {
   if (links[0]) {
     links.forEach((a) => {
       let href = a.getAttribute("href");
-      a.setAttribute("href", href.replace("siyuan://blocks/", `/block/`));
+      a.setAttribute("href", href.replace("siyuan://blocks/", `/siyuanPublisher/block/`));
       href.indexOf("siyuan://") == 0
         ? a.setAttribute("type", "blockref")
         : null;

@@ -38,7 +38,7 @@
             });
         };
         function openFileById(option) {
-            window.open(`/block/${option.id}`)
+            window.open(`/siyuanPublisher/block/${option.id}`)
         }
         function getIconByType(type, sub) {
             let iconName = "";
@@ -179,7 +179,7 @@
         )
         async function 生成反向链接() {
             let id = document.head.querySelector('meta').getAttribute('data-node-id')
-            let res = await fetch('siyuanApi/api/ref/getBacklink', {
+            let res = await fetch('/api/ref/getBacklink', {
 
                 body: JSON.stringify({
                     beforeLen: 10,
@@ -188,11 +188,6 @@
                     mk: ''
                 }),
                 method: "POST",
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-
-                },
-
             })
             res = await res.json()
             console.log(res)
@@ -202,9 +197,7 @@
             }
             if (res && res.data && res.data.backmentions) {
                 genbacklinkHTML(res.data.backmentions, document.querySelector("#backmentions"))
-
             }
-
         }
         function genbacklinkHTML(backlinks, element) {
             let html = ''
@@ -216,7 +209,7 @@
         <svg data-id="0-Z%E5%BC%80%E5%A4%B4%E7%9A%84%E7%A9%BA%E8%AF%8D%E6%9D%A10" class="b3-list-item__arrow b3-list-item__arrow--open"><use xlink:href="#iconRight"></use></svg>
     </span>
     <svg class="b3-list-item__graphic popover__block" data-id="${file.id}"><use xlink:href="#iconFile"></use></svg>
-    <span class="b3-list-item__text"><a href="/block/${file.id}">${file.name}</a></span>
+    <span class="b3-list-item__text"><a href="/siyuanPublisher/block/${file.id}">${file.name}</a></span>
     <span class="counter">${file.count}</span>
 </li>`
                     if (file.blocks&&file.blocks instanceof Array) {
@@ -225,7 +218,7 @@
                             block => {
                                 html += `<li class="b3-list-item" data-node-id="${block.id}" data-treetype="backlink"  data-subtype="">
     <svg class="b3-list-item__graphic popover__block" data-id="${block.id}" style="padding-left: 32px" ><use xlink:href="#${getIconByType(block.type, block.subType)}"></use></svg>
-    <span class="b3-list-item__text"><a href="/block/${block.id}">${block.content}</a></span>
+    <span class="b3-list-item__text"><a href="/siyuanPublisher/block/${block.id}">${block.content}</a></span>
 </li>`
                                 html += "</ul>"
 
@@ -236,7 +229,7 @@
                                         child => {
                                             html += `<li class="b3-list-item" data-node-id="${child.id}" data-treetype="backlink"  data-subtype="">
     <svg class="b3-list-item__graphic popover__block" data-id="${child.id}" style="padding-left: 48px" ><use xlink:href="#${getIconByType(child.type, child.subType)}"></use></svg>
-    <span class="b3-list-item__text"><a href="/block/${child.id}">${child.content}</a></span>
+    <span class="b3-list-item__text"><a href="/siyuanPublisher/block/${child.id}">${child.content}</a></span>
 </li>`
 
                                         }
@@ -263,7 +256,7 @@
             async function search(event) {
                 console.log(searchInputer.value)
                 if (searchInputer.value) {
-                    let res = await fetch('/siyuanApi/api/search/fullTextSearchBlock', {
+                    let res = await fetch('/api/search/fullTextSearchBlock', {
                         body: JSON.stringify({
                             path: "",
                             query: searchInputer.value,
@@ -284,9 +277,7 @@
 
                         }),
                         method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json;charset=UTF-8',
-                        },
+                      
                     })
                     res = await res.json()
                     document.querySelector('.protyle').classList.add('fn__none')
@@ -339,7 +330,7 @@
                                 class="b3-list-item__meta b3-list-item__meta--ellipsis" 
                                 title="${file.hPath}">
                                 <h2>
-                                    <a href="/block/${file.id}">
+                                    <a href="/siyuanPublisher/block/${file.id}">
                                     ${file.hPath}
                                     </a>
                                 </h2>
@@ -353,7 +344,7 @@
                                 <span 
                                 class="b3-list-item " 
                                 title="${block.fcontent}">
-                                    <a href="/block/${block.id}" style="color:var(--b3-theme-on-background)">
+                                    <a href="/siyuanPublisher/block/${block.id}" style="color:var(--b3-theme-on-background)">
                                     ${block.content}
                                     </a>
                                 </span> 
@@ -384,17 +375,13 @@
             if (event.target.dataset.type == "customAuthToken") {
                 let token = event.target.previousElementSibling.value
                 let id = event.target.getAttribute('data-node-id')
-                let res = await fetch('/siyuanApi/api/getPrivateBlock', {
+                let res = await fetch('//api/getPrivateBlock', {
 
                     body: JSON.stringify({
                         id: id,
                         token: token,
                     }),
                     method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-
-                    },
 
                 })
                 res = await res.json()
@@ -419,7 +406,7 @@
                 }
                 console.log(选取结果)
                 console.log(选取结果.getAttribute('data-url'))
-                let res = await fetch('/siyuanApi/api/filetree/listDocsByPath', {
+                let res = await fetch('/api/filetree/listDocsByPath', {
 
                     body: JSON.stringify({
                         notebook: 选取结果.getAttribute('data-url'),
@@ -427,11 +414,6 @@
                         sort: 0
                     }),
                     method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-
-                        Authorization: "Token " + '',
-                    },
                 })
                 res = await res.json()
                 let 文档容器 = 选取结果.querySelector('ul')
@@ -473,7 +455,7 @@
         <svg class="b3-list-item__arrow"><use xlink:href="#iconRight"></use></svg>
     </span>
     <span class="b3-list-item__icon b3-tooltips b3-tooltips__n" aria-label="修改图标"><svg class="custom-icon"><use xlink:href="#icon-1f4d1"></use></svg></span>
-    <span class="b3-list-item__text"><a href="/block/${file.id}">${file.name.endsWith(".sy") ? file.name.slice(0, file.name.length - 3) : file.name}</a></span>
+    <span class="b3-list-item__text"><a href="/siyuanPublisher/block/${file.id}">${file.name.endsWith(".sy") ? file.name.slice(0, file.name.length - 3) : file.name}</a></span>
     <span data-type="more-file" class="b3-list-item__action b3-tooltips b3-tooltips__nw" aria-label="更多">
         <svg><use xlink:href="#iconMore"></use></svg>
     </span>
@@ -552,13 +534,9 @@
                 }
             }
             console.log(option)
-            let res = await fetch("/siyuanApi/api/graph/getLocalGraph", {
+            let res = await fetch("/api/graph/getLocalGraph", {
                 body: JSON.stringify(option),
                 method: "POST",
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-
-                },
             })
             res = await res.json()
             graphData = res.data
@@ -866,7 +844,7 @@
                     <span class="item__icon favicon" style="width: 30px;height: 30px;">
                         <img src="/stage/logo.png"></img>
                     </span>
-                    <a href="/block/20200812220555-lj3enxa">
+                    <a href="/siyuanPublisher/block/20200812220555-lj3enxa">
                         CCDS
                     </a>
                 </li>
