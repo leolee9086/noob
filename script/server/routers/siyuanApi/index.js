@@ -3,6 +3,8 @@ const router = express.Router();
 const util = naive.serverUtil
 const {CheckAuth} = util
 router.use("/system",require("./system/index.js"))
+router.use("/clipboard",require("./clipboard/index.js"))
+
 router.use("/account",require("./account/index.js"))
 router.use("/notebook",require("./notebook/index.js"))
 router.use("/filetree",require("./filetree/index.js"))
