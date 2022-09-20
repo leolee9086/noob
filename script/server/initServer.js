@@ -49,31 +49,7 @@ naive.Handle=function(method,pattern,...args){
     middle=>app[method](pattern,(req,res,next)=>middle(req,res,next))
   )
 }
-function parseImport(code) {
-  console.force_log(importParser.parse(code))
-  let [imports, exports] = importParser.parse(code)
-  let codeMagicString = new MagicString(code)
-  imports.forEach(
-    导入声明 => {
-      if (导入声明.n) {
-        codeMagicString.overwrite(导入声明.s, 导入声明.e, 重写导入(导入声明))
-      }
-    }
-  )
-  return codeMagicString.toString()
-}
-function 重写导入(导入声明) {
-  console.log(导入声明)
-  let name = 导入声明.n
-  if (name && !name.startsWith('/') && !name.startsWith('./') && !name.startsWith('../')) {
-    console.log(`模块${name}重定向到naive设置文件夹/deps/esm`)
 
-    name = '/deps/' + name
-  } else {
-    console.log(导入声明)
-  }
-  return name
-}
 module.exports =  {
   创建服务器: async function (naive) {
     if (global.publishserver) {
@@ -145,9 +121,10 @@ module.exports =  {
     //允许访问外观设置文件夹内容
     //stage文件夹使用副本的方式访问
     addStaticPath(app)
+    addDevSurppoert(app)
+
     //设置接口
   app.use('/',require("./routers/index.js"))
-    addDevSurppoert(app)
     //暴露附件文件夹时允许访问附件路径
     //emojis文件夹默认能够访问
     naive.Handle("ALL","/status",express1.static("D:/test"))
@@ -158,85 +135,7 @@ module.exports =  {
     //允许客户端刷新缓存内容
     //为发布端提供插件支持
     //plugins文件夹启用ifdef,除了默认的状态之外,还会加上插件里定义的condition,
-    app.use("/plugins/*", async function (req, res, next) {
-      console.log(req);
-      let parsedUrl = req._parsedUrl;
-      parsedUrl.pathname = decodeURI(parsedUrl.pathname);
-      try {
-        if (req.query.condition) {
-          let content = await naive.ifdefParser.parse(
-            `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
-            }`,
-            req.query.condition ? JSON.parse(req.query.condition) : {}
-          );
-          content = parseImport(content)
-          res.type("application/x-javascript");
-          res.end(content);
-        } else {
-          if (req.baseUrl.endsWith('.js')) {
-            let content = naive.serverUtil.fs.readFileSync(`${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
-              }`, 'utf-8')
-            content = parseImport(content)
-            res.type("application/x-javascript");
-            console.log(content)
-            res.end(content);
-          }
-          else try {
-            let e = fs.existsSync(
-              `${naive.pathConstructor.pluginsPath().replace("/plugins", "")}${parsedUrl.pathname
-              }`
-            );
-            if (e) {
-              await res.sendFile(
-                `${naive.pathConstructor
-                  .pluginsPath()
-                  .replace("/plugins", "")}${parsedUrl.pathname}`
-              );
-            } else {
-              res.status(404);
-              res.end();
-            }
-          } catch (e) {
-            res.end(e.message);
-          }
-        }
-      } catch (e) {
-        res.end(e.message);
-      }
-    });
-    app.use("/script/*", async function (req, res, next) {
-      console.log(req);
-      let parsedUrl = req._parsedUrl;
-      console.log(req.query);
-      if (req.query.condition) {
-        try {
-          let content = await naive.ifdefParser.parse(
-            `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`,
-            req.query.condition ? JSON.parse(req.query.condition) : {}
-          );
-          res.type("application/x-javascript");
-          content = parseImport(content)
-
-          res.end(content);
-        } catch (e) {
-          console.log("解析失败", e);
-          res.end("解析失败");
-        }
-      } else {
-        if (req.baseUrl.endsWith('.js')) {
-          let content = fs.readFileSync(`${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`, 'utf-8')
-          content = parseImport(content)
-          res.type("application/x-javascript");
-          res.end(content);
-        } else {
-
-          res.sendFile(
-            `${naive.pathConstructor.naivePath()}/${parsedUrl.pathname}`
-          );
-        }
-      }
-    }
-    );
+    
     publishServer.timeout = 0
     publishServer.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
