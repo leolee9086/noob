@@ -4,5 +4,5 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/copy", atuh(), apiProxy)
+router.post("/copy", auth(), apiProxy)
 module.exports=router

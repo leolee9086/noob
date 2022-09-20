@@ -3,14 +3,14 @@ const router = express.Router();
 const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
-router.post("/lsNotebooks", atuh(), apiProxy)
-router.post("/openNotebook", atuh(), apiProxy)
-router.post("/closeNotebook", atuh(), apiProxy)
-router.post("/getNotebookConf", atuh(), apiProxy)
-router.post("/setNotebookConf", atuh(), apiProxy)
-router.post("/createNotebook", atuh(), apiProxy)
-router.post("/removeNotebook", atuh(), apiProxy)
-router.post("/renameNotebook", atuh(), apiProxy)
-router.post("/changeSortNotebook", atuh(), apiProxy)
-router.post("/setNotebookIcon", atuh(), apiProxy)
+router.post("/lsNotebooks", auth(), apiProxy)
+router.post("/openNotebook", auth(), apiProxy)
+router.post("/closeNotebook", auth(), apiProxy)
+router.post("/getNotebookConf", auth(), apiProxy)
+router.post("/setNotebookConf", auth(), apiProxy)
+router.post("/createNotebook", auth(), apiProxy)
+router.post("/removeNotebook", auth(), apiProxy)
+router.post("/renameNotebook", auth(), apiProxy)
+router.post("/changeSortNotebook", auth(), apiProxy)
+router.post("/setNotebookIcon", auth(), apiProxy)
 module.exports=router

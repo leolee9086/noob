@@ -4,13 +4,13 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/setSyncEnable", atuh(), apiProxy)
-router.post("/setSyncMode", atuh(), apiProxy)
-router.post("/setCloudSyncDir", atuh(), apiProxy)
-router.post("/createCloudSyncDir", atuh(), apiProxy)
-router.post("/removeCloudSyncDir", atuh(), apiProxy)
-router.post("/listCloudSyncDir", atuh(), apiProxy)
-router.post("/performSync", atuh(), apiProxy)
-router.post("/performBootSync", atuh(), apiProxy)
-router.post("/getBootSync", atuh(), apiProxy)
+router.post("/setSyncEnable", auth(), apiProxy)
+router.post("/setSyncMode", auth(), apiProxy)
+router.post("/setCloudSyncDir", auth(), apiProxy)
+router.post("/createCloudSyncDir", auth(), apiProxy)
+router.post("/removeCloudSyncDir", auth(), apiProxy)
+router.post("/listCloudSyncDir", auth(), apiProxy)
+router.post("/performSync", auth(), apiProxy)
+router.post("/performBootSync", auth(), apiProxy)
+router.post("/getBootSync", auth(), apiProxy)
 module.exports=router

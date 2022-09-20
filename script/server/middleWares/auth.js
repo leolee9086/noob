@@ -1,7 +1,7 @@
 const session = require("express-session")
 
 function authByParams(params) {
-    return function(req,res,next){
+    let ret= function(req,res,next){
     switch (req.method) {
         case "GET":
             if (req.session) {
@@ -66,5 +66,6 @@ function authByParams(params) {
         break
     }
 }
+return ret
 }
 module.exports = authByParams

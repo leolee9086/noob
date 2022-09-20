@@ -4,7 +4,7 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/getBookmark", atuh(), apiProxy)
-router.post("/renameBookmark", atuh(), apiProxy)
-router.post("/removeBookmark", atuh(), apiProxy)
+router.post("/getBookmark", auth(), apiProxy)
+router.post("/renameBookmark", auth(), apiProxy)
+router.post("/removeBookmark", auth(), apiProxy)
 module.exports=router

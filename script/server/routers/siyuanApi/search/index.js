@@ -4,12 +4,12 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/searchTag", atuh(), apiProxy)
-router.post("/searchTemplate", atuh(), apiProxy)
-router.post("/searchWidget", atuh(), apiProxy)
-router.post("/searchRefBlock", atuh(), apiProxy)
-router.post("/searchEmbedBlock", atuh(), apiProxy)
-router.post("/fullTextSearchBlock", atuh(), apiProxy)
-router.post("/searchAsset", atuh(), apiProxy)
-router.post("/findReplace", atuh(), apiProxy)
+router.post("/searchTag", auth(), apiProxy)
+router.post("/searchTemplate", auth(), apiProxy)
+router.post("/searchWidget", auth(), apiProxy)
+router.post("/searchRefBlock", auth(), apiProxy)
+router.post("/searchEmbedBlock", auth(), apiProxy)
+router.post("/fullTextSearchBlock", auth(), apiProxy)
+router.post("/searchAsset", auth(), apiProxy)
+router.post("/findReplace", auth(), apiProxy)
 module.exports=router
