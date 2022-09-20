@@ -7,6 +7,9 @@ router.use("/unauthorized/", require("./unauthorized/index.js"))
 naive.pluginsApiRouter = require("./pluginsApi/index.js")
 router.use("/siyuanApi/", require("./siyuanApi/index.js"))
 router.use("/api/", require("./siyuanApi/index.js"))
+
+
+//这里用于对websocket进行转发
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const {
     debugProxyErrorsPlugin, // subscribe to proxy errors to prevent server from crashing
