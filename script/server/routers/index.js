@@ -25,30 +25,11 @@ try {
             return `ws://${naive.publishOption.思源伺服地址}:${naive.publishOption.思源伺服端口}${req.url}`
         },
         ws: true,
-       // plugins: [debugProxyErrorsPlugin, loggerPlugin, errorResponsePlugin, proxyEventsPlugin],
-       
-       /* upgrade:(req,socket)=>{
-            console.log(req,socket)
-            socket.on(
-                "error",(err)=>{
-                    console.log(err)
-                }
-            )
-        },*/
         logLevel : 'debug'
     }
     )
     naive.wsProxy = proxy
     router.use("/ws",proxy)
-  /*  naive.publishServer.on("upgrade",(req,socket)=>{
-        console.log(req,socket)
-        socket.on(
-            "error",(err)=>{
-                console.error(err)
-            }
-        )
-    })*/
-
 
 } catch (e) {
     console.error(e)
