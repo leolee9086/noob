@@ -28,17 +28,6 @@ naive.serverUtil.getRouters=function(){
 naive.serverUtil.getRouteStack=function(){
   return app._router.stack
 }
-naive.Authregistry=[
-  {
-    匹配函数:function(req){
-      return (req.url.startsWith('/stage'))
-    },
-    安全策略函数:function(req){
-      return req.session
-    }
-  }
-]
-naive.safePath=[]
 
 module.exports =  {
   创建服务器: async function (naive) {
