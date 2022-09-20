@@ -30,7 +30,9 @@ export class configPages extends naive.plugin {
       回调函数:()=>this.加载窗口(`http://${naive.pathConstructor.baseURL()}/script/plugin/corePlugins/configPages/pages/pluginconfig.html`,this.窗口设置),
     };
     this.注册顶栏按钮(插件设置图标);
+    ///#ifAPP
     this.初始化配置页面()
+    ///#endif
   }
 
   初始化配置页面(){
