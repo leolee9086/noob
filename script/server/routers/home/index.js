@@ -24,7 +24,8 @@ if (naive.publishOption.暴露附件) {
 router.use("/upload",apiProxy)
 router.use("/emojis",express.static(`${naive.workspaceDir}/conf/appearance/emojis`));
 if (naive.publishOption.暴露挂件) {
-    app.use(
+    router.use(
       "/widgets",express.static(`${naive.workspaceDir}/data/widgets`))
-  }
+}
+
 module.exports=router
