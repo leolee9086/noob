@@ -51,3 +51,20 @@ async function 加载发布路由() {
       }
     }
   }
+  this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
+  async function 渲染(req, res) {
+    const path = require("path");
+    let 模板路径 = path.join(
+      this.initDir(`/templates/`),
+      req.url.split("/")[1] + ".js"
+    );
+    let e = fs.existsSync(模板路径);
+    if (e) {
+      let use = (await import(模板路径)).use;
+      use(req, res);
+    } else {
+      res.status(404);
+      res.end("404");
+    }
+    this.注册发布用菜单();
+  }

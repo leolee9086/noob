@@ -15,25 +15,8 @@ export class siyuanPublisher extends naive.plugin {
     let 模板列表 = fs.readdirSync(this.模板路径);
     this.pipe =pipe
     this.初始化后端 =(this.require("./backend/index.js")).bind(this)
-    this.expressApp.use("/publish", (req, res) => this.渲染(req, res));
     this.初始化后端()
     ///#endif
-  }
-  async 渲染(req, res) {
-    const path = require("path");
-    let 模板路径 = path.join(
-      this.initDir(`/templates/`),
-      req.url.split("/")[1] + ".js"
-    );
-    let e = fs.existsSync(模板路径);
-    if (e) {
-      let use = (await import(模板路径)).use;
-      use(req, res);
-    } else {
-      res.status(404);
-      res.end("404");
-    }
-    this.注册发布用菜单();
   }
   
   async 管线渲染(req, res) {
