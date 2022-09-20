@@ -39,16 +39,6 @@ naive.Authregistry=[
   }
 ]
 naive.safePath=[]
-naive.Handle=function(method,pattern,...args){
-  method=="ALL"?method="use":null
-  console.log(method,pattern,...args)
-  let pipes = [...args]
-  console.log(pipes)
-  console.log(app[method])
-  pipes.forEach(
-    middle=>app[method](pattern,(req,res,next)=>middle(req,res,next))
-  )
-}
 
 module.exports =  {
   创建服务器: async function (naive) {
@@ -127,7 +117,6 @@ module.exports =  {
   app.use('/',require("./routers/index.js"))
     //暴露附件文件夹时允许访问附件路径
     //emojis文件夹默认能够访问
-    naive.Handle("ALL","/status",express1.static("D:/test"))
     //只有暴露挂件选项开启时,能够访问挂件
     //此接口下的挂件可以使用裸模块导入
    
