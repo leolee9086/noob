@@ -69,5 +69,4 @@ export function corePluginList(){
   let 核心插件文件列表 = fs.readdirSync(naive.pathConstructor.corePluginsPath());
   return 核心插件文件列表
   }
-  
 }

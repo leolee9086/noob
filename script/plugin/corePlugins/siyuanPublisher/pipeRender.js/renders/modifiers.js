@@ -94,7 +94,7 @@ export function 修改块链接(req, res, div) {
       link.setAttribute("data-type", a.getAttribute("data-type"));
       link.setAttribute("data-id", a.getAttribute("data-id"));
       link.setAttribute("type", "blockref");
-      link.setAttribute("href", `/block/${a.getAttribute("data-id")}`);
+      link.setAttribute("href", `/siyuanPublisher/block/${a.getAttribute("data-id")}`);
       a.innerHTML = '';
       a.appendChild(link);
 

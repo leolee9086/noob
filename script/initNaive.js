@@ -29,29 +29,6 @@ export async function initNaive() {
   }
   //app环境下直接读取配置文件
   if (naive.ifDefOptions.defs.APP) {
-   /* const realRequire = window.require
-    const re = function (moduleName) {
-      try {
-        return realRequire(moduleName)
-      } catch (e) {
-        if (e.message.indexOf('Cannot find module')>=0) {
-          console.warn(`模块${moduleName}未找到,重定向到naive设置文件deps/node_modules`)
-          if (!moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../")) {
-            moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node_modules/${moduleName}`
-          }
-          try{ 
-            return realRequire(moduleName)
-          }
-          catch (e){
-            throw e
-          }
-        }
-        else {
-          console.error(e)
-        }
-      }
-    }
-    window.require = re*/
     const fs = require("fs");
     let option = {}
     try {
@@ -82,12 +59,6 @@ if (naive.ifDefOptions.defs.APP) {
     if (m.type !== "serverStart") {
       return;
     }
-    console.log(window.location);
-    /* naive.publishOption = await (
-       await fetch(
-         `http://${window.location.hostname}/naiveApi/getPublishOption`
-       )
-     ).json();*/
     //这里为了防止设置出错时无法通过naiveApi获取配置，使用了思源自身的api来获取文件
     naive.publishOption = await naive.核心api.getFile.raw({ path: 'conf/naiveConf/config/publish.json' }, '')
     naive.设置 =new Proxy(naive.publishOption,{})

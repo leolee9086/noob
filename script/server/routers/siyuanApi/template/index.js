@@ -4,6 +4,6 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/render", auth, apiProxy)
-router.post("/docSaveAsTemplate", auth, apiProxy)
+router.post("/render", atuh(), apiProxy)
+router.post("/docSaveAsTemplate", atuh(), apiProxy)
 module.exports=router

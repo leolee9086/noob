@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <script src="/stage/jsencryprt.js"></script>
-    <title>SiYuan Auth</title>
+    <title> Auth</title>
     <style>
         body {
             font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
@@ -215,7 +215,7 @@
 
 
         function submitAuth() {
-            fetch('/naiveApi/system/userRegist', {
+            fetch('/naiveApi/user/login', {
                 method: 'POST',
                 body: JSON.stringify({auth: rsaEncrypt
                     ({
@@ -241,12 +241,11 @@
                 console.log(response)
                 if (0 === response.code) {
                     localStorage.setItem('token', response.token);
-                    window.location.href = window.location.href
+                    window.location.href = "/"
                 } 
                 else if (3==response.code){
                     localStorage.setItem('token', response.token);
                     window.location.href = '/'
-
                 }
                 else {
                     document.querySelector('#message').classList.add('b3-snackbar--show')

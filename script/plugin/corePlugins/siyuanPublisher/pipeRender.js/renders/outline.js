@@ -89,7 +89,7 @@ data-def-path="">
     }">
         <use xlink:href="#icon${大纲条目.subType.toUpperCase()}"></use>
     </svg>
-    <span class="b3-list-item__text" title="${name}"><a href="/block/${
+    <span class="b3-list-item__text" title="${name}"><a href="/siyuanPublisher/block/${
         大纲条目.id
       }">${name}</a></span>    
 </li>

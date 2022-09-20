@@ -4,15 +4,8 @@
 //使用立即执行函数避免污染全局对象
 //async是为了能够在函数中使用await
 //只有下面这段代码是必须的
-let styleList = Array.from(document.styleSheets)
 
-siyuan.ws.ws.onerror = (err) => {
-  
-  const logElement = document.getElementById("errorLog");
-  if (err.target.url.endsWith("&type=main") && err.target.readyState === 3 && !logElement) {
-      console.log(err)
-  }
-};
+
 if(window.frameElement){
   let style =document.createElement('style')
   style.innerHTML=`.toolbar{

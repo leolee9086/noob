@@ -4,5 +4,5 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/sql", auth, apiProxy)
+router.post("/sql", atuh(), apiProxy)
 module.exports=router

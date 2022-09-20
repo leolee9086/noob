@@ -240,9 +240,10 @@
                 console.log(response)
                 if (0 === response.code) {
                     localStorage.setItem('token', response.token);
-
-                    window.location.href = window.location.href
-                } else {
+                    window.location.href = "/siyuanPublisher"
+                }
+                
+                else {
                     document.querySelector('#message').classList.add('b3-snackbar--show')
                     document.querySelector('#message').firstElementChild.textContent = response.msg
                     setTimeout(() => {

@@ -19,13 +19,7 @@ router.post("/regist", async (req, res) => {
                 msg: "存在重复的用户名",
             });
             return;
-        } else if (json.password !== json.ensurePassword) {
-            res.json({
-                code: 2,
-                msg: "两次输入密码不一致",
-            });
-            return;
-        } else {
+        }  else {
             if (json.password.length <= 8) {
                 res.json({
                     code: 2,
@@ -94,7 +88,7 @@ router.post("/regist", async (req, res) => {
             req.session.failed = 0
 
             res.json({
-                code: 3,
+                code: 0,
                 token: jsEncrypt.encrypt(
                     JSON.stringify({
                         name: checkedUser.name,
@@ -135,6 +129,7 @@ router.post("/login", async (req, res) => {
                 password: json.password,
             },
         });
+        console.log(checkedUser)
         if (checkedUser && checkedUser[0]) {
             req.session.status = "Authed";
             req.session.user = checkedUser[0].name

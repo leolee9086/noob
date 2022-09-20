@@ -27,7 +27,7 @@ export function 生成面包屑条目(面包屑条目, 渲染结果) {
     <svg class="popover__block" data-id="${面包屑条目.id}">
     <use xlink:href="#${getIconByType(面包屑条目.type, 面包屑条目.subType)}"></use>
     </svg>
-    <span class="protyle-breadcrumb__text" title="${面包屑条目.name}"><a href="/block/${面包屑条目.id}">${面包屑条目.name}</a></span>
+    <span class="protyle-breadcrumb__text" title="${面包屑条目.name}"><a href="/siyuanPublisher/block/${面包屑条目.id}">${面包屑条目.name}</a></span>
 </span>`;
     return div.innerHTML
 }

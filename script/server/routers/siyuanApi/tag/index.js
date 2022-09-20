@@ -4,7 +4,7 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/getTag", auth, apiProxy)
-router.post("/renameTag", auth, apiProxy)
-router.post("/removeTag", auth, apiProxy)
+router.post("/getTag", atuh(), apiProxy)
+router.post("/renameTag", atuh(), apiProxy)
+router.post("/removeTag", atuh(), apiProxy)
 module.exports=router

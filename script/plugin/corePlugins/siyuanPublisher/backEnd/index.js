@@ -8,7 +8,7 @@ module.exports = function 初始化后端(){
          this.管线渲染(req, res)
     )
     router.post('*',jsonReq)
-    router.get("/block/:blockid",(req,res)=>naive.middlewares.auth(req,res,{user_group:'admin'}), (req, res) =>
+    router.get("/block/:blockid", (req, res) =>
       this.管线渲染(req, res)
     );
     router.get("/block/", (req, res) => this.管线渲染(req, res));

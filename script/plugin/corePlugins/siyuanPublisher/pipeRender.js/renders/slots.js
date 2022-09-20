@@ -4,7 +4,7 @@ export async function 生成导航栏(req,res,渲染结果){
     <span class="item__icon favicon" style="width: 30px;height: 30px;">
         <img src="/stage/favicon.png">
     </span>
-    <a href="/block/${naive.设置.首页.思源文档id}">
+    <a href="/siyuanPublisher/block/${naive.设置.首页.思源文档id}">
         ${naive.设置.首页.显示名称||'首页'}
     </a>
 </li>
@@ -31,7 +31,7 @@ export async function 生成导航栏(req,res,渲染结果){
         block=>{
             html += `<li data-type="tab-header" data-position="center" class="item">
             <span>
-                <span class="item__text"><a href="/block/${block.id}">${block.name||block.content.slice(0,6)}</a></span>
+                <span class="item__text"><a href="/siyuanPublisher/block/${block.id}">${block.name||block.content.slice(0,6)}</a></span>
             </span>
         </li>`
         }
@@ -46,7 +46,7 @@ export  async function 生成脚注(req,res,渲染结果){
     `
     let stmt = `select * from blocks where id in (select block_id from attributes where name ="custom-publish-slot" and value="footer" )`
     if(req.session&&req.session.user_group=='admin'){
-        html+=`<div>管理员${req.session.user},欢迎回来,当前块从<a href="/editor/stage/build/desktop/?id=${渲染结果.block.id}">这里</a>开始编辑</div>`
+        html+=`<div>管理员${req.session.user},欢迎回来,当前块从<a href="/siyuanPublisher/editor/stage/build/desktop/?id=${渲染结果.block.id}">这里</a>开始编辑</div>`
     }
     let footBlocks = await naive.核心api.sql({stmt:stmt},'')
     footBlocks.forEach(
@@ -54,7 +54,7 @@ export  async function 生成脚注(req,res,渲染结果){
             if(block.type!=='html'){
             html += `<div data-type="footer-item" data-position="center" class="item">
             <span>
-                <span class="item__text"><a href="/block/${block.id}">${block.name||block.content.slice(0,6)}</a></span>
+                <span class="item__text"><a href="/siyuanPublisher/block/${block.id}">${block.name||block.content.slice(0,6)}</a></span>
             </span>
         </div>`}
         else{

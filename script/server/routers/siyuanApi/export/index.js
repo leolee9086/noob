@@ -4,16 +4,16 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/batchExportMd", auth, apiProxy)
-router.post("/exportMd", auth, apiProxy)
-router.post("/exportSY", auth, apiProxy)
-router.post("/exportNotebookSY", auth, apiProxy)
-router.post("/exportMdContent", auth, apiProxy)
-router.post("/exportHTML", auth, apiProxy)
-router.post("/exportMdHTML", auth, apiProxy)
-router.post("/exportDocx", auth, apiProxy)
-router.post("/addPDFOutline", auth, apiProxy)
-router.post("/preview", auth, apiProxy)
-router.post("/exportData", auth, apiProxy)
-router.post("/exportDataInFolder", auth, apiProxy)
+router.post("/batchExportMd", atuh(), apiProxy)
+router.post("/exportMd", atuh(), apiProxy)
+router.post("/exportSY", atuh(), apiProxy)
+router.post("/exportNotebookSY", atuh(), apiProxy)
+router.post("/exportMdContent", atuh(), apiProxy)
+router.post("/exportHTML", atuh(), apiProxy)
+router.post("/exportMdHTML", atuh(), apiProxy)
+router.post("/exportDocx", atuh(), apiProxy)
+router.post("/addPDFOutline", atuh(), apiProxy)
+router.post("/preview", atuh(), apiProxy)
+router.post("/exportData", atuh(), apiProxy)
+router.post("/exportDataInFolder", atuh(), apiProxy)
 module.exports=router

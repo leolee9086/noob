@@ -13,7 +13,7 @@ export async function 生成文档标题(req, res, 渲染结果) {
       titleEL.innerHTML = 标题内容
     }
     if (req.session && req.session.user_group == 'admin') {
-      标题元素.innerHTML += `<div><a style="font-size:16px;font-weight:lighter" href="/editor/stage/build/desktop/?id=${渲染结果.block.id}">开始编辑</a></div>`
+      标题元素.innerHTML += `<div><a style="font-size:16px;font-weight:lighter" href="/siyuanPublisher/editor/stage/build/desktop/?id=${渲染结果.block.id}">开始编辑</a></div>`
     }
     return 渲染结果;
   }

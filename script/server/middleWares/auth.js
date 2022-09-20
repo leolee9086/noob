@@ -1,7 +1,7 @@
 const session = require("express-session")
 
-function authByParams(req, res, params,next) {
-    console.error(req.method)
+function authByParams(params) {
+    return function(req,res,next){
     switch (req.method) {
         case "GET":
             if (req.session) {
@@ -21,13 +21,14 @@ function authByParams(req, res, params,next) {
                     if(flag){
                         next()
                     }
-                    
+                }
+                else{
+                    next()
                 }
             }
             else{
                 res.redirect("/unauthorized/protected")
                 res.end()
-
             }
         default :
         if (req.session) {
@@ -50,6 +51,9 @@ function authByParams(req, res, params,next) {
                     next()
                 }
             }
+            else{
+                next()
+            }
         }
         else{
             res.json({
@@ -61,5 +65,6 @@ function authByParams(req, res, params,next) {
 
         break
     }
+}
 }
 module.exports = authByParams
