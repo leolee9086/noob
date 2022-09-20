@@ -149,9 +149,6 @@ module.exports =  {
   app.use('/',require("./routers/index.js"))
     addDevSurppoert(app)
     //暴露附件文件夹时允许访问附件路径
-    if (realoption.暴露附件) {
-      app.use("/assets", (req, res) => this.转发请求(req, res));
-    }
 
     //emojis文件夹默认能够访问
     naive.Handle("ALL","/status",express1.static("D:/test"))
