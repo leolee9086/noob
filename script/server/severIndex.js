@@ -1,5 +1,5 @@
-naive.serverUtil = naive.pathConstructor.requireScript("/server/util/index.js");
-const server = naive.pathConstructor.requireScript("/server/initServer.js");
+naive.serverUtil = require("./script/server/util/index.js",naive.pathConstructor.naivePath());
+const server = require("./script/server/initServer.js",naive.pathConstructor.naivePath());
 naive.publishserver = server.创建服务器(naive);
-const fileWatcher = naive.pathConstructor.requireScript("/server/util/watch.js")
+const fileWatcher = require("./script/server/util/watch.js",naive.pathConstructor.naivePath())
 fileWatcher.startWatch()

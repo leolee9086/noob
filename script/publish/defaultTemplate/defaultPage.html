@@ -179,7 +179,7 @@
         )
         async function 生成反向链接() {
             let id = document.head.querySelector('meta').getAttribute('data-node-id')
-            let res = await fetch('api/ref/getBacklink', {
+            let res = await fetch('siyuanApi/api/ref/getBacklink', {
 
                 body: JSON.stringify({
                     beforeLen: 10,
@@ -263,7 +263,7 @@
             async function search(event) {
                 console.log(searchInputer.value)
                 if (searchInputer.value) {
-                    let res = await fetch('/api/search/fullTextSearchBlock', {
+                    let res = await fetch('/siyuanApi/api/search/fullTextSearchBlock', {
                         body: JSON.stringify({
                             path: "",
                             query: searchInputer.value,
@@ -384,7 +384,7 @@
             if (event.target.dataset.type == "customAuthToken") {
                 let token = event.target.previousElementSibling.value
                 let id = event.target.getAttribute('data-node-id')
-                let res = await fetch('/naiveApi/getPrivateBlock', {
+                let res = await fetch('/siyuanApi/api/getPrivateBlock', {
 
                     body: JSON.stringify({
                         id: id,
@@ -419,7 +419,7 @@
                 }
                 console.log(选取结果)
                 console.log(选取结果.getAttribute('data-url'))
-                let res = await fetch('/api/filetree/listDocsByPath', {
+                let res = await fetch('/siyuanApi/api/filetree/listDocsByPath', {
 
                     body: JSON.stringify({
                         notebook: 选取结果.getAttribute('data-url'),
@@ -552,7 +552,7 @@
                 }
             }
             console.log(option)
-            let res = await fetch("/api/graph/getLocalGraph", {
+            let res = await fetch("/siyuanApi/api/graph/getLocalGraph", {
                 body: JSON.stringify(option),
                 method: "POST",
                 headers: {

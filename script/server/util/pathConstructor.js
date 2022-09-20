@@ -2,8 +2,12 @@ import { 生成默认设置 } from "../../public/configer.js";
 const realRequire = window.require
 const path =require("path")
 if(realRequire){
-function re(moduleName){
+function re(moduleName,base){
   let that =window
+  if(base){
+    moduleName = path.resolve(base,moduleName)
+    console.log(moduleName)
+  }
   if(this){
     that =this
   }
@@ -19,7 +23,7 @@ function re(moduleName){
         console.warn(`模块${moduleName}未找到,重定向到naive设置文件deps/node_modules`)
         moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node_modules/${moduleName}`
       }
-      else if(that &&that instanceof naive.plugin){
+      else if(that && naive.plugin &&that instanceof naive.plugin){
         try{
           moduleName = path.resolve(that.selfPath,moduleName)
           return window.require(moduleName)

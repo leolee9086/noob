@@ -46,6 +46,7 @@ module.exports = function 初始化后端(){
       }
     });
     //通过这里查询渲染块数据权限
+    router.use('/editor',naive.middlewares.syProxy.proxy)
     router.use('/naiveApi/getPrivateBlock',(req,res)=>{
       let data = req.body
       if(data&&data.id){

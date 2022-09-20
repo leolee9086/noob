@@ -5,7 +5,6 @@ naive.serverUtil.router =  express1.Router
 const {fs,importParser,MagicString} =  naive.serverUtil
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addStaticPath = require('./middleWares/staticPath.js')
-const addSiyuanProxy = require('./middleWares/siyuanApi.js')
 const api = require("../public/siYuanApi");
 const app = express1();
 const http = require("http");
@@ -101,7 +100,6 @@ module.exports =  {
     app.use(middlewares.compression);
     //允许跨域请求
     app.use(middlewares.allowCors);
-    addSiyuanProxy(app)
 
     //向请求写入auth
    // app.use(middlewares)
@@ -294,6 +292,7 @@ module.exports =  {
       }
     }
     );
+    publishServer.timeout = 0
     publishServer.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
     });
@@ -309,6 +308,9 @@ module.exports =  {
     naive.express = express1;
     naive.serverEndPluginConfig = JSON.parse(res4);
     naive.publishServer = publishServer;
+  
+
+
     naive.eventBus.emit("message", {
       pushMode: 2,
       type: "serverStart",

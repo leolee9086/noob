@@ -2,6 +2,8 @@ const compression = require("compression");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const auth = require('./auth.js')
+const syProxy = require('./syProxy.js')
+
  const  middlewares = {
     compression:compression(),
     json:bodyParser.json(),
@@ -14,7 +16,8 @@ const auth = require('./auth.js')
     }),
     urlencoded:bodyParser.urlencoded({
         //此项必须在 bodyParser.json 下面,为参数编码
-        extended: false,
+        limit:'1024mb',
+        extended: true,
     }),
     allowCors:function (req, res, next) {
         console.log(req);
@@ -29,7 +32,8 @@ const auth = require('./auth.js')
         }
         next()
     },
-    auth:auth
+    auth:auth,
+    syProxy:syProxy
 }
 module.exports=middlewares 
 
