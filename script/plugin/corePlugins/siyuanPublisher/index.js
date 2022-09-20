@@ -110,8 +110,6 @@ export class siyuanPublisher extends naive.plugin {
             文字渲染结果,
             "text/html"
           );
-          //  let html = tempdoc.querySelector("html");
-          // html.innerHTML = 文字渲染结果;
           渲染结果 = tempdoc;
           console.error(e);
         }
