@@ -6,10 +6,8 @@ router.use('/naiveApi/', require("./naiveApi/index.js"))
 router.use("/user/", require("./user/index.js"))
 router.use("/unauthorized/", require("./unauthorized/index.js"))
 naive.pluginsApiRouter = require("./pluginsApi/index.js")
-router.use("/siyuanApi/", require("./siyuanApi/index.js"))
 router.use("/api/", require("./siyuanApi/index.js"))
 const {discribeApi} = naive.serverUtil
-
 //这里用于对websocket进行转发
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const {
