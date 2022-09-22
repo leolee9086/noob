@@ -1,4 +1,5 @@
 const { createProxyMiddleware } = require('http-proxy-middleware')
+const apiFix = require('./apiFix/index.js')
 let naive = window.naive
 const proxy = createProxyMiddleware({
     target: `http://${naive.publishOption.思源伺服地址}:${naive.publishOption.思源伺服端口}`,
@@ -56,9 +57,9 @@ const jsonApiproxy =async function(req,res){
     }
     let apiName = req.originalUrl.split('/').slice (-1)[0] 
     console.log(apiName)
-    if (naive.syAuthConfig && naive.syAuthConfig.api && naive.syAuthConfig.api[apiName]) {
+    if (apiFix[apiName]) {
 
-        if (naive.syAuthConfig.api[apiName]["preFix"]) {
+        if (apiFix[apiName]["preFix"]) {
 
             let preFix = naive.syAuthConfig.api[apiName]["preFix"]
             let  data_1 =  await preFix(data, req, res)
@@ -74,8 +75,8 @@ const jsonApiproxy =async function(req,res){
     )
     let json = await syres.json()
 
-    if (naive.syAuthConfig && naive.syAuthConfig.api && naive.syAuthConfig.api[apiName]) {
-        if (naive.syAuthConfig.api[apiName]["afterFix"]) {
+    if (apiFix[apiName]) {
+        if (apiFix[apiName]["afterFix"]) {
             let afterFix = naive.syAuthConfig.api[apiName]["afterFix"]
             let data_1= await afterFix(data, req, res)
             json =data_1||json
