@@ -1,4 +1,5 @@
 const middlewares = require("./middleWares/index.js")
+
 naive.middlewares=middlewares
 const express1 = require("express");
 naive.serverUtil.router =  express1.Router
@@ -11,24 +12,6 @@ const http = require("http");
 const https = require("https");
 const { checkAdmin,models } = require('./models/index');
 naive.dbModels=models
-naive.serverUtil.getRouters=function(){
-  let route, routes = [];
-    app._router.stack.forEach(function(middleware){
-        if(middleware.route){ 
-            routes.push(middleware.route);
-        } else if(middleware.name === 'router'){ 
-            middleware.handle.stack.forEach(function(handler){
-                route = handler.route;
-                route && routes.push(route);
-            });
-        }
-    });
-  return routes
-}
-naive.serverUtil.getRouteStack=function(){
-  return app._router.stack
-}
-
 module.exports =  {
   创建服务器: async function (naive) {
     if (global.publishserver) {
@@ -137,6 +120,45 @@ module.exports =  {
       pushMode: 2,
       type: "serverStart",
     });
+    naive.checkApidoc=function(){
+      for(apiDocName in naive.doc.api) {
+          let apiDoc = naive.doc.api[apiDocName]
+          apiDoc.路径 = apiDocName
+          if(!apiDoc.名称){
+              console.warn(`api文档错误:${apiDoc}的文档缺少接口名称`)
+          }
+          if(!apiDoc.功能){
+              console.warn(`api文档错误:${apiDoc}的文档缺少接口功能说明`)
+          }
+  
+          if(!apiDoc.方法){
+              console.warn(`api文档错误:${apiDoc}的文档缺少方法说明`)
+          }
+          if(!apiDoc.权限){
+              console.warn(`api文档错误:${apiDoc}的文档缺少权限说明`)
+          }
+          if(!apiDoc.请求值){
+              console.warn(`api文档错误:${apiDoc}的文档缺少请求值说明`)
+              if(!apiDoc.请求值.格式){
+                  console.warn(`api文档错误:${apiDoc}的文档缺少请求值`)
+              }
+          }
+          if(!apiDoc.返回值){
+              console.warn(`api文档错误:${apiDoc}的文档缺少路径说明`)
+          }
+          if(!apiDoc.一级分组){
+              console.warn(`api文档错误:${apiDoc}的文档缺少分组说明`)
+          }
+      };
+      let apiList =Object.getOwnPropertyNames(naive.serverUtil.chekEndPoints())
+      apiList.forEach(path => {
+          if(!naive.doc.api[path]){
+              console.error(`api文档错误:${path}的文档缺失`)
+          }
+      });
+  }
+  naive.checkApidoc()
+
     return publishServer;
   },
   async 转发请求(req, res) {
@@ -180,6 +202,7 @@ module.exports =  {
       request1.end();
     });
     // console.log(req.body,2)
+  
   },
   终止服务: async function () {
     console.log(global.publishserver);

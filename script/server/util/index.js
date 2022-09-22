@@ -1,6 +1,6 @@
 const { shellCmd,npmCmd } = require('./shell');
 const proxy = require("express-http-proxy")
-
+const apiAuthor = require('./apiAuthorization')
 module.exports = {
         //magicstring用于替换文字等
         MagicString: require('magic-string'),
@@ -15,5 +15,8 @@ module.exports = {
         //用于执行命令
         shellCmd:shellCmd,
         npmCmd:npmCmd,
-        proxy:proxy       
+        proxy:proxy,
+        apiAuthor:apiAuthor,
+        chekEndPoints:()=>{return naive.serverUtil.apiAuthor.chekEndPoints(naive.expressApp,{})},
+        discribeApi:(path,discribe)=>{naive.doc.api[path]=discribe}
 }

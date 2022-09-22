@@ -1,5 +1,4 @@
 const session = require("express-session")
-const { DATE } = require("sequelize")
 
 function authByParams(params) {
     let ret = function (req, res, next) {
@@ -73,25 +72,6 @@ function authByParams(params) {
         }
     }
     return ret
-}
-naive.syAuthConfig = {
-    api: {
-        insertBlock: {
-            access: { user_group: 'admin' },
-        },
-        transactions: {
-            access: { user_group: 'admin' },
-        },
-        prependBlock: { user_group: 'admin' },
-        appendBlock: { user_group: 'admin' },
-        updateBlock: { user_group: 'admin' },
-        deleteBlock: { user_group: 'admin' },
-        setBlockReminder: { user_group: 'admin' },
-        setBlockAttrs: {             
-            access: { user_group: 'admin' },
-},
-        upload: { user_group: 'admin' }
-    }
 }
 
 

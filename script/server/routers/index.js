@@ -8,7 +8,7 @@ router.use("/unauthorized/", require("./unauthorized/index.js"))
 naive.pluginsApiRouter = require("./pluginsApi/index.js")
 router.use("/siyuanApi/", require("./siyuanApi/index.js"))
 router.use("/api/", require("./siyuanApi/index.js"))
-
+const {discribeApi} = naive.serverUtil
 
 //这里用于对websocket进行转发
 const { createProxyMiddleware } = require('http-proxy-middleware')
@@ -31,4 +31,13 @@ const proxy = createProxyMiddleware({
 )
 naive.wsProxy = proxy
 router.use("/ws", proxy)
+/*discribeApi('/ws',{
+    名称:'思源websocket',
+    功能:'用于思源各个界面与核心之间的通信',
+    方法:'todo',
+    权限:'admin',
+    请求值:"todo",
+    返回值:'todo',
+    一级分组:'siyuanApi'
+})*/
 module.exports = router

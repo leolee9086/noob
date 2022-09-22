@@ -13,6 +13,17 @@ export async function initNaive() {
     naive.workspaceDir,
     naive.themeName
   );
+  naive.doc = {
+    usage: {
+      type: "file",
+      path: "../../readme"
+
+    },
+    api: {},
+    method: {},
+    config: {},
+    plugins: {}
+  }
   //事件总线用于向插件发送事件数据
   naive.eventBus = new 事件总线();
   naive.事件总线 = new 事件总线();
@@ -27,8 +38,30 @@ export async function initNaive() {
       }
     }
   }
+  //用于设置各级api鉴权
+  naive.syAuthConfig = {
+    api: {
+      insertBlock: {
+        access: { user_group: 'admin' },
+      },
+      transactions: {
+        access: { user_group: 'admin' },
+      },
+      prependBlock: { user_group: 'admin' },
+      appendBlock: { user_group: 'admin' },
+      updateBlock: { user_group: 'admin' },
+      deleteBlock: { user_group: 'admin' },
+      setBlockReminder: { user_group: 'admin' },
+      setBlockAttrs: {
+        access: { user_group: 'admin' },
+      },
+      upload: { user_group: 'admin' }
+    }
+  }
   //app环境下直接读取配置文件
   if (naive.ifDefOptions.defs.APP) {
+
+
     const fs = require("fs");
     let option = {}
     try {
@@ -51,9 +84,9 @@ export async function initNaive() {
     naive.ifDefOptions.verbose = naive.publishOption.develop;
   }
   //仅仅在桌面端加载服务端代码
-if (naive.ifDefOptions.defs.APP) {
-  await import("./server/severIndex.js");
-}
+  if (naive.ifDefOptions.defs.APP) {
+    await import("./server/severIndex.js");
+  }
   //这里的代码会在服务器创建完成之后运行,ifdef这时已经启用了,因此后面可以从这里开始加载插件
   naive.eventBus.on("message", async (m) => {
     if (m.type !== "serverStart") {
@@ -61,7 +94,7 @@ if (naive.ifDefOptions.defs.APP) {
     }
     //这里为了防止设置出错时无法通过naiveApi获取配置，使用了思源自身的api来获取文件
     naive.publishOption = await naive.核心api.getFile.raw({ path: 'conf/naiveConf/config/publish.json' }, '')
-    naive.设置 =new Proxy(naive.publishOption,{})
+    naive.设置 = new Proxy(naive.publishOption, {})
     //校验发布地址是否有效
     //加载插件
     await 加载插件()
