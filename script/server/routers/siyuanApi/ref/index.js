@@ -4,7 +4,40 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
-router.post("/reshBacklink", auth(), apiProxy)
-router.post("/getBacklink", auth(), apiProxy)
+router.post("/refreshBacklink", auth(), apiProxy)
+naive.serverUtil.discribeApi('/api/ref/refreshBacklink', {
+    名称: '刷新反向链接',
+    功能: '刷新反向链接',
+    方法: 'post',
+    权限: 'admin',
+    请求值: "todo",
+    返回值: 'todo',
+    一级分组: 'siyuanApi',
+    二级分组: 'ref'
+})
+
+//router.post("/getBacklink", auth(), apiProxy)
+naive.serverUtil.discribeApi('/api/ref/getBacklink', {
+    名称: '获取反向链接',
+    功能: '获取反向链接',
+    方法: {
+        post:[auth(),apiProxy]
+    },
+    权限: 'read',
+    请求值: "todo",
+    返回值: 'todo',
+    一级分组: 'siyuanApi',
+    二级分组: 'ref'
+})
 router.post("/createBacklink", auth(), apiProxy)
+naive.serverUtil.discribeApi('/api/ref/createBacklink', {
+    名称: '创建反向链接',
+    功能: '创建反向链接',
+    方法: 'post',
+    权限: 'read',
+    请求值: "todo",
+    返回值: 'todo',
+    一级分组: 'siyuanApi',
+    二级分组: 'ref'
+})
 module.exports=router

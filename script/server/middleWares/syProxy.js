@@ -125,6 +125,7 @@ const apiProxy = createProxyMiddleware({
         )
     },
 })
+
 module.exports = {
     proxy: proxy,
     apiProxy: jsonApiproxy

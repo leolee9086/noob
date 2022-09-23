@@ -26,7 +26,7 @@ naive.serverUtil.discribeApi('/api/account/checkActivationcode',{
     二级分组:'account'
 })
 router.post("/useActivationcode", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/account/checkActivationcode',{
+naive.serverUtil.discribeApi('/api/account/useActivationcode',{
     名称:'使用激活码',
     功能:'使用思源激活码',
     方法:'post',
@@ -48,7 +48,7 @@ naive.serverUtil.discribeApi('/api/account/deactivate',{
     二级分组:'account'
 })
 router.post("/startFreeTrial", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/account/deactivate',{
+naive.serverUtil.discribeApi('/api/account/startFreeTrial',{
     名称:'开始试用思源',
     功能:'开始试用思源会员功能,试用时长参考思源的文档',
     方法:'post',

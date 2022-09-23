@@ -63,8 +63,8 @@ naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
 })
 
 router.post("/getFileAnnotation", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
-    名称:'上传附件到assets中',
+naive.serverUtil.discribeApi('/api/asset/getFileAnnotation',{
+    名称:'获取文件标记',
     功能:'todo',
     方法:'post',
     权限:'write',
@@ -75,7 +75,7 @@ naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
 })
 
 router.post("/getUnusedAssets", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
+naive.serverUtil.discribeApi('/api/asset/getUnusedAssets',{
     名称:'获取未使用附件列表',
     功能:'todo',
     方法:'post',
@@ -87,7 +87,7 @@ naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
 })
 
 router.post("/removeUnusedAsset", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
+naive.serverUtil.discribeApi('/api/asset/removeUnusedAsset',{
     名称:'删除未使用附件',
     功能:'todo',
     方法:'post',
@@ -99,7 +99,7 @@ naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
 })
 
 router.post("/removeUnusedAssets", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/asset/setFileAnnotation',{
+naive.serverUtil.discribeApi('/api/asset/removeUnusedAssets',{
     名称:'批量删除未使用附件',
     功能:'todo',
     方法:'post',
