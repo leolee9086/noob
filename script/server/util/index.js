@@ -75,6 +75,8 @@ module.exports = {
                                         next()
                                 }
                         }
+                }else{
+                        console.warn(`接口${path}没有提供请求格式`)
                 }
                 let json解析器 =async function(req,res,next){
                         if (req.headers["content-type"]=="text/plain;charset=UTF-8"){
