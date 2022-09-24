@@ -52,12 +52,12 @@ naive.serverUtil.describeJSONApi('/api/filetree/getDoc', {
     一级分组: 'siyuanApi',
     二级分组: 'filetree'
 })
-
-router.post("/getDocNameTemplate", auth(), apiProxy)
 naive.serverUtil.describeJSONApi('/api/filetree/getDocNameTemplate', {
     名称: '获取文档名模板',
     功能: '获取指定笔记本的文档名模板',
-    方法: 'post',
+    方法: {
+        post:[auth(), apiProxy]
+    },
     权限: 'read',
     请求值: "todo",
     返回值: 'todo',
