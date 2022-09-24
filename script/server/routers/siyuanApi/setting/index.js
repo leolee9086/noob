@@ -4,7 +4,7 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 router.post("/setAccount", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setAccount', {
+naive.serverUtil.describeJSONApi('/api/setting/setAccount', {
     名称: '设置账户',
     功能: '设置账户',
     方法: 'post',
@@ -15,7 +15,7 @@ naive.serverUtil.discribeApi('/api/setting/setAccount', {
     二级分组: 'setting'
 })
 router.post("/setEditor", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setEditor', {
+naive.serverUtil.describeJSONApi('/api/setting/setEditor', {
     名称: '设置编辑器',
     功能: '设置编辑器',
     方法: 'post',
@@ -26,7 +26,7 @@ naive.serverUtil.discribeApi('/api/setting/setEditor', {
     二级分组: 'setting'
 })
 router.post("/setExport", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setExport', {
+naive.serverUtil.describeJSONApi('/api/setting/setExport', {
     名称: '设置导出',
     功能: '设置导出',
     方法: 'post',
@@ -37,7 +37,7 @@ naive.serverUtil.discribeApi('/api/setting/setExport', {
     二级分组: 'setting'
 })
 router.post("/setFiletree", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setFiletree', {
+naive.serverUtil.describeJSONApi('/api/setting/setFiletree', {
     名称: '设置导出',
     功能: '设置导出',
     方法: 'post',
@@ -48,7 +48,7 @@ naive.serverUtil.discribeApi('/api/setting/setFiletree', {
     二级分组: 'setting'
 })
 router.post("/setSearch", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setSearch', {
+naive.serverUtil.describeJSONApi('/api/setting/setSearch', {
     名称: '设置导出',
     功能: '设置导出',
     方法: 'post',
@@ -59,7 +59,7 @@ naive.serverUtil.discribeApi('/api/setting/setSearch', {
     二级分组: 'setting'
 })
 router.post("/setKeymap", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setKeymap', {
+naive.serverUtil.describeJSONApi('/api/setting/setKeymap', {
     名称: '设置导出',
     功能: '设置导出',
     方法: 'post',
@@ -70,7 +70,7 @@ naive.serverUtil.discribeApi('/api/setting/setKeymap', {
     二级分组: 'setting'
 })
 router.post("/setAppearance", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setAppearance', {
+naive.serverUtil.describeJSONApi('/api/setting/setAppearance', {
     名称: '设置导出',
     功能: '设置导出',
     方法: 'post',
@@ -81,7 +81,7 @@ naive.serverUtil.discribeApi('/api/setting/setAppearance', {
     二级分组: 'setting'
 })
 router.post("/getCloudUser", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/getCloudUser', {
+naive.serverUtil.describeJSONApi('/api/setting/getCloudUser', {
     名称: '设置导出',
     功能: '设置导出',
     方法: 'post',
@@ -92,7 +92,7 @@ naive.serverUtil.discribeApi('/api/setting/getCloudUser', {
     二级分组: 'setting'
 })
 router.post("/logoutCloudUser", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/logoutCloudUser', {
+naive.serverUtil.describeJSONApi('/api/setting/logoutCloudUser', {
     名称: '登出云端账户',
     功能: '设置导出',
     方法: 'post',
@@ -103,7 +103,7 @@ naive.serverUtil.discribeApi('/api/setting/logoutCloudUser', {
     二级分组: 'setting'
 })
 router.post("/login2faCloudUser", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/login2faCloudUser', {
+naive.serverUtil.describeJSONApi('/api/setting/login2faCloudUser', {
     名称: '登入云端账户',
     功能: '登入云端账户',
     方法: 'post',
@@ -114,7 +114,7 @@ naive.serverUtil.discribeApi('/api/setting/login2faCloudUser', {
     二级分组: 'setting'
 })
 router.post("/getCustomCSS", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/getCustomCSS', {
+naive.serverUtil.describeJSONApi('/api/setting/getCustomCSS', {
     名称: '获取自定义css',
     功能: '获取自定义css',
     方法: 'post',
@@ -125,7 +125,7 @@ naive.serverUtil.discribeApi('/api/setting/getCustomCSS', {
     二级分组: 'setting'
 })
 router.post("/setCustomCSS", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setCustomCSS', {
+naive.serverUtil.describeJSONApi('/api/setting/setCustomCSS', {
     名称: '设置自定义css',
     功能: '设置自定义css',
     方法: 'post',
@@ -136,7 +136,7 @@ naive.serverUtil.discribeApi('/api/setting/setCustomCSS', {
     二级分组: 'setting'
 })
 router.post("/setEmoji", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setEmoji', {
+naive.serverUtil.describeJSONApi('/api/setting/setEmoji', {
     名称: '设置emoji',
     功能: '设置emoji',
     方法: 'post',
@@ -147,7 +147,7 @@ naive.serverUtil.discribeApi('/api/setting/setEmoji', {
     二级分组: 'setting'
 })
 router.post("/setSearchCaseSensitive", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/setting/setSearchCaseSensitive', {
+naive.serverUtil.describeJSONApi('/api/setting/setSearchCaseSensitive', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',

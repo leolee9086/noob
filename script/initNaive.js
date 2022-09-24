@@ -7,6 +7,23 @@ import { kernelApiList } from "./public/kernelApi.js";
 import { 加载插件 } from "./plugin/index.js";
 import { corePluginList } from "./plugin/pluginConfiger.js";
 import { updatePluginsConfig } from "./plugin/pluginConfiger.js";
+let fn = window.fetch
+window.fetch =async function(...args){
+  console.log(...args)
+  let path = args[0]
+  let data = args[1]
+  console.log(path,data)
+  let res = await fn(...args)
+  console.log(res)
+  return res
+}
+//document.fn = document.createElement
+/*document.createElement =function(...args){
+  console.log(...args)
+  let el = document.fn.bind(document)(...args)
+  console.log(el)
+  return el
+}*/
 export async function initNaive() {
   let naive = window.naive;
   naive.pathConstructor = new pathConstructor(

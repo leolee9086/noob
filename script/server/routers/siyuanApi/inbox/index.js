@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/getShorthands", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/inbox/getShorthands', {
+naive.serverUtil.describeJSONApi('/api/inbox/getShorthands', {
     名称: '获取收集箱内容',
     功能: '获取云端收集箱的内容',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/inbox/getShorthands', {
 })
 
 router.post("/removeShorthands", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/inbox/removeShorthands', {
+naive.serverUtil.describeJSONApi('/api/inbox/removeShorthands', {
     名称: '移除收集箱内容',
     功能: '移除云端收集箱的内容',
     方法: 'post',

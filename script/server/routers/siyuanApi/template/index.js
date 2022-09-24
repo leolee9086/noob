@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/render", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/template/render', {
+naive.serverUtil.describeJSONApi('/api/template/render', {
     名称: '渲染标签',
     功能: '渲染标签',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/template/render', {
 })
 
 router.post("/docSaveAsTemplate", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/template/docSaveAsTemplate', {
+naive.serverUtil.describeJSONApi('/api/template/docSaveAsTemplate', {
     名称: '另存文档为模板',
     功能: '另存文档为模板',
     方法: 'post',

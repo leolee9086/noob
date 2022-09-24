@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/InitRepoKeyFromPassphrase", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/InitRepoKeyFromPassphrase', {
+naive.serverUtil.describeJSONApi('/api/repo/InitRepoKeyFromPassphrase', {
     名称: '以passphrase创建repoKey',
     功能: '以passphrase创建repoKey',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/repo/InitRepoKeyFromPassphrase', {
 })
 
 router.post("/initRepoKey", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/initRepoKey', {
+naive.serverUtil.describeJSONApi('/api/repo/initRepoKey', {
     名称: '初始化repoKey',
     功能: '初始化repoKey',
     方法: 'post',
@@ -28,7 +28,7 @@ naive.serverUtil.discribeApi('/api/repo/initRepoKey', {
     二级分组: 'repo'
 })
 router.post("/resetRepo", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/resetRepo', {
+naive.serverUtil.describeJSONApi('/api/repo/resetRepo', {
     名称: '重设repo',
     功能: '重设repo',
     方法: 'post',
@@ -40,7 +40,7 @@ naive.serverUtil.discribeApi('/api/repo/resetRepo', {
 })
 
 router.post("/importRepoKey", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/importRepoKey', {
+naive.serverUtil.describeJSONApi('/api/repo/importRepoKey', {
     名称: '导入repoKey',
     功能: '导入repoKey',
     方法: 'post',
@@ -52,7 +52,7 @@ naive.serverUtil.discribeApi('/api/repo/importRepoKey', {
 })
 
 router.post("/createSnapshot", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/createSnapshot', {
+naive.serverUtil.describeJSONApi('/api/repo/createSnapshot', {
     名称: '创建数据快照',
     功能: '创建当前数据快照',
     方法: 'post',
@@ -63,7 +63,7 @@ naive.serverUtil.discribeApi('/api/repo/createSnapshot', {
     二级分组: 'repo'
 })
 router.post("/tagSnapshot", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/tagSnapshot', {
+naive.serverUtil.describeJSONApi('/api/repo/tagSnapshot', {
     名称: '标记数据快照',
     功能: '标记数据快照',
     方法: 'post',
@@ -74,7 +74,7 @@ naive.serverUtil.discribeApi('/api/repo/tagSnapshot', {
     二级分组: 'repo'
 })
 router.post("/checkoutRepo", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/checkoutRepo', {
+naive.serverUtil.describeJSONApi('/api/repo/checkoutRepo', {
     名称: 'checkoutRepo',
     功能: 'checkoutRepo',
     方法: 'post',
@@ -85,7 +85,7 @@ naive.serverUtil.discribeApi('/api/repo/checkoutRepo', {
     二级分组: 'repo'
 })
 router.post("/getRepoSnapshots", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/getRepoSnapshots', {
+naive.serverUtil.describeJSONApi('/api/repo/getRepoSnapshots', {
     名称: '获取所有快照',
     功能: '获取所有快照',
     方法: 'post',
@@ -96,7 +96,7 @@ naive.serverUtil.discribeApi('/api/repo/getRepoSnapshots', {
     二级分组: 'repo'
 })
 router.post("/getRepoTagSnapshots", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/getRepoTagSnapshots', {
+naive.serverUtil.describeJSONApi('/api/repo/getRepoTagSnapshots', {
     名称: '获取所有标记快照',
     功能: '获取所有标记快照',
     方法: 'post',
@@ -107,7 +107,7 @@ naive.serverUtil.discribeApi('/api/repo/getRepoTagSnapshots', {
     二级分组: 'repo'
 })
 router.post("/removeRepoTagSnapshot", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/removeRepoTagSnapshot', {
+naive.serverUtil.describeJSONApi('/api/repo/removeRepoTagSnapshot', {
     名称: '移除标记快照',
     功能: '移除标记快照',
     方法: 'post',
@@ -118,7 +118,7 @@ naive.serverUtil.discribeApi('/api/repo/removeRepoTagSnapshot', {
     二级分组: 'repo'
 })
 router.post("/getCloudRepoTagSnapshots", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/getCloudRepoTagSnapshots', {
+naive.serverUtil.describeJSONApi('/api/repo/getCloudRepoTagSnapshots', {
     名称: '获取云端数据快照',
     功能: '获取思源云端数据快照',
     方法: 'post',
@@ -129,7 +129,7 @@ naive.serverUtil.discribeApi('/api/repo/getCloudRepoTagSnapshots', {
     二级分组: 'repo'
 })
 router.post("/removeCloudRepoTagSnapshot", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/removeCloudRepoTagSnapshot', {
+naive.serverUtil.describeJSONApi('/api/repo/removeCloudRepoTagSnapshot', {
     名称: '移除云端数据快照',
     功能: '移除云端数据快照',
     方法: 'post',
@@ -141,7 +141,7 @@ naive.serverUtil.discribeApi('/api/repo/removeCloudRepoTagSnapshot', {
 })
 
 router.post("/uploadCloudSnapshot", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/uploadCloudSnapshot', {
+naive.serverUtil.describeJSONApi('/api/repo/uploadCloudSnapshot', {
     名称: '上传数据快照到云端',
     功能: '上传数据快照到云端',
     方法: 'post',
@@ -152,7 +152,7 @@ naive.serverUtil.discribeApi('/api/repo/uploadCloudSnapshot', {
     二级分组: 'repo'
 })
 router.post("/downloadCloudSnapshot", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/repo/downloadCloudSnapshot', {
+naive.serverUtil.describeJSONApi('/api/repo/downloadCloudSnapshot', {
     名称: '下载云端数据快照',
     功能: '下载云端数据快照',
     方法: 'post',

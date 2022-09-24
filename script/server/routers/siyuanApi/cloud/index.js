@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/getCloudSpace", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/cloud/getCloudSpace', {
+naive.serverUtil.describeJSONApi('/api/cloud/getCloudSpace', {
     名称: '获取云端空间情况',
     功能: '获取云端空间详情',
     方法: 'post',

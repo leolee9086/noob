@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/getTag", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/tag/getTag', {
+naive.serverUtil.describeJSONApi('/api/tag/getTag', {
     名称: '获取标签',
     功能: '获取标签',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/tag/getTag', {
 })
 
 router.post("/renameTag", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/tag/renameTag', {
+naive.serverUtil.describeJSONApi('/api/tag/renameTag', {
     名称: '重命名标签',
     功能: '重命名标签',
     方法: 'post',
@@ -28,7 +28,7 @@ naive.serverUtil.discribeApi('/api/tag/renameTag', {
     二级分组: 'tag'
 })
 router.post("/removeTag", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/tag/removeTag', {
+naive.serverUtil.describeJSONApi('/api/tag/removeTag', {
     名称: '移除标签',
     功能: '移除标签',
     方法: 'post',

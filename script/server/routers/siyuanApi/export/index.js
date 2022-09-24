@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/batchExportMd", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/batchExportMd', {
+naive.serverUtil.describeJSONApi('/api/export/batchExportMd', {
     名称: '批量导出markdown',
     功能: '批量导出指定文档的markdown内容',
     方法: 'post',
@@ -16,7 +16,7 @@ naive.serverUtil.discribeApi('/api/export/batchExportMd', {
     二级分组: 'export'
 })
 router.post("/exportMd", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportMd', {
+naive.serverUtil.describeJSONApi('/api/export/exportMd', {
     名称: '导出markdown',
     功能: '导出指定文档的markdown内容',
     方法: 'post',
@@ -27,7 +27,7 @@ naive.serverUtil.discribeApi('/api/export/exportMd', {
     二级分组: 'export'
 })
 router.post("/exportSY", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportSY', {
+naive.serverUtil.describeJSONApi('/api/export/exportSY', {
     名称: '导出sy压缩包',
     功能: '导出指定文档的sy压缩包',
     方法: 'post',
@@ -38,7 +38,7 @@ naive.serverUtil.discribeApi('/api/export/exportSY', {
     二级分组: 'export'
 })
 router.post("/exportNotebookSY", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportNotebookSY', {
+naive.serverUtil.describeJSONApi('/api/export/exportNotebookSY', {
     名称: '导出笔记本压缩包',
     功能: '导出笔记本的压缩包',
     方法: 'post',
@@ -50,7 +50,7 @@ naive.serverUtil.discribeApi('/api/export/exportNotebookSY', {
 })
 
 router.post("/exportMdContent", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportMdContent', {
+naive.serverUtil.describeJSONApi('/api/export/exportMdContent', {
     名称: '导出maekdown内容',
     功能: '导出指定文档的markdown内容',
     方法: 'post',
@@ -62,7 +62,7 @@ naive.serverUtil.discribeApi('/api/export/exportMdContent', {
 })
 
 router.post("/exportHTML", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportHTML', {
+naive.serverUtil.describeJSONApi('/api/export/exportHTML', {
     名称: '导出HTML',
     功能: '导出指定文档的HTML',
     方法: 'post',
@@ -74,7 +74,7 @@ naive.serverUtil.discribeApi('/api/export/exportHTML', {
 })
 
 router.post("/exportMdHTML", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportMdHTML', {
+naive.serverUtil.describeJSONApi('/api/export/exportMdHTML', {
     名称: '导出以markdown生成的HTML',
     功能: '导出指定文档的HTML',
     方法: 'post',
@@ -86,7 +86,7 @@ naive.serverUtil.discribeApi('/api/export/exportMdHTML', {
 })
 
 router.post("/exportDocx", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportDocx', {
+naive.serverUtil.describeJSONApi('/api/export/exportDocx', {
     名称: '导出Docx',
     功能: '导出Docx文件',
     方法: 'post',
@@ -97,7 +97,7 @@ naive.serverUtil.discribeApi('/api/export/exportDocx', {
     二级分组: 'export'
 })
 router.post("/addPDFOutline", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/addPDFOutline', {
+naive.serverUtil.describeJSONApi('/api/export/addPDFOutline', {
     名称: '导出PDF大纲',
     功能: '导出PDF时的大纲',
     方法: 'post',
@@ -109,7 +109,7 @@ naive.serverUtil.discribeApi('/api/export/addPDFOutline', {
 })
 
 router.post("/preview", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/preview', {
+naive.serverUtil.describeJSONApi('/api/export/preview', {
     名称: '导出预览',
     功能: '导出预览',
     方法: 'post',
@@ -120,7 +120,7 @@ naive.serverUtil.discribeApi('/api/export/preview', {
     二级分组: 'export'
 })
 router.post("/exportData", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportData', {
+naive.serverUtil.describeJSONApi('/api/export/exportData', {
     名称: '导出data文件',
     功能: '导出data文件',
     方法: 'post',
@@ -131,7 +131,7 @@ naive.serverUtil.discribeApi('/api/export/exportData', {
     二级分组: 'export'
 })
 router.post("/exportDataInFolder", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/export/exportDataInFolder', {
+naive.serverUtil.describeJSONApi('/api/export/exportDataInFolder', {
     名称: '导出data文件到压缩包',
     功能: '导出data文件到压缩包',
     方法: 'post',

@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/pushMsg", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/transactions/pushMsg', {
+naive.serverUtil.describeJSONApi('/api/transactions/pushMsg', {
     名称: '推送消息',
     功能: '推送错误消息',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/transactions/pushMsg', {
 })
 
 router.post("/pushErrMsg", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/transactions/pushErrMsg', {
+naive.serverUtil.describeJSONApi('/api/transactions/pushErrMsg', {
     名称: '推送消息',
     功能: '推送错误消息',
     方法: 'post',
@@ -28,7 +28,7 @@ naive.serverUtil.discribeApi('/api/transactions/pushErrMsg', {
     二级分组: 'pushMsg'
 })
 router.post("", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/transactions', {
+naive.serverUtil.describeJSONApi('/api/transactions', {
     名称: '事务',
     功能: '事务',
     方法: 'post',

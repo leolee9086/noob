@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/getDocOutline", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/outline/getDocOutline', {
+naive.serverUtil.describeJSONApi('/api/outline/getDocOutline', {
     名称: '获取文档大纲',
     功能: '获取文档大纲',
     方法: 'post',

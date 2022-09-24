@@ -4,7 +4,7 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 router.post("/spinBlockDOM", auth(), apiProxy) // 未测试
-naive.serverUtil.discribeApi('/api/lute/spinBlockDOM', {
+naive.serverUtil.describeJSONApi('/api/lute/spinBlockDOM', {
     名称: '自旋blockDOM',
     功能: '对blockDOM进行一次自旋',
     方法: 'post',
@@ -16,7 +16,7 @@ naive.serverUtil.discribeApi('/api/lute/spinBlockDOM', {
 })
 
 router.post("/html2BlockDOM", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/lute/html2BlockDOM', {
+naive.serverUtil.describeJSONApi('/api/lute/html2BlockDOM', {
     名称: '转换html为blockDOM',
     功能: '将输入的blockDOM转换为blockDOM',
     方法: 'post',
@@ -27,7 +27,7 @@ naive.serverUtil.discribeApi('/api/lute/html2BlockDOM', {
     二级分组: 'lute'
 })
 router.post("/copyStdMarkdown", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/lute/copyStdMarkdown', {
+naive.serverUtil.describeJSONApi('/api/lute/copyStdMarkdown', {
     名称: '复制标准markdown',
     功能: '复制标准markdown内容',
     方法: 'post',

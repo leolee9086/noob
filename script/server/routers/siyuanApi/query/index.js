@@ -4,7 +4,7 @@ const {middlewares} =naive
 const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 router.post("/sql", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/query/sql', {
+naive.serverUtil.describeJSONApi('/api/query/sql', {
     名称: 'sql查询',
     功能: '以sql查询结果',
     方法: 'post',

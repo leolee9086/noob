@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post( "/pushMsg", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/notification/pushMsg', {
+naive.serverUtil.describeJSONApi('/api/notification/pushMsg', {
     名称: '推送消息',
     功能: '推送消息到各个编辑器',
     方法: 'post',
@@ -16,7 +16,7 @@ naive.serverUtil.discribeApi('/api/notification/pushMsg', {
     二级分组: 'notification'
 })
 router.post( "/pushErrMsg", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/notification/pushErrMsg', {
+naive.serverUtil.describeJSONApi('/api/notification/pushErrMsg', {
     名称: '推送错误信息',
     功能: '推送错误信息到各个编辑器',
     方法: 'post',

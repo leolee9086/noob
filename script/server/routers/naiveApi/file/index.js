@@ -13,7 +13,7 @@ router.post("/putFile", (req, res) => {
         }
     }
 });
-naive.serverUtil.discribeApi('/naiveApi/file/putFile', {
+naive.serverUtil.describeJSONApi('/naiveApi/file/putFile', {
     名称: '获取文档大纲',
     功能: '获取文档大纲',
     方法: 'post',

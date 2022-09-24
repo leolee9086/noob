@@ -23,7 +23,7 @@ const proxy = createProxyMiddleware({
 )
 naive.wsProxy = proxy
 router.use("/ws", proxy)
-naive.serverUtil.discribeApi('/ws',{
+naive.serverUtil.describeJSONApi('/ws',{
     名称:'思源websocket',
     功能:'用于思源各个界面与核心之间的通信',
     方法:'todo',

@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/readFilePaths", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/clipboard/readFilePaths', {
+naive.serverUtil.describeJSONApi('/api/clipboard/readFilePaths', {
     名称: '读取系统剪贴板内容',
     功能: '删除某个书签',
     方法: 'post',

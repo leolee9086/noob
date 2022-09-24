@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/setSyncEnable", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/setSyncEnable', {
+naive.serverUtil.describeJSONApi('/api/sync/setSyncEnable', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/sync/setSyncEnable', {
 })
 
 router.post("/setSyncMode", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/setSyncMode', {
+naive.serverUtil.describeJSONApi('/api/sync/setSyncMode', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -29,7 +29,7 @@ naive.serverUtil.discribeApi('/api/sync/setSyncMode', {
 })
 
 router.post("/setCloudSyncDir", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/setCloudSyncDir', {
+naive.serverUtil.describeJSONApi('/api/sync/setCloudSyncDir', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -41,7 +41,7 @@ naive.serverUtil.discribeApi('/api/sync/setCloudSyncDir', {
 })
 
 router.post("/createCloudSyncDir", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/createCloudSyncDir', {
+naive.serverUtil.describeJSONApi('/api/sync/createCloudSyncDir', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -53,7 +53,7 @@ naive.serverUtil.discribeApi('/api/sync/createCloudSyncDir', {
 })
 
 router.post("/removeCloudSyncDir", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/removeCloudSyncDir', {
+naive.serverUtil.describeJSONApi('/api/sync/removeCloudSyncDir', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -65,7 +65,7 @@ naive.serverUtil.discribeApi('/api/sync/removeCloudSyncDir', {
 })
 
 router.post("/listCloudSyncDir", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/listCloudSyncDir', {
+naive.serverUtil.describeJSONApi('/api/sync/listCloudSyncDir', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -77,7 +77,7 @@ naive.serverUtil.discribeApi('/api/sync/listCloudSyncDir', {
 })
 
 router.post("/performSync", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/performSync', {
+naive.serverUtil.describeJSONApi('/api/sync/performSync', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -89,7 +89,7 @@ naive.serverUtil.discribeApi('/api/sync/performSync', {
 })
 
 router.post("/performBootSync", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/performBootSync', {
+naive.serverUtil.describeJSONApi('/api/sync/performBootSync', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',
@@ -101,7 +101,7 @@ naive.serverUtil.discribeApi('/api/sync/performBootSync', {
 })
 
 router.post("/getBootSync", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/sync/getBootSync', {
+naive.serverUtil.describeJSONApi('/api/sync/getBootSync', {
     名称: '搜索大小写设置',
     功能: '搜索大小写设置',
     方法: 'post',

@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/searchTag", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/searchTag', {
+naive.serverUtil.describeJSONApi('/api/search/searchTag', {
     名称: '搜索标签',
     功能: '搜索标签',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/search/searchTag', {
 })
 
 router.post("/searchTemplate", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/searchTemplate', {
+naive.serverUtil.describeJSONApi('/api/search/searchTemplate', {
     名称: '搜索模板',
     功能: '搜索模板',
     方法: 'post',
@@ -28,7 +28,7 @@ naive.serverUtil.discribeApi('/api/search/searchTemplate', {
     二级分组: 'search'
 })
 router.post("/searchWidget", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/searchWidget', {
+naive.serverUtil.describeJSONApi('/api/search/searchWidget', {
     名称: '搜索挂件',
     功能: '搜索挂件',
     方法: 'post',
@@ -39,7 +39,7 @@ naive.serverUtil.discribeApi('/api/search/searchWidget', {
     二级分组: 'search'
 })
 router.post("/searchRefBlock", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/searchRefBlock', {
+naive.serverUtil.describeJSONApi('/api/search/searchRefBlock', {
     名称: '搜索引用块',
     功能: '搜索引用块',
     方法: 'post',
@@ -50,7 +50,7 @@ naive.serverUtil.discribeApi('/api/search/searchRefBlock', {
     二级分组: 'search'
 })
 router.post("/searchEmbedBlock", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/searchEmbedBlock', {
+naive.serverUtil.describeJSONApi('/api/search/searchEmbedBlock', {
     名称: '搜索引用块',
     功能: '搜索引用块',
     方法: 'post',
@@ -61,7 +61,7 @@ naive.serverUtil.discribeApi('/api/search/searchEmbedBlock', {
     二级分组: 'search'
 })
 router.post("/fullTextSearchBlock", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/fullTextSearchBlock', {
+naive.serverUtil.describeJSONApi('/api/search/fullTextSearchBlock', {
     名称: '全文搜索块',
     功能: '全文搜索块',
     方法: 'post',
@@ -72,7 +72,7 @@ naive.serverUtil.discribeApi('/api/search/fullTextSearchBlock', {
     二级分组: 'search'
 })
 router.post("/searchAsset", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/searchAsset', {
+naive.serverUtil.describeJSONApi('/api/search/searchAsset', {
     名称: '搜索附件',
     功能: '搜索附件',
     方法: 'post',
@@ -83,7 +83,7 @@ naive.serverUtil.discribeApi('/api/search/searchAsset', {
     二级分组: 'search'
 })
 router.post("/findReplace", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/search/findReplace', {
+naive.serverUtil.describeJSONApi('/api/search/findReplace', {
     名称: '搜索并替换内容',
     功能: '搜索并替换内容',
     方法: 'post',

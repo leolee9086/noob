@@ -1,5 +1,32 @@
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
+window.siyuan.menus.menu.element =new Proxy(
+  window.siyuan.menus.menu.element,{
+    get(target,key){
+      console.log(key)
 
+      if(target[key] instanceof Function){
+        if(key == 'append'){
+          return function(...args){
+             console.log(...args)
+             args.forEach(
+              el=>{console.log(el)}
+             )
+             target.append(...args)
+          }
+        }
+        return target[key].bind(target)
+      }
+      else{
+        return target[key]
+      }
+    },
+    set(target,key,value){
+      target[key]=value
+      console.log(key,value)
+      return true
+    }
+  }
+)
 let 通用菜单监听器选项 = {
   监听目标: "#commonMenu",
   监听器回调: 通用菜单监听器回调,

@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/copy", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/extension/copy', {
+naive.serverUtil.describeJSONApi('/api/extension/copy', {
     名称: '浏览器插件复制',
     功能: '供浏览器插件调用,复制文件到思源的剪贴板',
     方法: 'post',

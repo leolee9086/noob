@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/getFile", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/file/getFile', {
+naive.serverUtil.describeJSONApi('/api/file/getFile', {
     名称: '获取指定文件',
     功能: '指定工作空间路径,获取指定文件',
     方法: 'post',
@@ -16,7 +16,7 @@ naive.serverUtil.discribeApi('/api/file/getFile', {
     二级分组: 'file'
 })
 router.post("/putFile", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/file/putFile', {
+naive.serverUtil.describeJSONApi('/api/file/putFile', {
     名称: '上传文件',
     功能: '指定工作空间路径,上传文件到此位置',
     方法: 'post',
@@ -27,7 +27,7 @@ naive.serverUtil.discribeApi('/api/file/putFile', {
     二级分组: 'file'
 })
 router.post("/copyFile", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/file/copyFile', {
+naive.serverUtil.describeJSONApi('/api/file/copyFile', {
     名称: '复制文件',
     功能: '指定工作空间路径,复制文件',
     方法: 'post',

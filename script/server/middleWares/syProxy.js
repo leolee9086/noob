@@ -7,7 +7,7 @@ const proxy = createProxyMiddleware({
     pathRewrite: { '/siyuanPublisher/editor': '/' },
     //ws: true
 })
-function unzip(msg) {
+function unzipJSON(msg) {
     return new Promise(function (resolve, reject) {
         const _data = []
         msg.on('data', chunk => {
@@ -25,26 +25,6 @@ function unzip(msg) {
     }
     )
 }
-function unzipJSON(syRes) {
-    return new Promise(function (resolve, reject) {
-        const _data = []
-
-        syRes.on('data', chunk => {
-            _data.push(...chunk)
-        })
-
-        syRes.on('end', () => {
-            // 把传递过来的数据转换为一个对象
-            const zlib = require('zlib')
-            zlib.unzip(Buffer.from(_data), (err, buffer) => {
-                console.log(JSON.parse(buffer.toString('utf8')))
-                resolve(JSON.parse(buffer.toString('utf8')))
-            })
-
-        })
-    }
-    )
-}
 
 const jsonApiproxy =async function(req,res){
     let syres = {}
@@ -52,15 +32,18 @@ const jsonApiproxy =async function(req,res){
     let url ="http://" +naive.publishOption.思源伺服地址 +":" +naive.publishOption.思源伺服端口 +req.originalUrl;
     try{
     let data = req.body   
-    if (req.headers["content-type"]=="text/plain;charset=UTF-8"){
-        data=await unzip(req)
+    if (req.headers["content-type"]=="text/plain;charset=UTF-8"&&JSON.stringify(data)=='{}'){
+        try{
+        data=await unzipJSON(req)
+        }
+        catch(e){
+            console.error(e)
+            data = {}
+        }
     }
     let apiName = req.originalUrl.split('/').slice (-1)[0] 
-    console.log(apiName)
     if (apiFix[apiName]) {
-
         if (apiFix[apiName]["preFix"]) {
-
             let preFix = naive.syAuthConfig.api[apiName]["preFix"]
             let  data_1 =  await preFix(data, req, res)
             data =data_1||data 
@@ -91,6 +74,7 @@ const jsonApiproxy =async function(req,res){
         })
     }
 }
+
 const apiProxy = createProxyMiddleware({
     target: `http://${naive.publishOption.思源伺服地址}:${naive.publishOption.思源伺服端口}`,
     changeOrigin: true,

@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/refreshBacklink", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/ref/refreshBacklink', {
+naive.serverUtil.describeJSONApi('/api/ref/refreshBacklink', {
     名称: '刷新反向链接',
     功能: '刷新反向链接',
     方法: 'post',
@@ -17,11 +17,14 @@ naive.serverUtil.discribeApi('/api/ref/refreshBacklink', {
 })
 
 //router.post("/getBacklink", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/ref/getBacklink', {
+naive.serverUtil.describeJSONApi('/api/ref/getBacklink', {
     名称: '获取反向链接',
     功能: '获取反向链接',
     方法: {
-        post:[auth(),apiProxy]
+        post:[auth(),apiProxy],
+        get:function(req,res){
+            res.end("测试一下")
+        }
     },
     权限: 'read',
     请求值: "todo",
@@ -30,7 +33,7 @@ naive.serverUtil.discribeApi('/api/ref/getBacklink', {
     二级分组: 'ref'
 })
 router.post("/createBacklink", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/ref/createBacklink', {
+naive.serverUtil.describeJSONApi('/api/ref/createBacklink', {
     名称: '创建反向链接',
     功能: '创建反向链接',
     方法: 'post',

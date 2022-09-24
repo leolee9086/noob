@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/resetGraph", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/graph/resetGraph', {
+naive.serverUtil.describeJSONApi('/api/graph/resetGraph', {
     名称: '重置全局图谱设定',
     功能: '重置全局图谱设定',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/graph/resetGraph', {
 })
 
 router.post("/resetLocalGraph", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/graph/resetLocalGraph', {
+naive.serverUtil.describeJSONApi('/api/graph/resetLocalGraph', {
     名称: '重置局部图谱设定',
     功能: '重置局部图谱设定',
     方法: 'post',
@@ -30,7 +30,7 @@ naive.serverUtil.discribeApi('/api/graph/resetLocalGraph', {
 
 
 router.post("/getGraph", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/graph/getGraph', {
+naive.serverUtil.describeJSONApi('/api/graph/getGraph', {
     名称: '获取全局图谱',
     功能: '获取全局图谱',
     方法: 'post',
@@ -41,7 +41,7 @@ naive.serverUtil.discribeApi('/api/graph/getGraph', {
     二级分组: 'format'
 })
 router.post("/getLocalGraph", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/graph/getLocalGraph', {
+naive.serverUtil.describeJSONApi('/api/graph/getLocalGraph', {
     名称: '获取局部图谱',
     功能: '获取局部图谱',
     方法: 'post',

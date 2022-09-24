@@ -5,7 +5,7 @@ const {auth,syProxy}= middlewares
 const { apiProxy} =syProxy
 
 router.post("/importStdMd", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/import/importStdMd', {
+naive.serverUtil.describeJSONApi('/api/import/importStdMd', {
     名称: '导入标准markdown',
     功能: '导入markdown内容到指定位置',
     方法: 'post',
@@ -17,7 +17,7 @@ naive.serverUtil.discribeApi('/api/import/importStdMd', {
 })
 
 router.post("/importData", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/import/importData', {
+naive.serverUtil.describeJSONApi('/api/import/importData', {
     名称: '导入数据',
     功能: '导入data文件夹',
     方法: 'post',
@@ -28,7 +28,7 @@ naive.serverUtil.discribeApi('/api/import/importData', {
     二级分组: 'import'
 })
 router.post("/importSY", auth(), apiProxy)
-naive.serverUtil.discribeApi('/api/import/importSY', {
+naive.serverUtil.describeJSONApi('/api/import/importSY', {
     名称: '导入.sy压缩包',
     功能: '导入思源导出的压缩包文件',
     方法: 'post',
