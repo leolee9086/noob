@@ -1063,7 +1063,7 @@ describeJSONApi('/api/ref/getBacklink', {
             res.end("测试一下")
         }
     },
-    权限: 'public',
+    权限: 'read',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',

@@ -1,9 +1,5 @@
 const listEndpoints = require('express-list-endpoints')
-const apiLevel = {
-    admin: 0,
-    writable: 1,
-    readOnly: 2
-}
+
 module.exports = {
     //校验是否所有path都有设置权限
     chekEndPoints: function (app, registry) {
