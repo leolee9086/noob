@@ -60,12 +60,19 @@ module.exports = function (path, describe) {
             console.log(describe.权限)
 
             auth = (req, res, next) => {
+                console.log(describe.权限)
+
                 let user_group = req.session.user_group || 'visitor'
+                console.log(user_group)
                 if (user_group == 'admin') {
                     next()
+                    return
+
                 }
                 else {
                     let 权限设置 = naive.apiAuthorization[user_group]
+                    console.log(权限设置)
+
                     if (!权限设置) {
                         res.json({
                             code: 3,
@@ -73,14 +80,15 @@ module.exports = function (path, describe) {
                             msg: '抱歉,你无权访问此位置'
                         })
                         res.end()
-
                     }
                     else {
                         if (权限设置[describe.一级分组] == 'all') {
                             console.log(权限设置[describe.一级分组])
                             next()
+                            return
                         }
                         else {
+
                             let 接口等级 = apiLevel.indexOf([describe.权限])
                             let 用户组权限等级 = apiLevel.length + 1
                             if (权限设置[describe.一级分组]) {
@@ -89,6 +97,9 @@ module.exports = function (path, describe) {
                                 }
                                 else {
                                     用户组权限等级 = apiLevel.indexOf(权限设置[describe.一级分组]["权限"])
+                                    if(权限设置[describe.一级分组]["权限"]=='all'){
+                                        用户组权限等级 = 0
+                                    }
                                     if (用户组权限等级 < 0) {
                                         console.warn(`用户组${user_group}在${describe.一级分组}上的权限${权限设置[describe.一级分组]["权限"]}不存在,请检查权限设置`)
                                         res.json({
@@ -101,13 +112,20 @@ module.exports = function (path, describe) {
                                     }
                                     else {
                                         if (权限设置[describe.一级分组][describe.二级分组]) {
+                                            if ( 权限设置[describe.一级分组][describe.二级分组] == "all") {
+                                                next()
+                                                return
+                                            }
+            
                                             if (typeof 权限设置[describe.一级分组][describe.二级分组] == "string") {
                                                 用户组权限等级 = apiLevel.indexOf(权限设置[describe.一级分组][describe.二级分组])
-
                                             }
                                             else {
 
                                                 用户组权限等级 = apiLevel.indexOf(权限设置[describe.一级分组][describe.二级分组]["权限"])
+                                                if(权限设置[describe.一级分组][describe.二级分组]["权限"]=='all'){
+                                                    用户组权限等级 = 0
+                                                }
                                                 if (用户组权限等级 < 0) {
                                                     console.warn(`用户组${user_group}在${describe.一级分组}下的${describe.二级分组}的权限${权限设置[describe.一级分组][describe.二级分组]["权限"]}不存在,请检查权限设置`)
                                                     res.json({
@@ -152,6 +170,7 @@ module.exports = function (path, describe) {
                             }
                             else {
                                 next()
+                                return
                             }
                         }
 
@@ -161,7 +180,7 @@ module.exports = function (path, describe) {
             }
         }
         else {
-            console.warn('错误的权限设置')
+            console.warn(`api错误:${path}未设置请求权限,请校验`)
             auth = (req, res, next) => {
                 res.json({
                     code: 3,
