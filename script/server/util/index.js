@@ -22,28 +22,28 @@ module.exports = {
         apiAuthor: apiAuthor,
         chekEndPoints: () => { return naive.serverUtil.apiAuthor.chekEndPoints(naive.expressApp, {}) },
         //用于描述jsonapi
-        describeJSONApi: (path, discribe) => {
+        describeJSONApi: (path, describe) => {
                 let 请求校验器
                 let 返回值校验器
                 naive.doc.api[path] = {
-                        一级分组: discribe.一级分组,
-                        二级分组: discribe.二级分组,
-                        功能: discribe.功能,
-                        名称: discribe.名称,
-                        方法: discribe.方法,
-                        权限: discribe.权限,
-                        请求值: discribe.请求值,
-                        路径: discribe.路径,
-                        返回值: discribe.返回值,
+                        一级分组: describe.一级分组,
+                        二级分组: describe.二级分组,
+                        功能: describe.功能,
+                        名称: describe.名称,
+                        方法: describe.方法,
+                        权限: describe.权限,
+                        请求值: describe.请求值,
+                        路径: describe.路径,
+                        返回值: describe.返回值,
                 }
-                if (discribe.请求值.schema || discribe.请求值.模式) {
-                        let 模式 = discribe.请求值.schema || discribe.请求值.模式
+                if (describe.请求值.schema || describe.请求值.模式) {
+                        let 模式 = describe.请求值.schema || describe.请求值.模式
                         let 校验器 = ajv.compile(模式)
                         请求校验器 = function (req, res, next) {
                                 if (!校验器(req.body)) {
                                         console.error(`接口${path}收到了错误的请求`)
                                         console.error(校验器.errors)
-                                        if (discribe.请求值.strictCheck) {
+                                        if (describe.请求值.strictCheck) {
                                                 res.json(
                                                         {
                                                                 msg: 校验器.errors,
@@ -53,7 +53,7 @@ module.exports = {
                                                 )
                                                 res.end()
                                         }
-                                        if (!discribe.请求值.strictCheck) { next() }
+                                        if (!describe.请求值.strictCheck) { next() }
                                 }
                                 else {
                                         next()
@@ -62,15 +62,74 @@ module.exports = {
                 } else {
                         console.warn(`接口${path}没有提供请求格式`)
                 }
+                let auth 
+                if(describe.权限){
+                        if(describe.权限=='public'){
+                                auth =(req,res,next)=>{next()}                                
+                        }
+                        else if(describe.权限 instanceof String){
+                                auth = (req,res,next)=>{
+                                        let user_group = req.session.user_group
+                                        if(user_group=='admin'){
+                                                next()
+                                        }
+                                        else{
+                                                let 权限设置 = naive.apiAuthorization[user_group]
+                                                if(!权限设置){
+                                                        res.json({
+                                                                code:3,
+                                                                data:null,
+                                                                msg:'抱歉,你无权访问此位置'
+                                                        })
+                                                }  
+                                                else {
+                                                        if(权限设置[describe.一级分组]=='all'){
+                                                                next()
+                                                        }
+                                                        else if (权限设置[describe.一级分组]==describe.权限){
+                                                                next()
+                                                        }
+                                                        else if (权限设置[describe.一级分组][describe.二级分组]==describe.权限){
+                                                                next()
+                                                        }
+                                                        else if (权限设置[describe.一级分组][describe.二级分组][describe.path]== describe.权限){
+                                                                next()
+                                                        }
+                                                        else{
+                                                                res.json({
+                                                                        code:3,
+                                                                        data:null,
+                                                                        msg:'抱歉,你无权访问此位置'
+                                                                })
+        
+                                                        }
+                                                        
+                                                }      
+                                                
+                                        }
+                                }
+                        }
+                        else {
+                                console.warn('错误的权限设置')
+                                auth = (req,res,next)=>{
+                                        res.json({
+                                                code:3,
+                                                data:null,
+                                                msg:'抱歉,你无权访问此位置'
+                                        })
 
-                if (discribe.方法 && discribe.方法 instanceof Object) {
-                        Object.getOwnPropertyNames(discribe.方法).forEach(
+                                }
+                        }
+                }
+                if (describe.方法 && describe.方法 instanceof Object) {
+                        Object.getOwnPropertyNames(describe.方法).forEach(
                                 method => {
-                                        !请求校验器 ? naive.expressApp[method](path, discribe['方法'][method]) : naive.expressApp[method](path, 请求校验器, discribe['方法'][method])
+                                        !请求校验器 ? naive.expressApp[method](path, auth,describe['方法'][method]) : naive.expressApp[method](path, auth,请求校验器, describe['方法'][method])
 
                                 }
                         )
                 }
+                
 
         }
 }

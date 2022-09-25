@@ -9,8 +9,8 @@ describeJSONApi('/api/system/bootProgress', {
     名称: '获取启动进度',
     功能: '获取启动进度',
     方法: {
-        get: [auth(), apiProxy],
-        post: [auth(), apiProxy]
+        get: [auth({user_group:"admin"}), apiProxy],
+        post: [auth({user_group:"admin"}), apiProxy]
     },
     权限: 'admin',
     请求值: "todo",
@@ -236,13 +236,12 @@ describeJSONApi('/api/system/setUILayout', {
     一级分组: 'siyuanApi',
     二级分组: 'system'
 })
-//naive.expressApp.post('/api/system/getConf',apiProxy)
 describeJSONApi('/api/system/getConf', {
     名称: '获取设置',
     功能: '获取设置',
     方法: {
-        get: apiProxy,
-        post: apiProxy
+        get:  [auth({user_group:"admin"}), apiProxy],
+        post: [auth({user_group:"admin"}), apiProxy]
     },
     权限: 'read',
     请求值: "todo",
@@ -1064,7 +1063,7 @@ describeJSONApi('/api/ref/getBacklink', {
             res.end("测试一下")
         }
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',

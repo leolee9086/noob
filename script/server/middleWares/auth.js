@@ -1,11 +1,11 @@
 const session = require("express-session")
 
-function authByParams(params) {
+function authByParams(params, successCb, failedCb) {
     let ret = function (req, res, next) {
         switch (req.method) {
             case "GET":
                 if (req.session) {
-                    if (req.session && params instanceof Object&&params) {
+                    if (req.session && params instanceof Object && params) {
                         let flag = true
                         Object.getOwnPropertyNames(params).forEach(
                             prop => {
@@ -13,19 +13,30 @@ function authByParams(params) {
                                     let array = params[prop].split(',')
                                     if (array.indexOf(req.session[prop] < 0)) {
                                         flag = false
-                                        res.redirect("/unauthorized/protected")
-                                        res.end()
+                                        if (!failedCb) {
+                                            res.redirect("/unauthorized/protected")
+                                            res.end()
+                                        }
+                                        else {
+                                            failedCb(req, res, next)
+                                        }
                                     }
                                 }
                             }
                         )
                         console.error(flag)
                         if (flag) {
-                            next()
+                            if (!successCb) {
+                                next()
+                            }
+                            else {
+                                successCb(req, res, next)
+                            }
                         }
                     }
 
                     else {
+                        console.warn('没有提供鉴权条件')
                         next()
                     }
                 }
@@ -43,20 +54,30 @@ function authByParams(params) {
                                 let array = params[prop].split(',')
                                 if (array.indexOf(req.session[prop] < 0)) {
                                     flag = false
-                                    res.json({
-                                        msg: "抱歉,你无权访问此地址",
-                                        data: null,
-                                        code: 3
-                                    })
-                                    res.end()
+                                    if (!failedCb) {
+
+                                        res.json({
+                                            msg: "抱歉,你无权访问此地址",
+                                            data: null,
+                                            code: 3
+                                        })
+                                        res.end()
+                                    } else {
+                                        failedCb(req, res, next)
+                                    }
                                 }
                             }
                         )
                         if (flag) {
-                            next()
+                            if (!successCb) {
+                                next()
+                            }else{
+                                successCb(req, res, next)
+                            }
                         }
                     }
                     else {
+                        console.warn('没有提供鉴权条件')
                         next()
                     }
                 }

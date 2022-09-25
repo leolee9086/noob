@@ -179,4 +179,14 @@ router.post("/login",
         }
     }
 });
+router.get("/logout", async (req, res) => {
+    req.session.user=''
+    req.session.user_group=''
+    req.session.status=''
+})  
+router.post("/logout", async (req, res) => {
+    req.session.user=''
+    req.session.user_group=''
+    req.session.status=''
+}) 
 module.exports=router

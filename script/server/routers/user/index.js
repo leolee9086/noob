@@ -20,6 +20,7 @@ router.get('/regist', (req, res) => {
     else res.end(unAuthedPageTemplate);
     console.log(res);
 });
+
 router.get("/login", async (req, res) => {
     let loginPageTemplate = fs.readFileSync(naive.pathConstructor.templatePath() + '/unAuthedPage.html', 'utf8')
     let adminPageTemplate = fs.readFileSync(naive.pathConstructor.templatePath() + '/admin.html', 'utf8')
@@ -30,4 +31,18 @@ router.get("/login", async (req, res) => {
         res.end(loginPageTemplate)
     }
 })  
+router.get("/logout", async (req, res) => {
+    req.session.user=''
+    req.session.user_group=''
+    req.session.status=''
+    res.redirect('/')
+})  
+router.post("/logout", async (req, res) => {
+    req.session.user=''
+    req.session.user_group=''
+    req.session.status=''
+    res.redirect('/')
+
+}) 
+
 module.exports =router
