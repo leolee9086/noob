@@ -17,13 +17,6 @@ window.fetch =async function(...args){
   console.log(res)
   return res
 }
-//document.fn = document.createElement
-/*document.createElement =function(...args){
-  console.log(...args)
-  let el = document.fn.bind(document)(...args)
-  console.log(el)
-  return el
-}*/
 export async function initNaive() {
   let naive = window.naive;
   naive.pathConstructor = new pathConstructor(

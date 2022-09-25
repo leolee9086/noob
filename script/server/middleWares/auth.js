@@ -5,7 +5,7 @@ function authByParams(params) {
         switch (req.method) {
             case "GET":
                 if (req.session) {
-                    if (req.session && params instanceof Object) {
+                    if (req.session && params instanceof Object&&params) {
                         let flag = true
                         Object.getOwnPropertyNames(params).forEach(
                             prop => {
@@ -73,8 +73,6 @@ function authByParams(params) {
     }
     return ret
 }
-
-
 authByParams.apiAuth = function apiAuth(req, res, next) {
     let apiName = req.route.path.replace('/', '')
     if (naive.syAuthConfig && naive.syAuthConfig.api && naive.syAuthConfig.api[apiName]) {

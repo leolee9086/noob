@@ -40,6 +40,8 @@ module.exports =  {
     app.use(middlewares.compression);
     //允许跨域请求
     app.use(middlewares.allowCors);
+    //允许跨域请求
+    app.use(middlewares.json解析器);
 
     //向请求写入auth
    // app.use(middlewares)
