@@ -7,8 +7,32 @@ const apiLevel = [
 ]
 naive.apiAuthorization = {
     visitor: {
-        siyuanApi: { 权限: 'all' }
+        siyuanApi: { 权限: 'public' }
     }
+}
+function  toString(方法对象){
+    let object = {}
+    if(typeof 方法对象 =='string' ){
+        return 方法对象
+    }
+    else {
+       Object.getOwnPropertyNames(方法对象).forEach(
+        name=>{
+            object[name] = []
+            if(方法对象[name] instanceof Function){
+                object[name].push(方法对象[name].toString())
+            }
+            else if(方法对象[name] instanceof Array){
+                方法对象[name].forEach(
+                    函数=>{
+                        object[name].push(函数.toString())
+                    }
+                )
+            }
+        }
+       )
+    }
+    return object
 }
 module.exports = function (path, describe) {
     let 请求校验器
@@ -18,12 +42,13 @@ module.exports = function (path, describe) {
         二级分组: describe.二级分组,
         功能: describe.功能,
         名称: describe.名称,
-        方法: describe.方法,
+        方法:toString( describe.方法),
         权限: describe.权限,
         请求值: describe.请求值,
         路径: describe.路径,
         返回值: describe.返回值,
     }
+    
     if (describe.请求值.schema || describe.请求值.模式) {
         let 模式 = describe.请求值.schema || describe.请求值.模式
         let 校验器 = ajv.compile(模式)
@@ -89,7 +114,7 @@ module.exports = function (path, describe) {
                         }
                         else {
 
-                            let 接口等级 = apiLevel.indexOf([describe.权限])
+                            let 接口等级 = apiLevel.indexOf(describe.权限)
                             let 用户组权限等级 = apiLevel.length + 1
                             if (权限设置[describe.一级分组]) {
                                 if (typeof 权限设置[describe.一级分组] == "string") {
@@ -159,6 +184,7 @@ module.exports = function (path, describe) {
                             if (接口等级 < 0) {
                                 接口等级 = 0
                             }
+                            console.log(path,接口等级,用户组权限等级)
                             if (接口等级 < 用户组权限等级) {
                                 res.json({
                                     code: 3,

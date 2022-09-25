@@ -38,7 +38,7 @@ describeJSONApi('/api/system/currentTime', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -50,7 +50,7 @@ describeJSONApi('/api/system/uiproc', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -101,7 +101,7 @@ describeJSONApi('/api/system/getEmojiConf', {
         post: [apiProxy],
         get: [apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -204,7 +204,7 @@ describeJSONApi('/api/system/getSysFonts', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'admin',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -409,7 +409,7 @@ describeJSONApi('/api/tag/getTag', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'read',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -612,7 +612,6 @@ describeJSONApi('/api/setting/setFiletree', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -625,7 +624,6 @@ describeJSONApi('/api/setting/setSearch', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -651,7 +649,6 @@ describeJSONApi('/api/setting/setAppearance', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -664,7 +661,6 @@ describeJSONApi('/api/setting/getCloudUser', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -677,7 +673,6 @@ describeJSONApi('/api/setting/logoutCloudUser', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -690,7 +685,6 @@ describeJSONApi('/api/setting/login2faCloudUser', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -703,7 +697,6 @@ describeJSONApi('/api/setting/getCustomCSS', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -742,7 +735,6 @@ describeJSONApi('/api/setting/setSearchCaseSensitive', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -756,20 +748,18 @@ describeJSONApi('/api/search/searchTag', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
     二级分组: 'repo'
 })
-
 describeJSONApi('/api/search/searchTemplate', {
     名称: '搜索模板',
     功能: '搜索模板',
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'read',
     请求值: "todo",
     返回值: 'todo',
@@ -782,7 +772,6 @@ describeJSONApi('/api/search/searchWidget', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'read',
     请求值: "todo",
     返回值: 'todo',
@@ -795,8 +784,7 @@ describeJSONApi('/api/search/searchRefBlock', {
     方法: {
         post: [auth(), apiProxy]
     },
-
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -808,8 +796,7 @@ describeJSONApi('/api/search/searchEmbedBlock', {
     方法: {
         post: [auth(), apiProxy]
     },
-
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -821,8 +808,7 @@ describeJSONApi('/api/search/fullTextSearchBlock', {
     方法: {
         post: [auth(), apiProxy]
     },
-
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -834,7 +820,6 @@ describeJSONApi('/api/search/searchAsset', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'read',
     请求值: "todo",
     返回值: 'todo',
@@ -847,8 +832,7 @@ describeJSONApi('/api/search/findReplace', {
     方法: {
         post: [auth(), apiProxy]
     },
-
-    权限: 'read',
+    权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -860,21 +844,18 @@ describeJSONApi('/api/repo/InitRepoKeyFromPassphrase', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
     二级分组: 'repo'
 })
-
 describeJSONApi('/api/repo/initRepoKey', {
     名称: '初始化repoKey',
     功能: '初始化repoKey',
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -894,14 +875,12 @@ describeJSONApi('/api/repo/resetRepo', {
     一级分组: 'siyuanApi',
     二级分组: 'repo'
 })
-
 describeJSONApi('/api/repo/importRepoKey', {
     名称: '导入repoKey',
     功能: '导入repoKey',
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -941,7 +920,6 @@ describeJSONApi('/api/repo/checkoutRepo', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -954,7 +932,6 @@ describeJSONApi('/api/repo/getRepoSnapshots', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -967,7 +944,6 @@ describeJSONApi('/api/repo/getRepoTagSnapshots', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -980,7 +956,6 @@ describeJSONApi('/api/repo/removeRepoTagSnapshot', {
     方法: {
         post: [auth(), apiProxy]
     },
-
     权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
@@ -1047,7 +1022,7 @@ describeJSONApi('/api/ref/refreshBacklink', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'read',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1063,7 +1038,7 @@ describeJSONApi('/api/ref/getBacklink', {
             res.end("测试一下")
         }
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1076,7 +1051,7 @@ describeJSONApi('/api/ref/createBacklink', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'write',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1088,8 +1063,7 @@ describeJSONApi('/api/query/sql', {
     方法: {
         post: [auth(), apiProxy]
     },
-
-    权限: 'admin',
+    权限: 'read',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1102,7 +1076,7 @@ describeJSONApi('/api/outline/getDocOutline', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1138,7 +1112,7 @@ describeJSONApi('/api/notebook/lsNotebooks', {
     名称: '列出所有笔记本',
     功能: '列出当前工作空间下所有笔记本',
     方法: { post: [auth(), apiProxy] },
-    权限: 'admin',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1177,7 +1151,7 @@ describeJSONApi('/api/notebook/getNotebookConf', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'read',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1242,7 +1216,7 @@ describeJSONApi('/api/notebook/changeSortNotebook', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'write',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1255,7 +1229,7 @@ describeJSONApi('/api/notebook/setNotebookIcon', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'write',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1268,7 +1242,7 @@ describeJSONApi('/api/lute/spinBlockDOM', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1282,7 +1256,7 @@ describeJSONApi('/api/lute/html2BlockDOM', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1295,7 +1269,7 @@ describeJSONApi('/api/lute/copyStdMarkdown', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1345,7 +1319,7 @@ describeJSONApi('/api/inbox/getShorthands', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'admin',
+    权限: 'read',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1554,7 +1528,7 @@ describeJSONApi('/api/graph/getGraph', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1566,7 +1540,7 @@ describeJSONApi('/api/graph/getLocalGraph', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1604,7 +1578,7 @@ describeJSONApi('/api/filetree/searchDocs', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1616,7 +1590,7 @@ describeJSONApi('/api/filetree/listDocsByPath', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -1628,7 +1602,7 @@ describeJSONApi('/api/filetree/getDoc', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'read',
+    权限: 'public',
     请求值: {
         schema: {
             type: "object",
@@ -1736,7 +1710,7 @@ describeJSONApi('/api/filetree/removeDoc', {
     方法: {
         post: [auth(), apiProxy]
     },
-    权限: 'admin',
+    权限: 'write',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2126,7 +2100,7 @@ describeJSONApi('/api/bookmark/renameBookmark', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'write',
+    权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2139,7 +2113,7 @@ describeJSONApi('/api/bookmark/removeBookmark', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'write',
+    权限: 'admin',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2152,7 +2126,7 @@ describeJSONApi('/api/block/getBlockInfo', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2166,7 +2140,7 @@ describeJSONApi('/api/block/getBlockDOM', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2180,7 +2154,7 @@ describeJSONApi('/api/block/getBlockKramdown', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2193,7 +2167,7 @@ describeJSONApi('/api/block/getBlockBreadcrumb', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2206,7 +2180,7 @@ describeJSONApi('/api/block/getRefIDs', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2259,7 +2233,7 @@ describeJSONApi('/api/block/getBlockWordCount', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2272,7 +2246,7 @@ describeJSONApi('/api/block/getBlocksWordCount', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2285,7 +2259,7 @@ describeJSONApi('/api/block/getContentWordCount', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2299,7 +2273,7 @@ describeJSONApi('/api/block/getRecentUpdatedBlocks', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2313,7 +2287,7 @@ describeJSONApi('/api/block/getDocInfo', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2327,7 +2301,7 @@ describeJSONApi('/api/block/checkBlockExist', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
@@ -2341,7 +2315,7 @@ describeJSONApi('/api/block/checkBlockFold', {
         post: [auth(), apiProxy]
     },
 
-    权限: 'read',
+    权限: 'public',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
