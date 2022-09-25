@@ -14,38 +14,6 @@ module.exports = function 初始化后端(){
     );
     router.get("/block/", (req, res) => this.管线渲染(req, res));
     router.get("/", (req, res) => this.管线渲染(req, res));
-    //允许搜索时,能够访问文档树
-    router.post("/api/notebook/lsNotebooks", (req, res) => {
-      if (this.realoption.允许搜索) {
-        this.转发JSON请求(req, res, true);
-      }
-    });
-    //允许搜索时,能够列出所有文档
-    router.post("/api/filetree/listDocsByPath", (req, res) => {
-      if (this.realoption.允许搜索) {
-        this.转发JSON请求(req, res, true);
-      }
-    });
-    //允许搜索时,能够搜索所有文档,这里需要加上鉴权
-    router.post("/api/search/fullTextSearchBlock", (req, res) => {
-      if (this.realoption.允许搜索) {
-        this.转发JSON请求(req, res, true);
-      }
-    });
-    //允许搜索时,能够嵌入所有块,这里需要加入鉴权
-    router.post("/api/search/searchEmbedBlock", (req, res) => {
-      if (this.realoption.允许搜索) {
-        this.转发JSON请求(req, res, true);
-      }
-    });
-    //暴露api时,能够访问大部分api
-    router.post("/api/*", (req, res) => {
-      if (this.realoption.暴露api) {
-        this.转发JSON请求(req, res, false);
-      } else {
-        res.sendStatus(404);
-      }
-    });
     //通过这里查询渲染块数据权限
     router.use('/editor',naive.middlewares.syProxy.proxy)
     router.use('/naiveApi/getPrivateBlock',(req,res)=>{

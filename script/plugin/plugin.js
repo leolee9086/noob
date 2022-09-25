@@ -57,20 +57,30 @@ export class 主题插件 {
   //#ifApp
   router(){
     let router= naive.pluginsApiRouter()
-   /*  {
-      get:(pattern,...middleware)=>naive.pluginsApiRouter.use(`${pattern}`,...middleware),
-      head:(pattern,...middleware)=>naive.pluginsApiRouter.head(`${pattern}`,...middleware),
-      post:(pattern,...middleware)=>naive.pluginsApiRouter.post(`${pattern}`,...middleware),
-      put:(pattern,...middleware)=>naive.pluginsApiRouter.put(`${pattern}`,...middleware),
-      delete:(pattern,...middleware)=>naive.pluginsApiRouter.delete(`${pattern}`,...middleware),
-      connect:(pattern,...middleware)=>naive.pluginsApiRouter.connect(`${pattern}`,...middleware),
-      options:(pattern,...middleware)=>naive.pluginsApiRouter.options(`${pattern}`,...middleware),
-      trace:(pattern,...middleware)=>naive.pluginsApiRouter.trace(`${pattern}`,...middleware),
-      patch:(pattern,...middleware)=>naive.pluginsApiRouter.patch(`${pattern}`,...middleware),
-      use:(pattern,...middleware)=>naive.pluginsApiRouter.use(`${pattern}`,...middleware),
-    }*/
     naive.expressApp.use(`/${this.name}`,router)
     return router
+  }
+  describeJSONApi(path,describe){
+      naive.serverUtil.describeJSONApi(`/${this.name}${path}`,describe)
+      naive.doc.api[`/${this.name}${path}`]['来源插件']=this.name
+      if(!naive.doc.plugin[this.name]){
+        naive.doc.plugin[this.name]={api:[]}
+        naive.doc.plugin[this.name]['api'].push(`/${this.name}${path}`)
+      }
+      else{
+        if(!naive.doc.plugin[this.name]['api']){
+          naive.doc.plugin[this.name]['api']=[]
+        }
+        naive.doc.plugin[this.name]['api'].push(`/${this.name}${path}`)
+      }
+  }
+  describeCoreJSONApi(path,describe){
+    let selfpath = naive.pathConstructor.corePluginsPath()+`/${this.name}`
+    let fs = this.require('fs-extra')
+    if(fs.existsSync(selfpath)){
+      naive.serverUtil.describeJSONApi(path,describe)
+      naive.doc.api[`${path}`]['来源插件']=this.name
+    }
   }
   //#endif
 }
