@@ -9,7 +9,6 @@ const addStaticPath = require('./middleWares/staticPath.js')
 const api = require("../public/siYuanApi");
 const app = express1();
 naive.expressApp = app;
-
 const http = require("http");
 const https = require("https");
 const { checkAdmin,models } = require('./models/index');
