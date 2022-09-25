@@ -51,7 +51,8 @@ module.exports =  (plugin)=> {
             请求值:'todo',
             返回值:'todo',
             一级分组:'siyuanPublisher',
-            二级分组:'editor'
+            二级分组:'editor',
+            详情:`这里打开的编辑界面行为跟思源默认的基本一致,但是多了一些权限过滤,例如无法编辑没有编辑权限的文档之类`
         }
     )
     plugin.describeApi(
@@ -105,6 +106,23 @@ module.exports =  (plugin)=> {
         二级分组:'editor'
     },
     )
+    plugin.describeApi(
+        '/publishApi/*',
+        {
+            名称:'发布界面思源api',
+            功能:'用于发布页面的思源api转发,会对返回的块内容进行过滤,大部分api无法访问',
+            方法:{
+                post:require('./middlewares/jsonReq.js')
+            },
+        
+        权限:'public',
+        请求值:'todo',
+        返回值:'todo',
+        一级分组:'siyuanPublisher',
+        二级分组:'publishApi'
+    },
+    )
+
     //这里之后全部都是对思源api的转发,但是只有核心插件能够调用describeCoreApi方法
     //describeCoreApi方法能够忽略前缀定义api
     plugin.describeCoreApi('/api/system/bootProgress', {
@@ -554,7 +572,6 @@ module.exports =  (plugin)=> {
         方法: {
             post: [apiProxy]
         },
-
         权限: 'admin',
         请求值: "todo",
         返回值: 'todo',

@@ -202,11 +202,8 @@ export class siyuanPublisher extends naive.plugin {
     naive.renders[插件名] = true;
     return 渲染管线;
   }
-  async 转发JSON请求(req, res, unAuth) {
-    if (!unAuth && !req.session) {
-      res.statue(403);
-      res.end("请首先登录或提供token");
-    }
+  async 转发JSON请求(req, res) {
+    
     if(req.session && req.session.user_group === "admin"&&(!((req.rawHeaders.indexOf("application/json;charset=UTF-8"))>=0))){
       await this.转发请求(req,res)
       return
