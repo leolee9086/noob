@@ -1,5 +1,5 @@
 const middlewares = require("./middleWares/index.js")
-
+const passport = require('passport')
 naive.middlewares=middlewares
 const express1 = require("express");
 naive.serverUtil.router =  express1.Router
@@ -44,7 +44,8 @@ module.exports =  {
     app.use(middlewares.json解析器);
 
     //向请求写入auth
-   // app.use(middlewares)
+    app.use(passport.authenticate('session'));
+    // app.use(middlewares)
     //获取设置
     let res4 = await fs.readFileSync(naive.pathConstructor.cusoptionPath());
     const port = realoption.发布端口;
@@ -164,49 +165,6 @@ module.exports =  {
   naive.checkApidoc()
 
     return publishServer;
-  },
-  async 转发请求(req, res) {
-    const http = require("http");
-    var { connection, host, ...originHeaders } = req.headers;
-    // 构造请求报文
-    console.log(req.url, req.body);
-    var options = {
-      method: req.method,
-      hostname: this.realoption.思源伺服地址,
-      port: this.realoption.思源伺服端口,
-      path: req.originalUrl,
-      headers: { originHeaders },
-    };
-    // 通过req的data事件和end事件接收客户端发送的数据
-    // 并用Buffer.concat处理一下
-    let postbody = [];
-    req.on("data", (chunk) => {
-      postbody.push(chunk);
-    });
-    req.on("end", () => {
-      console.log("end");
-      let postbodyBuffer = Buffer.concat(postbody);
-      // 定义变量接收目标服务器返回的数据
-      let responsebody = [];
-      // 发送请求头
-      var request1 = http.request(options, (response2) => {
-        response2.on("data", (chunk) => {
-          responsebody.push(chunk);
-        });
-        response2.on("end", () => {
-          // 处理目标服务器数据,并将其返回给客户端
-          responsebodyBuffer = Buffer.concat(responsebody);
-          console.log(response2, 25);
-          res.setHeader("Access-Control-Allow-Private-Network", true);
-          res.end(responsebodyBuffer);
-        });
-      });
-      // 将接收到的客户端请求数据发送到目标服务器;
-      request1.write(postbodyBuffer);
-      request1.end();
-    });
-    // console.log(req.body,2)
-  
   },
   终止服务: async function () {
     console.log(global.publishserver);

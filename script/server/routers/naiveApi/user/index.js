@@ -2,6 +2,7 @@ const { jsEncrypt, rsaPublicKey, rsaPrivateKey } = require("../../../keys/index.
 const express = require('express');
 const router = express.Router();
 const {models} = require("../../../models/index.js")
+const passport = require('../../../middleWares/passport.js')
 router.post("/regist", async (req, res) => {
     if (req.body) {
         let auth = req.body.auth;
@@ -99,7 +100,8 @@ router.post("/regist", async (req, res) => {
         }
     }
 });
-router.post("/login", async (req, res) => {
+router.post("/login",
+  async (req, res) => {
     console.log(req);
     if (req.session && req.session.failed && req.session.nextAllowedTry) {
         let date = new Date()
@@ -119,7 +121,6 @@ router.post("/login", async (req, res) => {
         })
     }
     if (req.body) {
-
         let auth = req.body.auth;
         let string = jsEncrypt.decrypt(auth);
         let json = JSON.parse(string);
@@ -129,7 +130,6 @@ router.post("/login", async (req, res) => {
                 password: json.password,
             },
         });
-        console.log(checkedUser)
         if (checkedUser && checkedUser[0]) {
             req.session.status = "Authed";
             req.session.user = checkedUser[0].name
