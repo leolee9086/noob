@@ -38,7 +38,7 @@ function toString(方法对象) {
     }
     return object
 }
-module.exports = function (path, describe) {
+function describeApi(path, describe) {
     let 请求校验器
     let 返回值校验器
     naive.doc.api[path] = {
@@ -318,5 +318,18 @@ module.exports = function (path, describe) {
                 }
             )
         }
+    }
+}
+
+module.exports = function (path,describe){
+    if(typeof path =='string'){
+        describeApi(path,describe)
+    }
+    else if (path instanceof Array){
+        path.forEach(
+            p=>{
+                describeApi(p,describe)
+            }
+        )
     }
 }

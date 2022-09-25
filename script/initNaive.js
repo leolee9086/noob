@@ -32,7 +32,7 @@ export async function initNaive() {
     api: {},
     method: {},
     config: {},
-    plugins: {}
+    plugin: {}
   }
   //事件总线用于向插件发送事件数据
   naive.eventBus = new 事件总线();

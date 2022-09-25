@@ -375,14 +375,12 @@
             if (event.target.dataset.type == "customAuthToken") {
                 let token = event.target.previousElementSibling.value
                 let id = event.target.getAttribute('data-node-id')
-                let res = await fetch('//api/getPrivateBlock', {
-
+                let res = await fetch('/siyuanPublisher/getPrivateBlock', {
                     body: JSON.stringify({
                         id: id,
                         token: token,
                     }),
                     method: "POST",
-
                 })
                 res = await res.json()
                 if (res.data && res.data.content) {

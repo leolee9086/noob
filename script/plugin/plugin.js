@@ -61,6 +61,7 @@ export class 主题插件 {
     return router
   }
   describeApi(path,describe){
+    let  des=(path,describe) =>{
       naive.serverUtil.describeApi(`/${this.name}${path}`,describe)
       naive.doc.api[`/${this.name}${path}`]['来源插件']=this.name
       if(!naive.doc.plugin[this.name]){
@@ -73,6 +74,20 @@ export class 主题插件 {
         }
         naive.doc.plugin[this.name]['api'].push(`/${this.name}${path}`)
       }
+
+    }
+    if(typeof path =='string'){
+      des(path,describe)
+
+    }
+    else if( path instanceof Array){
+      path.forEach(
+        p=>{
+          des(p,describe)
+        }
+    )
+
+    }
   }
   describeCoreApi(path,describe){
     let selfpath = naive.pathConstructor.corePluginsPath()+`/${this.name}`
