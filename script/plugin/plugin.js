@@ -60,8 +60,8 @@ export class 主题插件 {
     naive.expressApp.use(`/${this.name}`,router)
     return router
   }
-  describeJSONApi(path,describe){
-      naive.serverUtil.describeJSONApi(`/${this.name}${path}`,describe)
+  describeApi(path,describe){
+      naive.serverUtil.describeApi(`/${this.name}${path}`,describe)
       naive.doc.api[`/${this.name}${path}`]['来源插件']=this.name
       if(!naive.doc.plugin[this.name]){
         naive.doc.plugin[this.name]={api:[]}
@@ -74,11 +74,11 @@ export class 主题插件 {
         naive.doc.plugin[this.name]['api'].push(`/${this.name}${path}`)
       }
   }
-  describeCoreJSONApi(path,describe){
+  describeCoreApi(path,describe){
     let selfpath = naive.pathConstructor.corePluginsPath()+`/${this.name}`
     let fs = this.require('fs-extra')
     if(fs.existsSync(selfpath)){
-      naive.serverUtil.describeJSONApi(path,describe)
+      naive.serverUtil.describeApi(path,describe)
       naive.doc.api[`${path}`]['来源插件']=this.name
     }
   }

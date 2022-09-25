@@ -2,6 +2,7 @@ const Ajv = require("ajv")
 const ajv = new Ajv() // options can be passed, e.g. {allErrors: true}
 const express = require('express')
 const fg = require('fast-glob')
+const { read } = require("fs-extra")
 const apiLevel = [
     "admin",
     "write",
@@ -45,7 +46,7 @@ module.exports = function (path, describe) {
         二级分组: describe.二级分组,
         功能: describe.功能,
         名称: describe.名称,
-        方法: toString(describe.方法),
+        方法: describe.方法?toString(describe.方法):null,
         权限: describe.权限,
         请求值: describe.请求值,
         路径: describe.路径,
@@ -90,16 +91,13 @@ module.exports = function (path, describe) {
         }
         else if (typeof describe.权限 == "string") {
             console.log(describe.权限)
-
             auth = (req, res, next) => {
                 console.log(describe.权限)
-
                 let user_group = req.session.user_group || 'visitor'
                 console.log(user_group)
                 if (user_group == 'admin') {
                     next()
                     return
-
                 }
                 else {
                     let 权限设置 = naive.apiAuthorization[user_group]
@@ -227,16 +225,55 @@ module.exports = function (path, describe) {
     }
     if (describe.方法 && describe.方法 instanceof Object) {
         if (describe.mode && describe.mode == 'staticPath') {
-            naive.expressApp.get(path, auth, express.static(describe['方法']))
+            naive.expressApp.get(path, auth, express.static(describe['dirPath']))
             naive.expressApp.post(path, auth, (req, res) => {
-                let option = describe.option
-                if (!option) {
-                    option = { stats: true }
+                if(describe.postUpload){
+                    if (req.fields && req.fields.path) {
+                        if (req.files) {
+                            const path = require('path')
+                            let filePath = path.join(describe['dirPath'], req.fields.path);
+                            fs.renameSync(req.files.file.path, filePath);
+                            console.log(req.files);
+                            res.json({ data: null, msg: "上传文件成功" });
+                        }
+                    }
+
                 }
-                option.cwd = describe['dirPath']
-                let list = fg.sync(describe['param'], option)
-                res.json(list)
+                else if (describe.allowList) {
+                    let option = describe.option
+                    if (!option) {
+                        option = { stats: true }
+                    }
+                    option.cwd = describe['dirPath']
+                    let list = fg.sync(describe['param'], option)
+                    res.json({
+                        code: 0,
+                        data: list
+                    })
+                } else {
+                    res.json({
+                        msg: '抱歉,此位置不允许遍历',
+                        code: 3,
+                        data: null
+                    })
+                }
             }
+            )
+            naive.expressApp.put(
+                path, auth, (req, res) => {
+                    if (describe.allowUpload) {
+                        if (req.fields && req.fields.path) {
+                            if (req.files) {
+                                const path = require('path')
+                                let filePath = path.join(describe['dirPath'], req.fields.path);
+                                fs.renameSync(req.files.file.path, filePath);
+                                console.log(req.files);
+                                res.json({ data: null, msg: "上传文件成功" });
+                            }
+                        }
+
+                    }
+                }
             )
         }
         else if (describe.mode && (describe.mode == 'cmd' || describe.mode == 'shell')) {

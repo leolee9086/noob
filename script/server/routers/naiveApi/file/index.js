@@ -13,15 +13,19 @@ router.post("/putFile", (req, res) => {
         }
     }
 });
-naive.serverUtil.describeJSONApi('/naiveApi/file/putFile', {
-    名称: '获取文档大纲',
+naive.serverUtil.describeApi('/naiveApi/file/putFile', {
+    名称: '上传文件',
     功能: '获取文档大纲',
-    方法: 'post',
+    dirPath: naive.workspaceDir,
     权限: 'write',
     请求值: "todo",
     返回值: 'todo',
     一级分组: 'siyuanApi',
-    二级分组: 'ouline'
+    二级分组: 'ouline',
+    mode:'staticPath',
+    allowList:true,
+    postUpload:true
+    
 })
 
 module.exports = router

@@ -4,6 +4,8 @@ const auth =naive.middlewares.auth
 module.exports = function 初始化后端(){
     //这里的this绑定到插件本身上
     let router =  this.router()
+    require('./api.js')(this)
+
     console.error(router)
     router.get('/',jsonReq,(req,res)=>
          this.管线渲染(req, res)

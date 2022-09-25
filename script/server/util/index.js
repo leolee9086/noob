@@ -19,5 +19,5 @@ module.exports = {
         apiAuthor: apiAuthor,
         chekEndPoints: () => { return naive.serverUtil.apiAuthor.chekEndPoints(naive.expressApp, {}) },
         //用于描述jsonapi
-        describeJSONApi:require('./describeJSONApi')
+        describeApi:require('./describeApi')
 }
