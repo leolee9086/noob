@@ -53,7 +53,7 @@ function describeApi(path, describe) {
         返回值: describe.返回值,
     }
 
-    if (describe.请求值.schema || describe.请求值.模式) {
+    if (describe.请求值&&(describe.请求值.schema || describe.请求值.模式)) {
         let 模式 = describe.请求值.schema || describe.请求值.模式
         let 校验器 = ajv.compile(模式)
         请求校验器 = function (req, res, next) {
