@@ -105,4 +105,3 @@ export class customBlock extends naive.plugin {
     }
   }
 }
-export const dependencies = ["siyuanRouter"]

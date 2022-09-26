@@ -200,6 +200,18 @@ module.exports =  (plugin)=> {
 
     //这里之后全部都是对思源api的转发,但是只有核心插件能够调用describeCoreApi方法
     //describeCoreApi方法能够忽略前缀定义api
+    plugin.describeCoreApi('/appearance',
+        {
+        名称:"外观文件夹",
+        功能:"访问思源的外观文件夹获取主题等",
+        权限:"public",
+        一级分组:"siyuanApi",
+        二级分组:'appearance',
+        mode:"staticPath",
+        dirPath:`${naive.workspaceDir}\\conf\\appearance`,
+
+        }
+    )
     plugin.describeCoreApi('/api/system/bootProgress', {
         名称: '获取启动进度',
         功能: '获取启动进度',

@@ -98,6 +98,23 @@ export class 主题插件 {
     }
   }
   //#endif
+  initFolder(){
+    let pluginFoldr = naive.pathConstructor.initDirp(`${naive.pathConstructor.workspaceDir}/conf/naiveConf/pluginFolders/${this.name}`)
+    return pluginFoldr
+  }
+  initFile(filePath, data){
+    let FolderPath = this.initFolder()
+    let path = require('path')
+    let realPath =  path.join(FolderPath,filePath)
+    return naive.pathConstructor.initFilep(realPath,data)
+  }
+  initDir(dirpath){
+    let FolderPath = this.initFolder()
+    let path = require('path')
+    let realPath =  path.join(FolderPath,dirpath)
+    return naive.pathConstructor.initDirp(realPath)
+    }
+  ///#endif
 }
 export { 主题插件 as plugin };
 

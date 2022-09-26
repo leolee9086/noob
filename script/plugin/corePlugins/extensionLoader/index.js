@@ -7,7 +7,4 @@ export class  extensionLoader extends  naive.plugin  {
         ///#endif
     }
 }
-export const dependencies = [
-    "siyuanRouter",
-];
 export const environment = ["APP"];

@@ -223,11 +223,46 @@ function describeApi(path, describe) {
 
         }
     }
-    if (describe.方法 && describe.方法 instanceof Object) {
-        if (describe.mode && describe.mode == 'staticPath') {
-            naive.expressApp.get(path, auth, express.static(describe['dirPath']))
-            naive.expressApp.post(path, auth, (req, res) => {
-                if(describe.postUpload){
+    //await (await fetch("http://127.0.0.1/appearance",{method:"POST"})).json()
+    if (describe.mode && describe.mode == 'staticPath') {
+        console.error("staticPath",path)
+        naive.expressApp.use(path, auth, express.static(describe['dirPath']))
+        naive.expressApp.post(path, auth, (req, res) => {
+            if(describe.postUpload){
+                if (req.fields && req.fields.path) {
+                    if (req.files) {
+                        const path = require('path')
+                        let filePath = path.join(describe['dirPath'], req.fields.path);
+                        fs.renameSync(req.files.file.path, filePath);
+                        console.log(req.files);
+                        res.json({ data: null, msg: "上传文件成功" });
+                    }
+                }
+
+            }
+            else if (describe.allowList) {
+                let option = describe.option
+                if (!option) {
+                    option = { stats: true,base: describe['dirPath']}
+                }
+                //option.cwd = describe['dirPath']
+                let list = fg.sync('*', option)
+                res.json({
+                    code: 0,
+                    data: list
+                })
+            } else {
+                res.json({
+                    msg: '抱歉,此位置不允许遍历',
+                    code: 3,
+                    data: null
+                })
+            }
+        }
+        )
+        naive.expressApp.put(
+            path, auth, (req, res) => {
+                if (describe.allowUpload) {
                     if (req.fields && req.fields.path) {
                         if (req.files) {
                             const path = require('path')
@@ -239,85 +274,54 @@ function describeApi(path, describe) {
                     }
 
                 }
-                else if (describe.allowList) {
-                    let option = describe.option
-                    if (!option) {
-                        option = { stats: true }
-                    }
-                    option.cwd = describe['dirPath']
-                    let list = fg.sync(describe['param'], option)
-                    res.json({
-                        code: 0,
-                        data: list
-                    })
-                } else {
-                    res.json({
-                        msg: '抱歉,此位置不允许遍历',
-                        code: 3,
-                        data: null
-                    })
-                }
             }
-            )
-            naive.expressApp.put(
-                path, auth, (req, res) => {
-                    if (describe.allowUpload) {
-                        if (req.fields && req.fields.path) {
-                            if (req.files) {
-                                const path = require('path')
-                                let filePath = path.join(describe['dirPath'], req.fields.path);
-                                fs.renameSync(req.files.file.path, filePath);
-                                console.log(req.files);
-                                res.json({ data: null, msg: "上传文件成功" });
-                            }
-                        }
+        )
+    }
+    else if (describe.mode && (describe.mode == 'cmd' || describe.mode == 'shell')) {
+        const { shellCmd } = require('../util/shell')
+        let target = describe.target
+        let defaultArgs = describe.args
+        let path = describe.dirPath
+        let timeOut = describe.timeOut
+        naive.expressApp.post(path, auth, async (req, res) => {
+            let { args } = req.body
+            args = defaultArgs + '\s' + args
+            if (timeOut) {
+                setTimeout(() => {
+                    try {
+                        res.json({
+                            msg: '执行超时',
+                            code: 3
+                        })
+                    } catch (e) {
 
                     }
-                }
-            )
-        }
-        else if (describe.mode && (describe.mode == 'cmd' || describe.mode == 'shell')) {
-            const { shellCmd } = require('../util/shell')
-            let target = describe.target
-            let defaultArgs = describe.args
-            let path = describe.dirPath
-            let timeOut = describe.timeOut
-            naive.expressApp.post(path, auth, async (req, res) => {
-                let { args } = req.body
-                args = defaultArgs + '\s' + args
-                if (timeOut) {
-                    setTimeout(() => {
-                        try {
-                            res.json({
-                                msg: '执行超时',
-                                code: 3
-                            })
-                        } catch (e) {
-
-                        }
-                    })
-                }
-                let msg = await shellCmd(target, args, { cwd: path })
-                try {
-                    res.json({
-                        code: 0,
-                        msg: msg
-                    })
-                } catch (e) {
-
-                }
+                })
+            }
+            let msg = await shellCmd(target, args, { cwd: path })
+            try {
+                res.json({
+                    code: 0,
+                    msg: msg
+                })
+            } catch (e) {
 
             }
-            )
+
         }
-        else {
+        )
+    }
+    else if (describe.方法 && describe.方法 instanceof Object) {
+        
+        
+    
             Object.getOwnPropertyNames(describe.方法).forEach(
                 method => {
                     !请求校验器 ? naive.expressApp[method](path, auth, describe['方法'][method]) : naive.expressApp[method](path, auth, 请求校验器, describe['方法'][method])
 
                 }
             )
-        }
+        
     }
 }
 

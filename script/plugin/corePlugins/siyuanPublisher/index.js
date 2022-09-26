@@ -361,5 +361,5 @@ export class siyuanPublisher extends naive.plugin {
     );
   }
 }
-export const dependencies = ["template", "siyuanRouter", "commonMenu"];
+export const dependencies = ["template",  "commonMenu"];
 export const environments = ["APP",'BROWSER'];
