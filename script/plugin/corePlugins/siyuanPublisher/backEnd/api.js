@@ -207,9 +207,12 @@ module.exports =  (plugin)=> {
         权限:"public",
         一级分组:"siyuanApi",
         二级分组:'appearance',
+        //staticPath模式表示这是一个静态文件访问接口
         mode:"staticPath",
         dirPath:`${naive.workspaceDir}\\conf\\appearance`,
-
+        //表示不允许通过post接口遍历该文件夹
+        allowList:false
+        
         }
     )
     plugin.describeCoreApi('/api/system/bootProgress', {
