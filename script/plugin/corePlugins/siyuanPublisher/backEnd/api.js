@@ -103,10 +103,10 @@ module.exports =  (plugin)=> {
             名称: '思源编辑器页面',
             功能: '通过naive代理打开思源编辑器页面',
             方法:{
-                get:(req,res)=>{
+                use:
                     //这个东西是转发到思源的proxy,之后需要把它从naive核心里面分离出来
                     naive.middlewares.syProxy.proxy
-                }
+                
             },
             //这里只有对siyuanPublisher->editor分组的api有write权限的用户才能打开编辑器界面
             //配置项目长这样;
@@ -122,7 +122,7 @@ module.exports =  (plugin)=> {
             //  
             // }
             //}
-            权限:'write',
+            权限:'public',
             请求值:'todo',
             返回值:'todo',
             一级分组:'siyuanPublisher',
@@ -197,7 +197,7 @@ module.exports =  (plugin)=> {
         二级分组:'publishApi'
     },
     )
-
+ 
     //这里之后全部都是对思源api的转发,但是只有核心插件能够调用describeCoreApi方法
     //describeCoreApi方法能够忽略前缀定义api
     plugin.describeCoreApi('/appearance',
@@ -1599,7 +1599,6 @@ module.exports =  (plugin)=> {
         方法: {
             post: [apiProxy]
         },
-
         权限: 'admin',
         请求值: "todo",
         返回值: 'todo',
@@ -1612,7 +1611,6 @@ module.exports =  (plugin)=> {
         方法: {
             post: [apiProxy]
         },
-
         权限: 'admin',
         请求值: "todo",
         返回值: 'todo',
@@ -2072,7 +2070,7 @@ module.exports =  (plugin)=> {
             post: [apiProxy]
         },
 
-        权限: 'read',
+        权限: 'admin',
         请求值: "todo",
         返回值: 'todo',
         一级分组: 'siyuanApi',
@@ -2272,7 +2270,6 @@ module.exports =  (plugin)=> {
         方法: {
             post: [apiProxy]
         },
-
         权限: 'admin',
         请求值: "todo",
         返回值: 'todo',

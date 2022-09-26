@@ -223,7 +223,7 @@ function describeApi(path, describe) {
 
         }
     }
-    //await (await fetch("http://127.0.0.1/appearance",{method:"POST"})).json()
+    
     if (describe.mode && describe.mode == 'staticPath') {
         console.error("staticPath",path)
         naive.expressApp.use(path, auth, express.static(describe['dirPath']))

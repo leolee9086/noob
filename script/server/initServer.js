@@ -3,6 +3,8 @@ const passport = require('passport')
 naive.middlewares = middlewares
 const express1 = require("express");
 naive.serverUtil.router = express1.Router
+const expressWs = require('express-ws');
+
 const fs = require("fs-extra")
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
 const addStaticPath = require('./middleWares/staticPath.js')
@@ -29,6 +31,7 @@ module.exports = {
     this.realoption = realoption;
     naive.设置 = realoption;
     思源api = new api(realoption);
+    expressWs(app)
     //使用session
     app.use(middlewares.session)
     //解析json
@@ -117,9 +120,6 @@ module.exports = {
     naive.express = express1;
     naive.serverEndPluginConfig = JSON.parse(res4);
     naive.publishServer = publishServer;
-
-
-
     naive.eventBus.emit("message", {
       pushMode: 2,
       type: "serverStart",
@@ -134,7 +134,6 @@ module.exports = {
         if (!apiDoc.功能) {
           console.warn(`api文档错误:${apiDoc}的文档缺少接口功能说明`)
         }
-
         if (!apiDoc.方法) {
           console.warn(`api文档错误:${apiDoc}的文档缺少方法说明`)
         }
