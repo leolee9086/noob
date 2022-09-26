@@ -10,6 +10,7 @@ import { updatePluginsConfig } from "./plugin/pluginConfiger.js";
 
 export async function initNaive() {
   let naive = window.naive;
+  naive.naiveID = Lute.NewNodeID()
   naive.pathConstructor = new pathConstructor(
     naive.workspaceDir,
     naive.themeName

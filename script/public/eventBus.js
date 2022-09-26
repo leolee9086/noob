@@ -1,7 +1,22 @@
 export class 事件总线{
-    constructor(){
+    constructor(ws){
         this.回调字典 = {}
+        if(ws){
+            this.bindWebsocket(ws)
+        }
+        this.ws=ws
     }
+    bindWebsocket(ws){
+        socket.addEventListener('message', function (event) {
+            
+            if(event.data){
+                let data =event.data 
+                if(data.eventType&&data.naiveID&&data.naiveID!==naive.naiveID){
+                    this.emit(data.eventType,data)
+                } 
+            }
+        });
+  }
     on(事件类型,回调函数){
         if(!this.回调字典[事件类型]){
             this.回调字典[事件类型]=[]
@@ -14,6 +29,13 @@ export class 事件总线{
             回调函数序列.slice().map(
                回调函数=> 回调函数(事件数据)
             )
+        }
+        if(this.ws){
+            let data = {
+                eventType:事件类型,
+                data:事件数据
+            }
+            this.ws.send(JSON.stringify(data))
         }
     }
     offAll(事件类型){

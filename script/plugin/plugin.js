@@ -1,6 +1,5 @@
 import model from "./model.js";
 import { 事件总线 } from "../public/eventBus.js";
-
 export class 主题插件 {
   constructor(option) {
     if (option.插件名 || option.name) {
@@ -25,7 +24,6 @@ export class 主题插件 {
       { 名称: { 中文: "消息信道", en: "ws" }, 接口值: () => new model(this) }
     ])
     this.初始化事件总线()
-   
   }
   
   copyFolderTemplate(){
