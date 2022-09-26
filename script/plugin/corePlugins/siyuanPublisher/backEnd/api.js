@@ -1,6 +1,7 @@
 const { middlewares } = naive
 const { syProxy } = middlewares
 const { apiProxy } = syProxy
+const {判定id权限 } =require ('./middlewares/jsonReq.js')
 module.exports =  (plugin)=> {
     //这里是插件自己的api
     plugin.describeApi(
@@ -10,9 +11,83 @@ module.exports =  (plugin)=> {
             名称: '首页',
             功能: '渲染首页',
             方法:{
-                get:(req,res)=>{
+                get:[async (req, res, next) =>{
+                    if (req.session) {
+                        let access =await 判定id权限(
+                            req.params.blockid || req.query.blockid || req.query.id
+                            ,
+                            "",
+                            true
+                        );
+                        console.error(access);
+                        //未登录状况以默认权限鉴权
+                        if (req.session.status !== "Authed") {
+                            //已经设置了access的路径,根据access鉴权
+                            if (access == "protected") {
+                
+                                res.end(naive.unAuthedPageTemplate.protected);
+                                console.log(res);
+                                
+                            } else if (access == "private") {
+                
+                                res.end(naive.unAuthedPageTemplate.private);
+                                console.log(res);
+                            } else if (access == "public") {
+                                next()
+                            }
+                            //没有设置或者为其他值的,根据默认设置鉴权
+                            else {
+                                if (!naive.设置.默认发布设置 || naive.设置.默认发布设置 == "private") {
+                                    console.error('test')
+                                    res.end(naive.unAuthedPageTemplate.private);
+                
+                                } else if (naive.设置.默认发布设置 == "protected") {
+                                    res.end(naive.unAuthedPageTemplate.protected);
+                                    console.log(res);
+                                } else if (naive.设置.默认发布设置 == "public" && !access) {
+                                    next()
+                                }
+                                else if (naive.设置.默认发布设置 == "public" && access) {
+                
+                                    res.end(naive.unAuthedPageTemplate.protected);
+                                }
+                                else {
+                                    res.end(naive.unAuthedPageTemplate.protected);
+                
+                                }
+                
+                            }
+                        }
+                        //已经登录的状况,则以userGroup鉴权
+                        else if ((access + "").startsWith("userGroup:")) {
+                            let userGroup = access.slice("userGroup:".length, access.length);
+                            console.error(userGroup);
+                            let array = userGroup.split(",");
+                            //如果块的userGroup包含了当前请求会话所在的userGroup,返回块内容
+                            if (req.session.user_group == 'admin') {
+                                next();
+                            }
+                            if (array.indexOf(req.session.user_group) >= 0) {
+                                next();
+                            } else {
+                                res.end(naive.unAuthedPageTemplate.private);
+                                next()
+                            }
+                        }
+                        //如果没有设置userGroup直接返回渲染结果,也就是所有登录用户都可以访问
+                        else {
+                            next()
+                        }
+                    }
+                    //如果请求路径有问题,直接重定向到login
+                    else if ( !req.session) {
+                        res.redirect("/user/login");
+                        
+                    }
+                },
+                (req,res)=>{
                     plugin.管线渲染(req,res)
-                }
+                }]
             },
             //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
             权限:'public',

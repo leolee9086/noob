@@ -28,13 +28,12 @@ async function 请求鉴权(req, res) {
 }
 async function 判定id权限(块id, query, multi) {
     let flag = false;
-    let 块信息数组 = await naive.思源api.以sql向思源请求块数据(
-        `${naive.设置.思源伺服地址}:${naive.设置.思源伺服端口}`,
-
-        "",
+    let 块信息数组 = await naive.核心api.sql(
+        {stmt:
         `select root_id , path  from blocks where id = '${块id}' and not id in (
         select block_id from attributes where name = 'custom-publish-token'
-      )`
+      )`},''
+
     );
     if (块信息数组 && 块信息数组[0]) {
         let 路径 = 块信息数组[0].path;
