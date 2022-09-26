@@ -1,5 +1,4 @@
 const { createProxyMiddleware } = require('http-proxy-middleware')
-const apiFix = require('./apiFix/index.js')
 let naive = window.naive
 const proxy = createProxyMiddleware({
     target: `http://${naive.publishOption.思源伺服地址}:${naive.publishOption.思源伺服端口}`,
@@ -7,7 +6,6 @@ const proxy = createProxyMiddleware({
     pathRewrite: { '/siyuanPublisher/editor': '/' },
     //ws: true
 })
-
 const jsonApiproxy = async function (req, res) {
     if (req instanceof Function && res instanceof Function) {
         let preFix = req, afterFix = res

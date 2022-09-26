@@ -16,7 +16,6 @@ export class toolbarItem extends naive.plugin{
         naive.事件总线.on("pluginsLoaded",()=>this.插入顶栏按钮)
     }
     插入顶栏按钮(){
-        
     }
 }
 export const dependencies = ['template']

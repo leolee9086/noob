@@ -13,7 +13,7 @@ export class template extends naive.plugin {
     constructor() {
       super({ name: "template" });
       ///#ifAPP
-      const templateParser = require(naive.pathConstructor.naivePath()+`/script/public/node_modules/art-template`)
+      const templateParser = require(`art-template`)
       this.setPluginsProp(
         {中文:"模板解析器",en:'templateParser'},templateParser)
       ///#endif

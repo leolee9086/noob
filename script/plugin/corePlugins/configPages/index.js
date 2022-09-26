@@ -14,7 +14,7 @@ export class configPages extends naive.plugin {
     let 服务器设置图标 = {
       提示: "打开服务器设置窗口",
       图标: "iconPublish",
-      回调函数:()=>this.加载窗口(`/script/plugin/corePlugins/configPages/pages/serverconfig.html`,this.窗口设置),
+      回调函数:()=>this.加载窗口(`/plugin/corePlugins/configPages/pages/serverconfig.html`,this.窗口设置),
     };
     this.注册顶栏按钮(服务器设置图标);
     let 服务器设置图标1 = {
@@ -27,7 +27,7 @@ export class configPages extends naive.plugin {
     let 插件设置图标 = {
       提示: "打开插件设置窗口",
       图标: "iconPlugin",
-      回调函数:()=>this.加载窗口(`/script/plugin/corePlugins/configPages/pages/pluginconfig.html`,this.窗口设置),
+      回调函数:()=>this.加载窗口(`/plugin/corePlugins/configPages/pages/pluginconfig.html`,this.窗口设置),
     };
     this.注册顶栏按钮(插件设置图标);
     ///#ifAPP
