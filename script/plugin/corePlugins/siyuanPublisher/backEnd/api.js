@@ -112,7 +112,7 @@ module.exports =  (plugin)=> {
             名称:'发布界面思源api',
             功能:'用于发布页面的思源api转发,会对返回的块内容进行过滤,大部分api无法访问',
             方法:{
-                post:require('./middlewares/jsonReq.js')
+                post:require('./middlewares/jsonReq.js').转发JSON请求
             },
         
         权限:'public',

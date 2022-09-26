@@ -127,8 +127,8 @@ async function   checkAccessAuth(块数据, query) {
     return 块数组;
   }
 
-module.exports = async function 转发JSON请求(req, res) {
-
+module.exports ={
+转发JSON请求: async function (req, res) {
     if (req.session && req.session.user_group === "admin" && (!((req.rawHeaders.indexOf("application/json;charset=UTF-8")) >= 0))) {
         await 转发请求(req, res)
         return
@@ -209,4 +209,6 @@ module.exports = async function 转发JSON请求(req, res) {
         syres = JSON.parse(JSON.stringify(syres));
     }
     res.end(JSON.stringify(syres));
+},
+判定id权限:判定id权限
 }

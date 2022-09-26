@@ -9,7 +9,40 @@ import {修改发布主题} from "./renders/themes.js"
 import {生成文档树} from "./renders/fileTree.js"
 import {生成文档大纲} from "./renders/outline.js"
 import {生成导航栏,生成脚注} from "./renders/slots.js"
+function 注入文档元数据(req,res,渲染结果){
+  if(req.headers["user-agent"]){
+    渲染结果.reqHeaders= req.headers
+}
+
+let id = req.params.blockid || req.query.blockid || req.query.id;
+let meta = 渲染结果.createElement("meta");
+if (id) {
+  meta.setAttribute("data-node-id", id);
+} else if (req.url == "/") {
+  meta.setAttribute(
+    "data-node-id",
+    naive.设置.首页.id || naive.设置.首页.思源文档id || naive.设置.首页
+  );
+}
+meta.setAttribute("charset", "UTF-8");
+渲染结果.head.appendChild(meta);
+return 渲染结果;
+}
+function 鉴权(req,res,渲染结果){
+  let meta = 渲染结果.head.querySelector("meta");
+  let id = meta.getAttribute("data-node-id");
+  let id鉴权结果 = false;
+  if (id == null) {
+    return 渲染结果;
+  } else {
+    id鉴权结果 = require('../backend/middlewares/jsonReq').判定id权限(id, req.query);
+  }
+  meta.setAttribute("data-access", id鉴权结果);
+  return 渲染结果;
+
+}
 export const pipe = [
+  注入文档元数据,
   注入块属性,
   生成发布文档头,
   生成发布文档内容,
