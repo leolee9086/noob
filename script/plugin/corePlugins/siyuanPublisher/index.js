@@ -1,4 +1,5 @@
 import {pipe} from "./pipeRender.js/index.js"
+import initFrontend from "./frontEnd/index.js"
 //#ifAPP
 const fs  = require("fs-extra")
 //#endif
@@ -16,6 +17,8 @@ export class siyuanPublisher extends naive.plugin {
     this.初始化后端 =(this.require("./backend/index.js")).bind(this)
     this.初始化后端()
     ///#endif
+    this.initFrontend =initFrontend.bind(this)
+    this.initFrontend()
   }
   
   async 管线渲染(req, res) {
