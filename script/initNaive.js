@@ -7,7 +7,12 @@ import { kernelApiList } from "./public/kernelApi.js";
 import { 加载插件 } from "./plugin/index.js";
 import { corePluginList } from "./plugin/pluginConfiger.js";
 import { updatePluginsConfig } from "./plugin/pluginConfiger.js";
-
+/*let fn =window.fetch
+window.fetch=async function(url,data){
+  let modifiedData = prefix(data)
+  let rawRes =(await fn(url,data)).json()
+  return afterfix(rawRes)
+}*/
 export async function initNaive() {
   let naive = window.naive;
   naive.naiveID = Lute.NewNodeID()
@@ -62,8 +67,6 @@ export async function initNaive() {
   }
   //app环境下直接读取配置文件
   if (naive.ifDefOptions.defs.APP) {
-
-
     const fs = require("fs");
     let option = {}
     try {

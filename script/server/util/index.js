@@ -19,5 +19,12 @@ module.exports = {
         apiAuthor: apiAuthor,
         chekEndPoints: () => { return naive.serverUtil.apiAuthor.chekEndPoints(naive.expressApp, {}) },
         //用于描述jsonapi
-        describeApi:require('./describeApi')
+        describeApi:require('./describeApi'),
+        //用于描述文件
+        describeFile:require('./describeFile'),
+        //用于重定向导入
+        importRewriter:require('./parser/importRewriter.js'),
+        compilers:{
+                vue:require('./compilers/vue.js')
+        }
 }

@@ -223,9 +223,47 @@ function describeApi(path, describe) {
 
         }
     }
-    
+    if (describe.mode && describe.mode == 'sourcePath'){
+        naive.expressApp.use(path,auth,async (req,res)=>{
+            let extensionName = req.url.substr(req.url.lastIndexOf('\.')+1).split('?')[0]
+            let filePath = describe.dirPath+req.url.split('?')[0]
+            let customcompiler
+            if(naive.serverUtil.compilers){
+                customcompiler=naive.serverUtil.compilers[extensionName]||naive.serverUtil.compilers["_default"]
+            }
+            if(describe.compilers){
+                if(describe.compilers[extensionName]){
+                customcompiler = describe.compilers[extensionName]
+                }
+                else if(describe.compilers["_default"]){
+                    customcompiler =describe.compilers["_default"]
+                }
+                else if(!describe.compilers['_strict']){
+                    if(naive.serverUtil.compilers){
+                        customcompiler=naive.serverUtil.compilers[extensionName]||naive.serverUtil.compilers["_default"]
+                    }
+        
+                }
+            }
+            if(!customcompiler){
+                res.sendFile(filePath,req,res)
+            }
+            else {
+                let  data
+                try {
+                    data =await customcompiler(filePath,req,res)
+                }
+                catch(e){
+                    console.error(e)
+                    data=""
+                }
+                if(!res.destroyed){
+                    res.end(data)
+                }
+            }
+        })
+    }
     if (describe.mode && describe.mode == 'staticPath') {
-        console.error("staticPath",path)
         naive.expressApp.use(path, auth, express.static(describe['dirPath']))
         naive.expressApp.post(path, auth, (req, res) => {
             if(describe.postUpload){

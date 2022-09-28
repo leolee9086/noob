@@ -1,18 +1,23 @@
 const MagicString =require('magic-string');
-export function  重写导入(code,重写器){
-    console.force_log(naive.parseImport(code))
-    let [imports,exports]=naive.parseImport(code)
+const importParser =  require('es-module-lexer')
+module.exports=  function  重写导入(code,重写器,flag){
+    console.force_log(importParser.parse(code))
+    let [imports,exports]=importParser.parse(code)
     let codeMagicString =  new MagicString(code)
     imports.forEach(
         导入声明=>{
-            if(导入声明.name){
-            codeMagicString.overwrite(导入声明.s,导入声明.e,重写导入(导入声明,重写器))
+            if(导入声明.n){
+            codeMagicString.overwrite(导入声明.s,导入声明.e,重写导入包名(导入声明,重写器))
             }
         }
     )
-    return codeMagicString.toString()
+    if(flag){
+        return {code:codeMagicString.toString(),imports:imports.map(item=>{return code.substring(item.ss,item.se)})}
+    }
+    else{
+    return codeMagicString.toString()}
 }
-export function 重写导入包名(导入声明,重写器){
+function 重写导入包名(导入声明,重写器){
     let name =导入声明.n
     if(name&&!name.startsWith('/')&&!name.startsWith('./')&&!name.startsWith('../')){
         name = '/deps/'+name

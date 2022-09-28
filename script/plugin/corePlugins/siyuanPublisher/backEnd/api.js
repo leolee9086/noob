@@ -1,19 +1,20 @@
 const { middlewares } = naive
 const { syProxy } = middlewares
 const { apiProxy } = syProxy
-const {判定id权限 } =require ('./middlewares/jsonReq.js')
-module.exports =  (plugin)=> {
+const { 判定id权限 } = require('./middlewares/jsonReq.js')
+
+module.exports = (plugin) => {
     //这里是插件自己的api
     plugin.describeApi(
         //这表示这些api采用了完全一样的配置
-        ['/', '/block/:blockid','/block/'],
+        ['/', '/block/:blockid', '/block/'],
         {
             名称: '首页',
             功能: '渲染首页',
-            方法:{
-                get:[async (req, res, next) =>{
+            方法: {
+                get: [async (req, res, next) => {
                     if (req.session) {
-                        let access =await 判定id权限(
+                        let access = await 判定id权限(
                             req.params.blockid || req.query.blockid || req.query.id
                             ,
                             "",
@@ -24,12 +25,12 @@ module.exports =  (plugin)=> {
                         if (req.session.status !== "Authed") {
                             //已经设置了access的路径,根据access鉴权
                             if (access == "protected") {
-                
+
                                 res.end(naive.unAuthedPageTemplate.protected);
                                 console.log(res);
-                                
+
                             } else if (access == "private") {
-                
+
                                 res.end(naive.unAuthedPageTemplate.private);
                                 console.log(res);
                             } else if (access == "public") {
@@ -40,7 +41,7 @@ module.exports =  (plugin)=> {
                                 if (!naive.设置.默认发布设置 || naive.设置.默认发布设置 == "private") {
                                     console.error('test')
                                     res.end(naive.unAuthedPageTemplate.private);
-                
+
                                 } else if (naive.设置.默认发布设置 == "protected") {
                                     res.end(naive.unAuthedPageTemplate.protected);
                                     console.log(res);
@@ -48,14 +49,14 @@ module.exports =  (plugin)=> {
                                     next()
                                 }
                                 else if (naive.设置.默认发布设置 == "public" && access) {
-                
+
                                     res.end(naive.unAuthedPageTemplate.protected);
                                 }
                                 else {
                                     res.end(naive.unAuthedPageTemplate.protected);
-                
+
                                 }
-                
+
                             }
                         }
                         //已经登录的状况,则以userGroup鉴权
@@ -80,21 +81,21 @@ module.exports =  (plugin)=> {
                         }
                     }
                     //如果请求路径有问题,直接重定向到login
-                    else if ( !req.session) {
+                    else if (!req.session) {
                         res.redirect("/user/login");
-                        
+
                     }
                 },
-                (req,res)=>{
-                    plugin.管线渲染(req,res)
+                (req, res) => {
+                    plugin.管线渲染(req, res)
                 }]
             },
             //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
-            权限:'public',
-            请求值:'todo',
-            返回值:'todo',
-            一级分组:'siyuanPublisher',
-            二级分组:'block'
+            权限: 'public',
+            请求值: 'todo',
+            返回值: 'todo',
+            一级分组: 'siyuanPublisher',
+            二级分组: 'block'
         }
     )
     plugin.describeApi(
@@ -102,11 +103,11 @@ module.exports =  (plugin)=> {
         {
             名称: '思源编辑器页面',
             功能: '通过naive代理打开思源编辑器页面',
-            方法:{
+            方法: {
                 use:
                     //这个东西是转发到思源的proxy,之后需要把它从naive核心里面分离出来
                     naive.middlewares.syProxy.proxy
-                
+
             },
             //这里只有对siyuanPublisher->editor分组的api有write权限的用户才能打开编辑器界面
             //配置项目长这样;
@@ -116,103 +117,188 @@ module.exports =  (plugin)=> {
             // }
             //}
             //或者
-               //<user_group>:{
+            //<user_group>:{
             //    siyuanPublisher:{
             //        editor:write
             //  
             // }
             //}
-            权限:'public',
-            请求值:'todo',
-            返回值:'todo',
-            一级分组:'siyuanPublisher',
-            二级分组:'editor',
-            详情:`这里打开的编辑界面行为跟思源默认的基本一致,但是多了一些权限过滤,例如无法编辑没有编辑权限的文档之类`
+            权限: 'public',
+            请求值: 'todo',
+            返回值: 'todo',
+            一级分组: 'siyuanPublisher',
+            二级分组: 'editor',
+            详情: `这里打开的编辑界面行为跟思源默认的基本一致,但是多了一些权限过滤,例如无法编辑没有编辑权限的文档之类`
         }
     )
     plugin.describeApi(
         '/getPrivateBlock',
         {
-            名称:'获取私有块内容',
-            功能:'获取发布页面下被token保护的私有块的实际内容',
-            方法:{
-                post:(req,res)=>{
+            名称: '获取私有块内容',
+            功能: '获取发布页面下被token保护的私有块的实际内容',
+            方法: {
+                post: (req, res) => {
                     let data = req.body
-                    if(data&&data.id){
-                        if(naive.私有块字典[data.id]){
-                            if(data.token==naive.私有块字典[data.id]['token']){
+                    if (data && data.id) {
+                        if (naive.私有块字典[data.id]) {
+                            if (data.token == naive.私有块字典[data.id]['token']) {
                                 res.end(JSON.stringify(
                                     {
-                                        msg:0,
-                                        data:{
-                                            content:naive.私有块字典[data.id]['content']
+                                        msg: 0,
+                                        data: {
+                                            content: naive.私有块字典[data.id]['content']
                                         }
                                     })
                                 )
                             }
-                            else{
+                            else {
                                 res.end(JSON.stringify(
                                     {
-                                        msg:0,
-                                        data:{
-                                            content:`<div>鉴权码错误</div>`
+                                        msg: 0,
+                                        data: {
+                                            content: `<div>鉴权码错误</div>`
                                         }
                                     }
                                 ))
                             }
                         }
-                    }else{
-                    res.end(JSON.stringify(
-                        {
-                            msg:0,
-                            data:{
-                                content:`<div>鉴权码错误</div>`
+                    } else {
+                        res.end(JSON.stringify(
+                            {
+                                msg: 0,
+                                data: {
+                                    content: `<div>鉴权码错误</div>`
+                                }
                             }
-                        }
-                    ))
+                        ))
                     }
                 }
             },
-        
-        权限:'public',
-        请求值:'todo',
-        返回值:'todo',
-        一级分组:'siyuanPublisher',
-        二级分组:'editor'
-    },
+
+            权限: 'public',
+            请求值: 'todo',
+            返回值: 'todo',
+            一级分组: 'siyuanPublisher',
+            二级分组: 'editor'
+        },
     )
     plugin.describeApi(
         '/publishApi/*',
         {
-            名称:'发布界面思源api',
-            功能:'用于发布页面的思源api转发,会对返回的块内容进行过滤,大部分api无法访问',
-            方法:{
-                post:require('./middlewares/jsonReq.js').转发JSON请求
+            名称: '发布界面思源api',
+            功能: '用于发布页面的思源api转发,会对返回的块内容进行过滤,大部分api无法访问',
+            方法: {
+                post: require('./middlewares/jsonReq.js').转发JSON请求
             },
-        
-        权限:'public',
-        请求值:'todo',
-        返回值:'todo',
-        一级分组:'siyuanPublisher',
-        二级分组:'publishApi'
-    },
+
+            权限: 'public',
+            请求值: 'todo',
+            返回值: 'todo',
+            一级分组: 'siyuanPublisher',
+            二级分组: 'publishApi'
+        },
     )
- 
+
     //这里之后全部都是对思源api的转发,但是只有核心插件能够调用describeCoreApi方法
     //describeCoreApi方法能够忽略前缀定义api
-    plugin.describeCoreApi('/appearance',
+    plugin.describeCoreApi('/appearance/',
         {
-        名称:"外观文件夹",
-        功能:"访问思源的外观文件夹获取主题等",
-        权限:"public",
-        一级分组:"siyuanApi",
-        二级分组:'appearance',
-        //staticPath模式表示这是一个静态文件访问接口
-        mode:"staticPath",
-        dirPath:`${naive.workspaceDir}\\conf\\appearance`,
-        //表示不允许通过post接口遍历该文件夹
-        allowList:false
-        
+            名称: "外观文件夹",
+            功能: "访问思源的外观文件夹获取主题等",
+            权限: "public",
+            一级分组: "siyuanApi",
+            二级分组: 'appearance',
+            //staticPath模式表示这是一个静态文件访问接口
+            mode: "sourcePath",
+            dirPath: `${naive.workspaceDir}\\conf\\appearance`,
+            //表示不允许通过post接口遍历该文件夹
+            allowList: false,
+            compilers: {
+                css: (filePath, req, res) => {
+                    let data
+                    try {
+                        data = require('fs-extra').readFileSync(filePath, 'utf-8')
+                        res.end(data)
+                    }
+                    catch (e) {
+                        res.end(e.message)
+                    }
+                },
+                json: () => {
+                    return '抱歉,你不能访问这个位置'
+                },
+                js: () => {
+                    return '抱歉,你不能访问这个位置'
+                },
+                /*vue: (filePath, req, res) => {
+                    let content = require('fs-extra').readFileSync(filePath, 'utf-8')
+                    let Ast = compilerSFC.parse(content)
+                    let reqPath = req.originalUrl.split('?')[0]
+                    console.log(Ast)
+
+                    if (!req.query.type) {
+                        let scriptContent
+                        if (Ast.descriptor.script) {
+                            scriptContent = naive.serverUtil.importRewriter(Ast.descriptor.script.content)
+                            scriptContent = scriptContent.replace('export default', 'const _script=')
+                        }
+
+                        res.setHeader('content-type', 'text/javascript')
+                        res.end(`
+                    import {render as _render} from '${reqPath}?type=template'
+                    import '${reqPath}?type=style'
+                    ${scriptContent} 
+                    _script.render = _render
+                    export default _script
+                    `
+                        )
+
+                    }
+                    if (req.query.type === 'template') {
+                        let template = Ast.descriptor.template.content
+                        let renderContent = compilerDOM.compile(template, { mode: 'module' }).code
+                        renderContent = naive.serverUtil.importRewriter(renderContent)
+                        res.setHeader('content-type', 'text/javascript')
+                        res.end(renderContent)
+                    } else if (req.query.type === 'style') {
+                        let style = Ast.descriptor.styles[0].content
+                        res.setHeader('content-type', 'text/javascript')
+                        let styleScript = `
+                        let style = document.createElement('style')
+                        style.innerHTML = \`${style}\`
+                        document.head.appendChild(style)
+                    `
+                        res.end(styleScript)
+                    }
+                    else if (req.query.type === 'ast') {
+                        res.json(Ast)
+                    }
+                    else if (req.query.type === 'app') {
+                        res.setHeader('content-type', 'text/html')
+
+                        res.end(
+                            `
+                        <html>
+                        <head>      
+                        </head>
+                        <body>
+                            <div id='app'></div>
+                        </body>
+                        <script type="module">
+                            import {createApp} from '/deps/vue' 
+                            import  root from '${reqPath}'
+                            import '${reqPath}?type=style'
+
+                            const app = createApp(root)
+                            app.mount('#app')
+                        </script>
+                        </html>
+
+                        `
+                        )
+                    }
+                }*/
+            }
         }
     )
     plugin.describeCoreApi('/api/system/bootProgress', {
@@ -227,8 +313,8 @@ module.exports =  (plugin)=> {
         //对于post请求,描述的是req.body
         //对于get请求,描述的是url的query
         请求值: {
-            schema:{
-                type:'object'
+            schema: {
+                type: 'object'
             }
         },
         返回值: 'todo',

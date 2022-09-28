@@ -1,4 +1,5 @@
 import { DOM监听器 } from "/script/public/DOMwatcher.js";
+
 window.siyuan.menus.menu.element =new Proxy(
   window.siyuan.menus.menu.element,{
     get(target,key){

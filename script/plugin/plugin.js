@@ -63,11 +63,7 @@ export class 主题插件 {
     )
   }
   //#ifApp
-  router() {
-    let router = naive.pluginsApiRouter()
-    naive.expressApp.use(`/${this.name}`, router)
-    return router
-  }
+ 
   describeApi(path, describe) {
     let des = (path, describe) => {
       naive.serverUtil.describeApi(`/${this.name}${path}`, describe)
