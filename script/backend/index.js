@@ -23,13 +23,18 @@ export default class NaiveBackend {
             persistent: true,
             recursive: true,
           };
-        fs.watch(
+        this.fileWatcher= fs.watch(
             this.workspaceDir, option,(type, fileName) => {
                 if (!standalone &&watchFiletypes &&watchFiletypes.indexOf(获取文件扩展名(fileName))>=0) {
                     naive.重新加载()
                 }
             }
         )
+    }
+    结束监听文件修改(){
+        if(this.fileWatcher){
+            this.fileWatcher.close()
+        }
     }
     创建服务器() {
         this.发布服务器 = new NaiveServer(naive)
