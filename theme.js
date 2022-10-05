@@ -13,7 +13,7 @@ if(window.frameElement){
   }`
 document.head.appendChild(style)}
 (async function(){
-  this.naivePath = '../naive/index.js'
+  this.naivePath = '../naive/script/index.js'
   await import(this.naivePath)
 })()
 let meta =document.createElement("meta")

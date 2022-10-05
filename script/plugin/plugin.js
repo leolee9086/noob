@@ -62,8 +62,31 @@ export class 主题插件 {
       接口对象 => 设置接口(接口对象[0] || 接口对象.名称, 接口对象[1] || 接口对象.接口值)
     )
   }
+  加载窗口(url, windowParams, closeCallback){
+    ///#ifAPP
+    const { BrowserWindow } = require("@electron/remote");
+    // 新建窗口(Electron 环境)
+    url = this.思源url格式化(url);
+    var newWin = new BrowserWindow(windowParams);
+
+    newWin.loadURL(url.href);
+
+    // newWin.name = name;
+    newWin.onClose =
+      // naive.子窗口[name] = newWin
+      newWin.on("closed", () => {
+        closeCallback
+          ? setTimeout(async () => closeCallback(newWin), 0)
+          : null;
+        // naive.子窗口[newWin.name] = null
+        newWin = null;
+      });
+    ///#else
+    window.open(url);
+    ///#endif
+
+          }
   //#ifApp
- 
   describeApi(path, describe) {
     let des = (path, describe) => {
       naive.serverUtil.describeApi(`/${this.name}${path}`, describe)
@@ -100,7 +123,6 @@ export class 主题插件 {
       naive.doc.api[`${path}`]['来源插件'] = this.name
     }
   }
-  //#endif
   initFolder(flag) {
     if(flag==undefined||flag ==true){
     let pluginFoldr = naive.pathConstructor.initDirp(`${naive.pathConstructor.workspaceDir}/conf/naiveConf/pluginFolders/${this.name}`)

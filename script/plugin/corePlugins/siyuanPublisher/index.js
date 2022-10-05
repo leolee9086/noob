@@ -141,6 +141,7 @@ export class siyuanPublisher extends naive.plugin {
     </html>
     `;
     res.end(渲染结果);
+    return 渲染结果
   }
   async 渲染函数(req, res, 渲染结果) {
     return 渲染结果;
@@ -203,19 +204,6 @@ export class siyuanPublisher extends naive.plugin {
     }
     naive.renders[插件名] = true;
     return 渲染管线;
-  }
-  更新缓存(id, content, workspaceDir) {
-    const fs = require("fs");
-    fs.writeFile(
-      `${workspaceDir}/conf/appearance/themes/naive/cache/${id}.html`,
-      content,
-      function (err) {
-        if (err) {
-          throw err;
-        }
-        console.log("uncached");
-      }
-    );
   }
 }
 export const dependencies = ["template",  "commonMenu"];

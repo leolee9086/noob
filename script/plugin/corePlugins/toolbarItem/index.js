@@ -8,14 +8,11 @@ function 注册顶栏按钮(option) {
     setTimeout(() => toolbar.insertBefore(button, windowControls), 0);
     console.log(button);
     button.addEventListener("click", 回调函数.bind(this));
-  }
+}
 export class toolbarItem extends naive.plugin{
     constructor() {
         super({ name: "toolbarItem" });
         this.setPluginsProp({中文:'注册顶栏按钮'},注册顶栏按钮)
-        naive.事件总线.on("pluginsLoaded",()=>this.插入顶栏按钮)
-    }
-    插入顶栏按钮(){
     }
 }
 export const dependencies = ['template']

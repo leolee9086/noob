@@ -125,7 +125,46 @@ async function   checkAccessAuth(块数据, query) {
     
     return 块数组;
   }
+async function 转发请求(req,res){
+    const http = require("http");
+    var { connection, host, ...originHeaders } = req.headers;
+    // 构造请求报文
+    var options = {
+      method: req.method,
+      hostname: naive.设置.思源伺服地址,
+      port: naive.设置.思源伺服端口,
+      path: req.url,
+      headers: { originHeaders },
+    };
+    // 通过req的data事件和end事件接收客户端发送的数据
+    // 并用Buffer.concat处理一下
+    let postbody = [];
+    req.on("data", (chunk) => {
+      postbody.push(chunk);
+    });
+    req.on("end", () => {
+      let postbodyBuffer = Buffer.concat(postbody);
+      // 定义变量接收目标服务器返回的数据
+      let responsebody = [];
+      // 发送请求头
+      var request1 = http.request(options, (response2) => {
+        response2.on("data", (chunk) => {
+          responsebody.push(chunk);
+        });
+        response2.on("end", () => {
+          // 处理目标服务器数据,并将其返回给客户端
+          let responsebodyBuffer = Buffer.concat(responsebody);
+          console.log(response2, 25);
+          res.setHeader("Access-Control-Allow-Private-Network", true);
+          res.end(responsebodyBuffer);
+        });
+      });
+      // 将接收到的客户端请求数据发送到目标服务器;
+      request1.write(postbodyBuffer);
+      request1.end();
+    });
 
+}
 module.exports ={
 转发JSON请求: async function (req, res) {
     if (req.session && req.session.user_group === "admin" && (!((req.rawHeaders.indexOf("application/json;charset=UTF-8")) >= 0))) {
@@ -170,7 +209,6 @@ module.exports ={
         if (req.session && !req.session.status) {
             if (syres.data && syres.data.files && syres.data.files[0]) {
                 syres.data.files = await 批处理判定路径权限(syres.data.files);
-
                 syres.data.files = syres.data.files.filter((file) => {
                     return file;
                 });
@@ -191,7 +229,6 @@ module.exports ={
             }
             if (syres.data && syres.data.nodes && syres.data.links) {
                 syres.data.nodes = await 批处理判定路径权限(syres.data.nodes);
-
                 for (let i = 0, len = syres.data.links.length; i < len; i++) {
                     let link = syres.data.links[i];
                     let fromid = link.from;

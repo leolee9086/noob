@@ -76,7 +76,7 @@ function 判定通用菜单(通用菜单) {
 }
 function 注册块标菜单(option, 目标) {
   let 自定义块标菜单 = !目标 ? naive.自定义块标菜单 : 目标;
-  let { 块类型, 菜单文字, 菜单图标, 回调函数, 显示判断函数 } = option;
+  let { 块类型, 菜单文字, 菜单图标, 回调函数, 显示判断函数,children } = option;
   自定义块标菜单[块类型] ? null : (自定义块标菜单[块类型] = {});
   自定义块标菜单[块类型][菜单文字] = {};
   自定义块标菜单[块类型][菜单文字]["回调函数"] = 回调函数;
@@ -84,6 +84,8 @@ function 注册块标菜单(option, 目标) {
   自定义块标菜单[块类型][菜单文字]["菜单图标"] = 菜单图标;
   自定义块标菜单[块类型][菜单文字]["注册插件"] = this;
   自定义块标菜单[块类型][菜单文字]["显示判断函数"] = 显示判断函数;
+  自定义块标菜单[块类型][菜单文字]["children"] = children;
+
 }
 function 注册图片菜单(option) {
   naive.自定义图片菜单 ? null : (naive.自定义图片菜单 = {});
@@ -255,23 +257,37 @@ const 生成列表菜单项目 = function (菜单项目) {
     return (菜单项目['渲染函数'])()
   }
   let button = document.createElement("button");
+
+  if(!菜单项目.children){
   button.className = "b3-menu__item diy";
   button.onclick = () =>
   菜单项目.回调函数.call(菜单项目.注册插件, naive.当前块id);
   button.setAttribute("data-node-id", naive.当前块id);
   button.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="${菜单项目.菜单图标}"></use></svg><span class="b3-menu__label">${菜单项目.菜单文字}</span>`;
+  }
   if(菜单项目.children){
+    button.className = "b3-menu__item diy";
+    button.setAttribute("data-node-id", naive.当前块id);
+
+    button.innerHTML = `<svg class="b3-menu__icon" style=""><use xlink:href="${菜单项目.菜单图标}"></use></svg><span class="b3-menu__label">${菜单项目.菜单文字}</span>`;
+
     button.innerHTML+=`<svg class="b3-menu__icon b3-menu__icon--arrow"><use xlink:href="#iconRight"></use></svg>`
     let div = document.createElement('div')
     div.className="b3-menu__submenu"
     菜单项目.children.forEach(element => {
-      div.appendChild(生成列表菜单项目(element))
+      let sub =生成列表菜单项目(element)
       if(element['渲染函数']){
-        return (element['渲染函数'])()
+        sub =  (element['渲染函数'])()
       }
-    
+
+      sub.onclick = () =>{
+        element.回调函数.call(菜单项目.注册插件,naive.当前块id)
+      }
+      div.appendChild(sub)
+      
     });
     button.appendChild(div)
+    
   }
   return button;
 };

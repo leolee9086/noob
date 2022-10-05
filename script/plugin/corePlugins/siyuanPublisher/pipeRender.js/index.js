@@ -13,7 +13,6 @@ function 注入文档元数据(req,res,渲染结果){
   if(req.headers["user-agent"]){
     渲染结果.reqHeaders= req.headers
 }
-
 let id = req.params.blockid || req.query.blockid || req.query.id;
 let meta = 渲染结果.createElement("meta");
 if (id) {

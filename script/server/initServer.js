@@ -142,10 +142,10 @@ module.exports = {
         }
         if (!apiDoc.请求值) {
           console.warn(`api文档错误:${apiDoc}的文档缺少请求值说明`)
-          if (!apiDoc.请求值.格式) {
-            console.warn(`api文档错误:${apiDoc}的文档缺少请求值`)
-          }
+        }else           if (!apiDoc.请求值.格式) {
+          console.warn(`api文档错误:${apiDoc}的文档缺少请求值`)
         }
+
         if (!apiDoc.返回值) {
           console.warn(`api文档错误:${apiDoc}的文档缺少路径说明`)
         }

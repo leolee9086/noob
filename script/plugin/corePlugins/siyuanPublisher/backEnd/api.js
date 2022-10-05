@@ -86,8 +86,37 @@ module.exports = (plugin) => {
 
                     }
                 },
-                (req, res) => {
-                    plugin.管线渲染(req, res)
+                async (req, res) => {
+                    let id = req.params.blockid || req.query.blockid || req.query.id || naive.设置.首页.id || naive.设置.首页.思源文档id || naive.设置.首页;
+                    const fs = require("fs-extra");
+                    let cachePath = `${naive.workspaceDir}/temp/naiveCache/${id}.html`
+                    let { updated } = await naive.核心api.getBlockAttrs(
+                        { id: id }, ""
+                    )
+                    console.log(updated)
+                    if (fs.existsSync(cachePath)) {
+                        let state=fs.statSync(cachePath)
+                        if(state)
+                        res.sendFile(cachePath)
+                        return
+                    }
+                    else {
+                        console.log(req)
+
+                        let content = await plugin.管线渲染(req, res)
+                        console.log(content)
+                        naive.pathConstructor.initFilep(
+                            cachePath,
+                            content,
+                            function (err) {
+                                if (err) {
+                                    throw err;
+                                }
+                                console.log("uncached");
+                            }
+                        );
+
+                    }
                 }]
             },
             //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
@@ -209,96 +238,11 @@ module.exports = (plugin) => {
             一级分组: "siyuanApi",
             二级分组: 'appearance',
             //staticPath模式表示这是一个静态文件访问接口
-            mode: "sourcePath",
+            mode: "staticPath",
             dirPath: `${naive.workspaceDir}\\conf\\appearance`,
             //表示不允许通过post接口遍历该文件夹
             allowList: false,
-            compilers: {
-                css: (filePath, req, res) => {
-                    let data
-                    try {
-                        data = require('fs-extra').readFileSync(filePath, 'utf-8')
-                        res.end(data)
-                    }
-                    catch (e) {
-                        res.end(e.message)
-                    }
-                },
-                json: () => {
-                    return '抱歉,你不能访问这个位置'
-                },
-                js: () => {
-                    return '抱歉,你不能访问这个位置'
-                },
-                /*vue: (filePath, req, res) => {
-                    let content = require('fs-extra').readFileSync(filePath, 'utf-8')
-                    let Ast = compilerSFC.parse(content)
-                    let reqPath = req.originalUrl.split('?')[0]
-                    console.log(Ast)
 
-                    if (!req.query.type) {
-                        let scriptContent
-                        if (Ast.descriptor.script) {
-                            scriptContent = naive.serverUtil.importRewriter(Ast.descriptor.script.content)
-                            scriptContent = scriptContent.replace('export default', 'const _script=')
-                        }
-
-                        res.setHeader('content-type', 'text/javascript')
-                        res.end(`
-                    import {render as _render} from '${reqPath}?type=template'
-                    import '${reqPath}?type=style'
-                    ${scriptContent} 
-                    _script.render = _render
-                    export default _script
-                    `
-                        )
-
-                    }
-                    if (req.query.type === 'template') {
-                        let template = Ast.descriptor.template.content
-                        let renderContent = compilerDOM.compile(template, { mode: 'module' }).code
-                        renderContent = naive.serverUtil.importRewriter(renderContent)
-                        res.setHeader('content-type', 'text/javascript')
-                        res.end(renderContent)
-                    } else if (req.query.type === 'style') {
-                        let style = Ast.descriptor.styles[0].content
-                        res.setHeader('content-type', 'text/javascript')
-                        let styleScript = `
-                        let style = document.createElement('style')
-                        style.innerHTML = \`${style}\`
-                        document.head.appendChild(style)
-                    `
-                        res.end(styleScript)
-                    }
-                    else if (req.query.type === 'ast') {
-                        res.json(Ast)
-                    }
-                    else if (req.query.type === 'app') {
-                        res.setHeader('content-type', 'text/html')
-
-                        res.end(
-                            `
-                        <html>
-                        <head>      
-                        </head>
-                        <body>
-                            <div id='app'></div>
-                        </body>
-                        <script type="module">
-                            import {createApp} from '/deps/vue' 
-                            import  root from '${reqPath}'
-                            import '${reqPath}?type=style'
-
-                            const app = createApp(root)
-                            app.mount('#app')
-                        </script>
-                        </html>
-
-                        `
-                        )
-                    }
-                }*/
-            }
         }
     )
     plugin.describeCoreApi('/api/system/bootProgress', {
@@ -1356,6 +1300,33 @@ module.exports = (plugin) => {
         一级分组: 'siyuanApi',
         二级分组: 'ref'
     })
+    plugin.describeCoreApi('/api/ref/getBacklink2', {
+        名称: '获取反向链接',
+        功能: '获取反向链接',
+        方法: {
+            post: [apiProxy],
+
+        },
+        权限: 'public',
+        请求值: "todo",
+        返回值: 'todo',
+        一级分组: 'siyuanApi',
+        二级分组: 'ref'
+    })
+    plugin.describeCoreApi('/api/ref/getBacklinkDoc', {
+        名称: '获取反向链接',
+        功能: '获取反向链接',
+        方法: {
+            post: [apiProxy],
+
+        },
+        权限: 'public',
+        请求值: "todo",
+        返回值: 'todo',
+        一级分组: 'siyuanApi',
+        二级分组: 'ref'
+    })
+
     plugin.describeCoreApi('/api/ref/createBacklink', {
         名称: '创建反向链接',
         功能: '创建反向链接',

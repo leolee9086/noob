@@ -1,8 +1,9 @@
 import { 生成默认设置 } from "../../public/configer.js";
+const fs = require("fs")
+
 const realRequire = window.require
 if(realRequire){
   const path =require("path")
-
 function re(moduleName,base){
   let that =window
   if(base){
@@ -22,7 +23,15 @@ function re(moduleName,base){
     if (e.message.indexOf('Cannot find module')>=0) {
       if (!(moduleName.startsWith("/") || moduleName.startsWith("./") || moduleName.startsWith("../"))) {
         console.warn(`模块${moduleName}未找到,重定向到naive设置文件deps/node_modules`)
+        let  realModuleName = moduleName
         moduleName = naive.workspaceDir + `/conf/naiveConf/deps/node_modules/${moduleName}`
+        if(!fs.existsSync(moduleName)){
+          try{
+          npm(`i ${realModuleName}`,naive.workspaceDir + `/conf/naiveConf/deps`)
+          }catch(e){
+
+          }
+        }
       }
       else if(that && naive.plugin &&that instanceof naive.plugin){
         try{
@@ -34,7 +43,6 @@ function re(moduleName,base){
         }
       }
       try{ 
-        
         let module =  that.realRequire(moduleName)
         return module 
       }

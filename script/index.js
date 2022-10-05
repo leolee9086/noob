@@ -1,9 +1,10 @@
 //路径生成器
 //条件加载器
-import ifdefParser from "./script/public/util/ifdef/index.js";
-import {initNaive} from "./script/initNaive.js";
+import ifdefParser from "./public/util/ifdef/index.js";
+import {initNaive} from "./initNaive.js";
 //创建naive对象
 window.naive = {};
+
 let naive = window.naive;
 //初始化naive对象
 //条件加载器

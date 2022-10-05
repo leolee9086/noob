@@ -1,3 +1,4 @@
+
 //加载插件配置在服务器环境下运行
 export function 监听插件(插件名) {
   let 插件主文件 = `${naive.workspaceDir}/data/${naive.插件文件夹url}/${插件名}`;
@@ -50,7 +51,9 @@ export async function 加载插件(插件名) {
     let { condition } = await import(
       `http://${naive.设置.发布地址}:${naive.设置.发布端口}/plugins/${插件名}/index.js
       `
-    );
+    ).catch(
+      e=>{console.error(`加载插件${插件名}出错:`,e)}
+    )
     let pluginclass
     let defs = options.defs
     if (condition) {
@@ -133,6 +136,8 @@ async function 加载核心插件(插件名) {
       `http://${naive.设置.发布地址}:${naive.设置.发布端口}/script/plugin/coreplugins/${插件名}/index.js?condition=${JSON.stringify(
         naive.ifDefOptions
       )}`
+    ).catch(
+      e=>{console.error(`加载核心插件${插件名}出错:`,e)}
     )
     if (pluginclass.environments && pluginclass.environments instanceof Array) {
       let flag = false
