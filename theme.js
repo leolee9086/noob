@@ -14,6 +14,7 @@ if(window.frameElement){
 document.head.appendChild(style)}
 (async function(){
   this.naivePath = '../naive/script/index.js'
+  //加载naive
   await import(this.naivePath)
 })()
 let meta =document.createElement("meta")
