@@ -53,6 +53,6 @@ if (window.siyuan.user) {
 naive.frontend.siyuanWs = window.siyuan.ws;
 }
 
-await initNaive();
+//await initNaive();
 
 
