@@ -1,9 +1,45 @@
-const middlewares = require("./middleWares/index.js")
+import {session,json,urlencoded,compression,allowCors,json解析器,passport} from './middleWares/index.js'
+import API from './util/api.js';
+export default class naiveServer{
+    constructor(naive){
+      const express = require ('express')
+      const expressWs = require('express-ws');
+      const http = require("http");
+      const https = require("https");
+      this.app = express()
+      const app = this.app
+      expressWs(app)
+      //使用session
+      app.use(session)
+      //解析json
+      app.use(json); //body-parser 解析json格式数据
+      //解析url
+      app.use(urlencoded);
+      //压缩gzip
+      app.use(compression);
+      //允许跨域请求
+      app.use(allowCors);
+      //允许跨域请求
+      app.use(json解析器);
+      //向请求写入auth
+      app.use(passport.authenticate('session'));
+      this.port  = naive.backend.port||naive.publish.port
+      this.sslPort="443"
+      this.publishServer = http.createServer(app);
+      this.api = new API(app)
+    }
+    开始服务(){
+      let {port}=this
+      this.publishServer.listen(port,()=>{
+        console.log(`publish app listening on port ${port}`);
+      })
+    }
+}
+/*const middlewares = require("./middleWares/index.js")
 const passport = require('passport')
 naive.middlewares = middlewares
 const express1 = require("express");
 naive.serverUtil.router = express1.Router
-const expressWs = require('express-ws');
 
 const fs = require("fs-extra")
 const addDevSurppoert = require("./middleWares/dependenciesParser.js")
@@ -11,8 +47,6 @@ const addStaticPath = require('./middleWares/staticPath.js')
 const api = require("../public/siYuanApi");
 const app = express1();
 naive.expressApp = app;
-const http = require("http");
-const https = require("https");
 const { checkAdmin, models } = require('./models/index');
 naive.dbModels = models
 module.exports = {
@@ -31,22 +65,6 @@ module.exports = {
     this.realoption = realoption;
     naive.设置 = realoption;
     思源api = new api(realoption);
-    expressWs(app)
-    //使用session
-    app.use(middlewares.session)
-    //解析json
-    app.use(middlewares.json); //body-parser 解析json格式数据
-    //解析url
-    app.use(middlewares.urlencoded);
-    //压缩gzip
-    app.use(middlewares.compression);
-    //允许跨域请求
-    app.use(middlewares.allowCors);
-    //允许跨域请求
-    app.use(middlewares.json解析器);
-
-    //向请求写入auth
-    app.use(passport.authenticate('session'));
     // app.use(middlewares)
     //获取设置
     let res4 = await fs.readFileSync(naive.pathConstructor.cusoptionPath());
@@ -170,4 +188,4 @@ module.exports = {
     global.publishserver = null;
     console.log("服务终止");
   },
-};
+};*/

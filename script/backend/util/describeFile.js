@@ -1,4 +1,4 @@
-const describeApi = require ('./describeApi')
+const describeApi = require ('./api')
 const fs = require('fs-extra')
 module.exports  ={
     describeFolder(path,describe){

@@ -1,7 +1,7 @@
 const { createProxyMiddleware } = require('http-proxy-middleware')
 let naive = window.naive
 const proxy = createProxyMiddleware({
-    target: `http://${naive.publishOption.思源伺服地址}:${naive.publishOption.思源伺服端口}`,
+    target: `http://127.0.0.1:6806`,
     changeOrigin: true,
     pathRewrite: { '/siyuanPublisher/editor': '/' },
     //ws: true
@@ -65,7 +65,9 @@ const jsonApiproxy = async function (req, res) {
 }
 
 
-module.exports = {
-    proxy: proxy,
-    apiProxy: jsonApiproxy
+export  {  proxy as proxy}
+export  {  jsonApiproxy as apiProxy}
+export default  {
+    proxy:proxy,
+    apiProxy:jsonApiproxy
 }

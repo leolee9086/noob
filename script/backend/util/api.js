@@ -38,22 +38,24 @@ function toString(方法对象) {
     }
     return object
 }
-function describeApi(path, describe) {
+
+function describeApi(path, describe, app, doc) {
     let 请求校验器
     let 返回值校验器
-    naive.doc.api[path] = {
-        一级分组: describe.一级分组,
-        二级分组: describe.二级分组,
-        功能: describe.功能,
-        名称: describe.名称,
-        方法: describe.方法?toString(describe.方法):null,
-        权限: describe.权限,
-        请求值: describe.请求值,
-        路径: describe.路径,
-        返回值: describe.返回值,
+    if (doc) {
+        doc[path] = {
+            一级分组: describe.一级分组,
+            二级分组: describe.二级分组,
+            功能: describe.功能,
+            名称: describe.名称,
+            方法: describe.方法 ? toString(describe.方法) : null,
+            权限: describe.权限,
+            请求值: describe.请求值,
+            路径: describe.路径,
+            返回值: describe.返回值,
+        }
     }
-
-    if (describe.请求值&&(describe.请求值.schema || describe.请求值.模式)) {
+    if (describe.请求值 && (describe.请求值.schema || describe.请求值.模式)) {
         let 模式 = describe.请求值.schema || describe.请求值.模式
         let 校验器 = ajv.compile(模式)
         请求校验器 = function (req, res, next) {
@@ -223,50 +225,50 @@ function describeApi(path, describe) {
 
         }
     }
-    if (describe.mode && describe.mode == 'sourcePath'){
-        naive.expressApp.use(path,auth,async (req,res)=>{
-            let extensionName = req.url.substr(req.url.lastIndexOf('\.')+1).split('?')[0]
-            let filePath = describe.dirPath+req.url.split('?')[0]
+    if (describe.mode && describe.mode == 'sourcePath') {
+        app.use(path, auth, async (req, res) => {
+            let extensionName = req.url.substr(req.url.lastIndexOf('\.') + 1).split('?')[0]
+            let filePath = describe.dirPath + req.url.split('?')[0]
             let customcompiler
-            if(naive.serverUtil.compilers){
-                customcompiler=naive.serverUtil.compilers[extensionName]||naive.serverUtil.compilers["_default"]
+            if (naive.serverUtil.compilers) {
+                customcompiler = naive.serverUtil.compilers[extensionName] || naive.serverUtil.compilers["_default"]
             }
-            if(describe.compilers){
-                if(describe.compilers[extensionName]){
-                customcompiler = describe.compilers[extensionName]
+            if (describe.compilers) {
+                if (describe.compilers[extensionName]) {
+                    customcompiler = describe.compilers[extensionName]
                 }
-                else if(describe.compilers["_default"]){
-                    customcompiler =describe.compilers["_default"]
+                else if (describe.compilers["_default"]) {
+                    customcompiler = describe.compilers["_default"]
                 }
-                else if(!describe.compilers['_strict']){
-                    if(naive.serverUtil.compilers){
-                        customcompiler=naive.serverUtil.compilers[extensionName]||naive.serverUtil.compilers["_default"]
+                else if (!describe.compilers['_strict']) {
+                    if (naive.serverUtil.compilers) {
+                        customcompiler = naive.serverUtil.compilers[extensionName] || naive.serverUtil.compilers["_default"]
                     }
-        
+
                 }
             }
-            if(!customcompiler){
-                res.sendFile(filePath,req,res)
+            if (!customcompiler) {
+                res.sendFile(filePath, req, res)
             }
             else {
-                let  data
+                let data
                 try {
-                    data =await customcompiler(filePath,req,res)
+                    data = await customcompiler(filePath, req, res)
                 }
-                catch(e){
+                catch (e) {
                     console.error(e)
-                    data=""
+                    data = ""
                 }
-                if(!res.destroyed){
+                if (!res.destroyed) {
                     res.end(data)
                 }
             }
         })
     }
     if (describe.mode && describe.mode == 'staticPath') {
-        naive.expressApp.use(path, auth, express.static(describe['dirPath']))
-        naive.expressApp.post(path, auth, (req, res) => {
-            if(describe.postUpload){
+        app.use(path, auth, express.static(describe['dirPath']))
+        app.post(path, auth, (req, res) => {
+            if (describe.postUpload) {
                 if (req.fields && req.fields.path) {
                     if (req.files) {
                         const path = require('path')
@@ -281,7 +283,7 @@ function describeApi(path, describe) {
             else if (describe.allowList) {
                 let option = describe.option
                 if (!option) {
-                    option = { stats: true,base: describe['dirPath']}
+                    option = { stats: true, base: describe['dirPath'] }
                 }
                 //option.cwd = describe['dirPath']
                 let list = fg.sync('*', option)
@@ -298,7 +300,7 @@ function describeApi(path, describe) {
             }
         }
         )
-        naive.expressApp.put(
+        app.put(
             path, auth, (req, res) => {
                 if (describe.allowUpload) {
                     if (req.fields && req.fields.path) {
@@ -316,12 +318,12 @@ function describeApi(path, describe) {
         )
     }
     else if (describe.mode && (describe.mode == 'cmd' || describe.mode == 'shell')) {
-        const { shellCmd } = require('../util/shell')
+        const { shellCmd } = require('./shell')
         let target = describe.target
         let defaultArgs = describe.args
         let path = describe.dirPath
         let timeOut = describe.timeOut
-        naive.expressApp.post(path, auth, async (req, res) => {
+        app.post(path, auth, async (req, res) => {
             let { args } = req.body
             args = defaultArgs + '\s' + args
             if (timeOut) {
@@ -350,28 +352,32 @@ function describeApi(path, describe) {
         )
     }
     else if (describe.方法 && describe.方法 instanceof Object) {
-        
-        
-    
-            Object.getOwnPropertyNames(describe.方法).forEach(
-                method => {
-                    !请求校验器 ? naive.expressApp[method](path, auth, describe['方法'][method]) : naive.expressApp[method](path, auth, 请求校验器, describe['方法'][method])
+        Object.getOwnPropertyNames(describe.方法).forEach(
+            method => {
+                !请求校验器 ? app[method](path, auth, describe['方法'][method]) : app[method](path, auth, 请求校验器, describe['方法'][method])
 
-                }
-            )
-        
+            }
+        )
+
     }
 }
 
-module.exports = function (path,describe){
-    if(typeof path =='string'){
-        describeApi(path,describe)
+
+export default class Api {
+    constructor(app) {
+        this.app = app
+        this.doc = {}
     }
-    else if (path instanceof Array){
-        path.forEach(
-            p=>{
-                describeApi(p,describe)
-            }
-        )
+    注册(path, describe) {
+        if (typeof path == 'string') {
+            describeApi(path, describe, this.app, this.doc)
+        }
+        else if (path instanceof Array) {
+            path.forEach(
+                p => {
+                    describeApi(p, describe, this.app, this.doc)
+                }
+            )
+        }
     }
 }

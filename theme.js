@@ -6,19 +6,49 @@
 //只有下面这段代码是必须的
 
 
-if(window.frameElement){
-  let style =document.createElement('style')
-  style.innerHTML=`.toolbar{
+if (window.frameElement) {
+  let style = document.createElement('style')
+  style.innerHTML = `.toolbar{
       display:none !important
   }`
-document.head.appendChild(style)}
-(async function(){
+  document.head.appendChild(style)
+}
+(async function () {
   this.naivePath = '../naive/script/index.js'
+  //获取用户配置文件
+  let options = {
+    publish: {
+
+    },
+
+    system: {
+      workspaceDir: window.siyuan.config.system.workspaceDir,
+      
+    },
+    siyuan: window.siyuan,
+    standalone: false,
+    watchFiletypes:['js'],
+    dev: false,
+    log: {
+      file: true,
+      verbose: false
+    }
+  }
+  let meta = document.createElement("meta")
+  meta.setAttribute('name', 'referrer')
+  meta.setAttribute('content', 'never')
+  document.head.appendChild(meta)
+
   //加载naive
-  await import(this.naivePath)
+  import(this.naivePath).then(
+    module => {
+      let naive = module.default
+      window.naive = new naive(options)
+      console.log(window.naive)
+    }
+  ).catch(e => {
+    console.error(e)
+  })
+
 })()
-let meta =document.createElement("meta")
-meta.setAttribute('name','referrer')
-meta.setAttribute('content','never')
-document.head.appendChild(meta)
 

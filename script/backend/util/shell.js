@@ -1,5 +1,5 @@
-const spawn =require("cross-spawn")
-function shellCmd(target,cmd,path){
+export function  shellCmd(target,cmd,path){
+    const spawn =require("cross-spawn")
     return new Promise((resolve, reject) => {
         let args = cmd.split(/\s+/)
         const processer = spawn(target, args, {
@@ -29,14 +29,9 @@ function shellCmd(target,cmd,path){
             }
         });
     });
-
 }
-function npmCmd(cmd, path) {
+export function npmCmd(cmd, path) {
     return shellCmd('npm',cmd,path)
 }
 
-module.exports={ 
-    npmCmd:npmCmd,
-    shellCmd:shellCmd
-}
 
