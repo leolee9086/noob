@@ -1,10 +1,10 @@
 import { 生成默认设置 } from "../../public/configer.js";
 export default class pathConstructor {
-  constructor(workspaceDir) {
-    this.workspaceDir = workspaceDir+'';
-    this.思源工作空间路径 = workspaceDir;
+  constructor(naive) {
+    let config = naive.public.config
+    this.workspaceDir = config.system.workspaceDir
     this.主题根目录思源URL = ``;
-    this.themeName="naive"
+    this.themeName = "naive"
   }
   requireScript(filepath) {
     let path = require("path");
@@ -73,7 +73,7 @@ export default class pathConstructor {
     }
     return filePath;
   }
-  uploadCachePath(){
+  uploadCachePath() {
     let fs = require("fs");
     let path = require("path");
     let mkdirp = require("mkdirp");
@@ -86,7 +86,7 @@ export default class pathConstructor {
     return filePath;
 
   }
-  downloadCachePath(){
+  downloadCachePath() {
     let fs = require("fs");
     let path = require("path");
     let mkdirp = require("mkdirp");

@@ -1,10 +1,9 @@
 //路径生成器
 //条件加载器
-
-import requireHacker from "./requireHacker.js"
+//这里是第一次引入requireHacker,纯粹是为了它的副作用,覆盖掉window.require
+import requireHacker from "./backend/fileSys/requireHacker.js"
 
 import ifdefParser from "./public/util/ifdef/index.js";
-import pathConstructor from "./backend/util/pathConstructor.js"
 //import { initNaive } from "./initNaive.js";
 //创建naive对象
 export default class naive {
@@ -28,7 +27,6 @@ export default class naive {
     if (require) {
       this.hackRequire()
       console.log(require)
-      this.初始化工作空间()
       this.初始化后端()
     }
     this.初始化前端()
@@ -40,9 +38,6 @@ export default class naive {
         element.reloadIgnoringCache()
       });
     }
-  }
-  初始化工作空间() {
-    this.pathConstructor = new pathConstructor(this.public.config.system.workspaceDir,this)
   }
   async 初始化后端() {
     let that = this

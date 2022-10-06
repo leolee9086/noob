@@ -1,10 +1,7 @@
 import serverUtil from "./util/index.js";
 import NaiveServer from "./naiveServer.js"
-const fs = require('fs-extra')
+import FileSys from "./fileSys/index.js";
 
-function 获取文件扩展名(filename) {
-    return filename.split(".").pop()
-}
 export default class NaiveBackend {
     constructor(naive) {
         this.naive = naive
@@ -12,29 +9,12 @@ export default class NaiveBackend {
         this.standalone = config.standalone
         this.watchFiletypes =config.watchFiletypes
         this.workspaceDir = config.system.workspaceDir
-        this.开始监听文件修改()
+        this.初始化文件系统()
         this.创建服务器()
     }
-    开始监听文件修改() {
-        let standalone = this.standalone
-        let watchFiletypes = this.watchFiletypes
-        let naive = this.naive
-        const option = {
-            persistent: true,
-            recursive: true,
-          };
-        this.fileWatcher= fs.watch(
-            this.workspaceDir, option,(type, fileName) => {
-                if (!standalone &&watchFiletypes &&watchFiletypes.indexOf(获取文件扩展名(fileName))>=0) {
-                    naive.重新加载()
-                }
-            }
-        )
-    }
-    结束监听文件修改(){
-        if(this.fileWatcher){
-            this.fileWatcher.close()
-        }
+    初始化文件系统(){
+        this.fileSys=new FileSys(this.naive)
+        console.log(this.fileSys)
     }
     创建服务器() {
         this.发布服务器 = new NaiveServer(naive)
