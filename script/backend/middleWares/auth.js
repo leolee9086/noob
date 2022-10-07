@@ -110,4 +110,4 @@ authByParams.apiAuth = function apiAuth(req, res, next) {
         next()
     }
 }
-module.exports = authByParams
+export default authByParams

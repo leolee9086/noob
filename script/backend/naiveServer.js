@@ -23,7 +23,7 @@ export default class naiveServer{
       app.use(json解析器);
       //向请求写入auth
       app.use(passport.authenticate('session'));
-      this.port  = naive.backend.port||naive.publish.port
+      this.port  = naive.public.config.backend.server.port
       this.sslPort="443"
       this.publishServer = http.createServer(app);
       this.api = new API(app)
@@ -33,6 +33,7 @@ export default class naiveServer{
       this.publishServer.listen(port,()=>{
         console.log(`publish app listening on port ${port}`);
       })
+      window.open(`http://127.0.0.1:${port}`)
     }
 }
 /*const middlewares = require("./middleWares/index.js")

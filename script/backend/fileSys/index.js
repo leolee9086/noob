@@ -10,8 +10,8 @@ export default class FileSys {
         this.naive = naive
         let config = naive.public.config
         this.standalone = config.standalone
-        this.watchFiletypes =config.watchFiletypes
-        this.workspaceDir = config.system.workspaceDir
+        this.watchFiletypes =config.backend.filesys.watchFiletypes
+        this.workspaceDir = config.backend.filesys.workspaceDir
         this.初始化工作空间()
         this.初始化外部资源()
         this.初始化依赖加载()

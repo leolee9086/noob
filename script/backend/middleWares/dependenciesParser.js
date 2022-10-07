@@ -22,7 +22,7 @@ function 重写导入(导入声明) {
     return name
 }
 
-module.exports = function addDevSurppoert(app) {
+export default  function addDevSurppoert(app) {
     app.use('/deps', async (req, res) => {
         console.log(req.url)
         console.log(req.headers)

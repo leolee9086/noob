@@ -15,29 +15,41 @@ if (window.frameElement) {
 }
 (async function () {
   this.naivePath = '../naive/script/index.js'
-  //获取用户配置文件
-  let options = {
-    publish: {
-
-    },
-
-    system: {
-      workspaceDir: window.siyuan.config.system.workspaceDir,
-      
-    },
-    siyuan: window.siyuan,
-    standalone: false,
-    watchFiletypes:['js'],
-    dev: false,
-    log: {
-      file: true,
-      verbose: false
-    }
-  }
   let meta = document.createElement("meta")
   meta.setAttribute('name', 'referrer')
   meta.setAttribute('content', 'never')
   document.head.appendChild(meta)
+  let defaultConfigPath = `${window.siyuan.config.system.workspaceDir}/conf/naiveConf/config/naiveConfig.js`
+  let options
+  //初始化用户配置文件
+  if(window.require){
+    let fs = require("fs")
+    if (fs.existsSync(defaultConfigPath)){
+      options= (await import (`${window.siyuan.config.system.workspaceDir}/conf/naiveConf/config/naiveConfig.js`)).default()
+    }
+  }
+  //获取用户配置文件
+/*{
+    frontend:{
+      theme:"ZHANG-Light",
+      cssSnippets:""
+    },
+    backend:{
+      filesys:{
+        workspaceDir:window.siyuan.config.system.workspaceDir,
+        confDir:window.siyuan.config.system.workspaceDir+'/conf/naiveConf',
+        watchFiletypes:['js']
+      },
+      server:{
+        port:"80",
+        location:"127.0.0.1"
+      }
+    },
+    plugin:{},
+    log:{},
+    doc:{},
+    publish:{}
+  }*/
 
   //加载naive
   import(this.naivePath).then(
@@ -49,6 +61,5 @@ if (window.frameElement) {
   ).catch(e => {
     console.error(e)
   })
-
 })()
 

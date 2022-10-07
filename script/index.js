@@ -2,16 +2,17 @@
 //条件加载器
 //这里是第一次引入requireHacker,纯粹是为了它的副作用,覆盖掉window.require
 import requireHacker from "./backend/fileSys/requireHacker.js"
-
 import ifdefParser from "./public/util/ifdef/index.js";
+import naiveLogger from "./logger/index.js"
+console.log(__dirname)
+
+const module = {}
 //import { initNaive } from "./initNaive.js";
 //创建naive对象
 export default class naive {
   constructor(options) {
     this.frontend = {}
     this.backend = {
-      port: options.publish.port || '80',
-      ip: options.publish.ip || window.siyuan.config.localIPs
     }
     this.public = {
       config: options,
@@ -27,9 +28,13 @@ export default class naive {
     if (require) {
       this.hackRequire()
       console.log(require)
+      this.初始化日志()
       this.初始化后端()
     }
     this.初始化前端()
+  }
+  初始化日志(){
+    this.logger = new naiveLogger(this)
   }
   重新加载() {
     if (window.require) {
@@ -41,7 +46,8 @@ export default class naive {
   }
   async 初始化后端() {
     let that = this
-    await import('./backend/index.js').then(
+    console.log(this.selfPath+'/backend/index.js')
+    await import(this.selfPath+'/backend/index.js').then(
       module => {
         let naiveBackend = module.default
         that.backend = new naiveBackend(this)
@@ -50,7 +56,17 @@ export default class naive {
       console.error(e)
     })
   }
-  初始化前端() {
+  async 初始化前端() {
+    let that = this
+
+    await import(this.selfPath+'/frontend/index.js').then(
+      module => {
+        let naiveFrontend = module.default
+        that.frontend = new naiveFrontend(this)
+      }
+    ).catch(e => {
+      console.error(e)
+    })
 
   }
   log(...args) {
@@ -64,8 +80,9 @@ export default class naive {
       this.log('在思源中运行,使用思源的工作空间')
       this.public.status.workspaceDir = window.siyuan.config.system.workspaceDir
       this.siyuan = window.siyuan
+      module.__dirname= this.public.status.workspaceDir+'/conf/appearance/themes/naive/script'
     }
-
+    this.selfPath = this.public.status.workspaceDir+'/conf/appearance/themes/naive/script'
   }
   初始化编译条件() {
     let { ifDefOptions } = this.public.status.ifDefOptions
@@ -98,6 +115,7 @@ export default class naive {
     //fileWatcher.startWatch()
   }
 }
+
 /*
 window.naive = {
   frontend:{},

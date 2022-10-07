@@ -2,7 +2,7 @@ import { 生成默认设置 } from "../../public/configer.js";
 export default class pathConstructor {
   constructor(naive) {
     let config = naive.public.config
-    this.workspaceDir = config.system.workspaceDir
+    this.workspaceDir = config.backend.filesys.workspaceDir
     this.主题根目录思源URL = ``;
     this.themeName = "naive"
   }

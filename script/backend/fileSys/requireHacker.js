@@ -5,12 +5,10 @@ if (require) {
         if (!window) {
                 const window = global
         }
-
         const realRequire = window.require
         if (realRequire) {
                 const path = require("path")
                 re = function (moduleName, base) {
-                        console.log(global)
                         window.realRequire = realRequire
                         let workspaceDir
                         let that = window
@@ -20,19 +18,24 @@ if (require) {
                         }
 
                         if (global.naive && global.naive.public) {
-                                workspaceDir = naive.public.config.system.workspaceDir
-                                re.setExternalDeps(workspaceDir + `/conf/naiveConf/deps/node_modules`)
+                                workspaceDir = naive.public.config.backend.filesys.workspaceDir
                         }
+
+                        if (window.siyuan) {
+                                workspaceDir = siyuan.config.system.workspaceDir
+                                re.setExternalDeps(workspaceDir + `/conf/appearance/themes/naive/script/node_modules`)
+                        }
+                        re.setExternalDeps(workspaceDir + `/conf/naiveConf/deps/node_modules`)
                         if (workspaceDir) {
                                 if (this) {
                                         that = this
                                 }
                                 try {
                                         if (that.realRequire) {
-                                                return that.realRequire(moduleName)
+                                                return that.realRequire(moduleName, __dirname)
                                         }
                                         else {
-                                                return window.realRequire(moduleName)
+                                                return window.realRequire(moduleName, __dirname)
                                         }
                                 } catch (e) {
                                         if (e.message.indexOf('Cannot find module') >= 0) {
@@ -79,6 +82,7 @@ if (require) {
                                         }
                                 }
                         }
+                        else return realRequire(moduleName)
                         console.log(realRequire.cache.electron.__proto__.require)
                         realRequire.cache.electron.__proto__.realRequire = realRequire.cache.electron.__proto__.require
                         realRequire.cache.electron.__proto__.require = re
@@ -99,6 +103,6 @@ re.setExternalDeps = (path) => {
         }
 }
 if (global.naive) {
-        re.setExternalDeps(`${naive.public.config.system.workspaceDir}`)
+        re.setExternalDeps(`${naive.public.config.backend.filesys.workspaceDir}`)
 }
 export default require = re
