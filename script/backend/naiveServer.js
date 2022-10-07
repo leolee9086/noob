@@ -1,40 +1,73 @@
-import {session,json,urlencoded,compression,allowCors,json解析器,passport} from './middleWares/index.js'
+import { session, json, urlencoded, compression, allowCors, json解析器, passport } from './middleWares/index.js'
 import API from './util/api.js';
-export default class naiveServer{
-    constructor(naive){
-      const express = require ('express')
-      const expressWs = require('express-ws');
-      const http = require("http");
-      const https = require("https");
-      this.app = express()
-      const app = this.app
-      expressWs(app)
-      //使用session
-      app.use(session)
-      //解析json
-      app.use(json); //body-parser 解析json格式数据
-      //解析url
-      app.use(urlencoded);
-      //压缩gzip
-      app.use(compression);
-      //允许跨域请求
-      app.use(allowCors);
-      //允许跨域请求
-      app.use(json解析器);
-      //向请求写入auth
-      app.use(passport.authenticate('session'));
-      this.port  = naive.public.config.backend.server.port
-      this.sslPort="443"
-      this.publishServer = http.createServer(app);
-      this.api = new API(app)
-    }
-    开始服务(){
-      let {port}=this
-      this.publishServer.listen(port,()=>{
-        console.log(`publish app listening on port ${port}`);
-      })
-      window.open(`http://127.0.0.1:${port}`)
-    }
+const express = require('express')
+const expressWs = require('express-ws');
+const http = require("http");
+const https = require("https");
+
+export default class naiveServer {
+  constructor(naive) {
+    this.app = express()
+    const app = this.app
+    expressWs(app)
+    //使用session
+    app.use(session)
+    //解析json
+    app.use(json); //body-parser 解析json格式数据
+    //解析url
+    app.use(urlencoded);
+    //压缩gzip
+    app.use(compression);
+    //允许跨域请求
+    app.use(allowCors);
+    //允许跨域请求
+    app.use(json解析器);
+    //向请求写入auth
+    app.use(passport.authenticate('session'));
+    this.port = naive.public.config.backend.server.port
+    this.sslPort = "443"
+    this.publishServer = http.createServer(app);
+    this.api = new API(app)
+    this.初始化基础api()
+  }
+  开始服务() {
+    let { port } = this
+    this.publishServer.listen(port, () => {
+      console.log(`publish app listening on port ${port}`);
+    })
+    window.open(`http://127.0.0.1:${port}`)
+  }
+  初始化基础api() {
+    this.api.注册('/config/naiveConfig.js', {
+      名称: '配置程序',
+      功能: '生成配置',
+      方法: {
+        get: [async (req, res, next) => {
+          res.sendFile(`${window.siyuan.config.system.workspaceDir}/conf/naiveConf/config/naiveConfig.js`)
+        }
+        ]
+      },
+      //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
+      权限: 'public',
+      请求值: 'todo',
+      返回值: 'todo',
+      一级分组: 'siyuanPublisher',
+      二级分组: 'block'
+    })
+    this.api.注册('/naive/script', {
+      名称: '配置程序',
+      功能: '生成配置',
+      方法: {
+        use: express.static(`${window.siyuan.config.system.workspaceDir}/conf/appearance/themes/naive/script`)
+      },
+      //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
+      权限: 'public',
+      请求值: 'todo',
+      返回值: 'todo',
+      一级分组: 'siyuanPublisher',
+      二级分组: 'block'
+    })
+  }
 }
 /*const middlewares = require("./middleWares/index.js")
 const passport = require('passport')

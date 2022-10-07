@@ -26,7 +26,19 @@ if (window.frameElement) {
     let fs = require("fs")
     if (fs.existsSync(defaultConfigPath)){
       options= (await import (`${window.siyuan.config.system.workspaceDir}/conf/naiveConf/config/naiveConfig.js`)).default()
+    }else{
+      options={
+        standAlone:false,
+        needInit:true,
+      }
     }
+  }
+  else{
+    let json = await(await fetch('/appearance/themes/naive/confBridge.json')).json()
+    console.log(json)
+    let port = json.server.port
+    options= (await import (`http://${window.location.hostname}:${port}/config/naiveConfig.js`)).default()
+    this.naivePath = `http://${window.location.hostname}:${port}/naive/script/index.js`
   }
   //获取用户配置文件
 /*{

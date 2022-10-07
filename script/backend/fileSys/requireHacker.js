@@ -1,5 +1,5 @@
 let re = null
-if (require) {
+if (window.require) {
         const fs = require("fs")
         const path = require("path")
         if (!window) {
@@ -90,19 +90,26 @@ if (require) {
                         global.require = re
                 }
         }
-}
-re.setExternalDeps = (path) => {
-        if (!global.require) {
-                return
+
+        re.setExternalDeps = (path) => {
+                if (!global.require) {
+                        return
+                }
+                if (!global.require.ExternalDepPathes) {
+                        global.require.ExternalDepPathes = []
+                }
+                if (path) {
+                        global.require.ExternalDepPathes.push(path)
+                }
         }
-        if (!global.require.ExternalDepPathes) {
-                global.require.ExternalDepPathes = []
-        }
-        if (path) {
-                global.require.ExternalDepPathes.push(path)
+        if (global.naive) {
+                re.setExternalDeps(`${naive.public.config.backend.filesys.workspaceDir}`)
         }
 }
-if (global.naive) {
-        re.setExternalDeps(`${naive.public.config.backend.filesys.workspaceDir}`)
+if(window.require){
+ require =re
 }
-export default require = re
+else {
+      const  require ={}
+}
+export default  window.require
