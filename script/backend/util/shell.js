@@ -30,8 +30,25 @@ export function  shellCmd(target,cmd,path){
         });
     });
 }
-export function npmCmd(cmd, path) {
-    return shellCmd('npm',cmd,path)
+export async function requireInstall(moduleName){
+    await pnpmCmd(`install ${moduleName}`,self.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps`)
+    return window.require(moduleName)
+}
+export function npmCmd(cmd, path) {    
+    if(window.npmPath){
+        return shellCmd(window.npmPath,cmd,path)
+    }
+    else{
+        return shellCmd('npm',cmd,path)
+    }
 }
 
+export function pnpmCmd(cmd, path) {    
+    if(window.pnpmPath){
+        return shellCmd(window.pnpmPath,cmd,path)
+    }
+    else{
+        return shellCmd('pnpm',cmd,path)
+    }
+}
 

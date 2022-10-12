@@ -1,11 +1,10 @@
 //路径生成器
 //条件加载器
 //这里是第一次引入requireHacker,纯粹是为了它的副作用,覆盖掉window.require
-import requireHacker from "./backend/fileSys/requireHacker.js"
-import ifdefParser from "./public/util/ifdef/index.js";
+import requireHacker from "./backend/util/requireHacker.js"
 import naiveLogger from "./logger/index.js"
-console.log(__dirname)
-
+import { shellCmd, npmCmd } from "./backend/util/shell.js"
+import reload from "./util/reload.js"
 const module = {}
 //import { initNaive } from "./initNaive.js";
 //创建naive对象
@@ -23,31 +22,55 @@ export default class naive {
     this.doc = {}
     console.log(this)
     global.naive = this
-    this.合并设置()
-    this.初始化编译条件()
-    if (require) {
-      this.hackRequire()
-      console.log(require)
-      this.初始化日志()
-      this.初始化后端()
+    //在这里之后,require就可以加载到外部模块了
+    if (window.require) {
+      require.setExternalDeps(this.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps/node_modules`)
+      require.setExternalDeps(this.public.config.backend.filesys.workspaceDir + `/conf/appearance/themes/naive/script/node_modules`)
+      require.setExternalBase(this.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps`)
     }
-    this.初始化前端()
+
+    this.合并设置()
+    this.初始化()
   }
-  初始化日志(){
+  合并设置() {
+    let options = this.public.config
+    if (window.siyuan) {
+      this.log('在思源中运行,使用思源的工作空间')
+      this.public.status.workspaceDir = window.siyuan.config.system.workspaceDir
+      this.siyuan = window.siyuan
+      module.__dirname = this.public.status.workspaceDir + '/conf/appearance/themes/naive/script'
+
+    }
+    this.selfPath = this.public.status.workspaceDir + '/conf/appearance/themes/naive/script'
+  }
+
+
+  async 初始化() {
+    if (require) {
+      await this.初始化命令行工具()
+      await this.初始化日志()
+      await this.初始化后端()
+    }
+    console.log(this)
+    await this.初始化前端()
+    await this.加载插件()
+
+  }
+  初始化命令行工具() {
+    this.shellCmd = shellCmd
+    this.npmCmd = npmCmd
+  }
+  async 加载插件() {
+    import(`${this.backend.server.host}/pluginHandler/index.js`)
+  }
+  初始化日志() {
     this.logger = new naiveLogger(this)
   }
-  重新加载() {
-    if (window.require) {
-      const { webContents } = require('@electron/remote');
-      webContents.getAllWebContents().forEach(element => {
-        element.reloadIgnoringCache()
-      });
-    }
-  }
+  
   async 初始化后端() {
     let that = this
-    console.log(this.selfPath+'/backend/index.js')
-    await import(this.selfPath+'/backend/index.js').then(
+    console.log(this.selfPath + '/backend/index.js')
+    await import(this.selfPath + '/backend/index.js').then(
       module => {
         let naiveBackend = module.default
         that.backend = new naiveBackend(this)
@@ -59,7 +82,7 @@ export default class naive {
   async 初始化前端() {
     let that = this
 
-    await import(this.selfPath+'/frontend/index.js').then(
+    await import(this.selfPath + '/frontend/index.js').then(
       module => {
         let naiveFrontend = module.default
         that.frontend = new naiveFrontend(this)
@@ -73,46 +96,6 @@ export default class naive {
     if (require) {
       console.log(...args)
     }
-  }
-  合并设置() {
-    let options = this.public.config
-    if (window.siyuan) {
-      this.log('在思源中运行,使用思源的工作空间')
-      this.public.status.workspaceDir = window.siyuan.config.system.workspaceDir
-      this.siyuan = window.siyuan
-      module.__dirname= this.public.status.workspaceDir+'/conf/appearance/themes/naive/script'
-    }
-    this.selfPath = this.public.status.workspaceDir+'/conf/appearance/themes/naive/script'
-  }
-  初始化编译条件() {
-    let { ifDefOptions } = this.public.status.ifDefOptions
-    ifDefOptions = {
-      defs: {
-        //如果没有require说明运行在浏览器中
-        BROWSER: window.require ? false : true,
-        APP: window.require ? true : false,
-        PUBLISH: !window.siyuan,
-        MOBILE: !window.siyuan.mobileEditor ? false : true,
-        DEBUG: true,
-      },
-      //是否输出编译日志
-      verbose: this.public.config.log.verbose,
-      //是否使用三道斜杠定义
-      tripleSlash: true,
-      fillWithBlanks: true,
-      uncommentPrefixString: "",
-    };
-    this.public.ifdefParser = new ifdefParser(ifDefOptions)
-  }
-  hackRequire() {
-  }
-  初始化服务器() {
-    this.backend.serverUtil = new serverUtil()
-    this.backend.server = new naiveServer(this)
-    //const server = require("./script/server/initServer.js", this.pathConstructor.naivePath());
-    //this.backend.server = server.创建服务器(naive);
-    //const fileWatcher = require("./script/server/util/watch.js", this.pathConstructor.naivePath())
-    //fileWatcher.startWatch()
   }
 }
 

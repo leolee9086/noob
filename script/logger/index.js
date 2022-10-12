@@ -2,7 +2,7 @@ export default class naiveLogger {
     constructor(naive) {
         let workspaceDir = naive.public.config.backend.filesys.workspaceDir
         if (window.require) {
-            const log4js = require('log4js');//加载log4js模块
+            const log4js = requireInstall('log4js');//加载log4js模块
 
             log4js.configure({
                 appenders: {
@@ -18,14 +18,9 @@ export default class naiveLogger {
             });
             this.normal = log4js.getLogger();
             naive.logger = this
-            for (let 属性名 in console) {
-                if (console.hasOwnProperty(属性名)) {
-                    console["force_" + 属性名] = console[属性名];
-                    if (!naive.public.status.DEBUG) {
-                        console[属性名] = (...args) => {
-                            try { console["force_" + 属性名](...args); this.normal[属性名](...args) } catch (e) { this.normal.error(e) }
-                        }
-                    }
+           for (let 属性名 in console) {
+                if (window.console.hasOwnProperty(属性名)) {
+                    window.console["file_" + 属性名] = (...args)=>naive.logger.normal[属性名](...args);
                 }
             }
         }

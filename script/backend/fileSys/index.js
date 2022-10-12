@@ -1,7 +1,16 @@
 import pathConstructor from "../util/pathConstructor.js"
-import requireHacker from "./requireHacker.js"
-
-const fs = require('fs-extra')
+import requireHacker from "../util/requireHacker.js"
+import compilers from "./compilers/index.js"
+import relaod  from "../../util/reload.js"
+const esbuild = requireInstall('esbuild')
+const fs = requireInstall('fs-extra')
+const string  = fs.readFileSync('D:\\newSiyuan\\conf\\appearance\\themes\\naive\\script\\frontend\\src\\index.ts')
+let data = esbuild.transform(
+    string, {
+        loader: 'ts',
+      }
+)
+console.log(await data)
 function 获取文件扩展名(filename) {
     return filename.split(".").pop()
 }
@@ -10,21 +19,26 @@ export default class FileSys {
         this.naive = naive
         let config = naive.public.config
         this.standalone = config.standalone
-        this.watchFiletypes =config.backend.filesys.watchFiletypes
+        this.compilers= {}
+        this.watchFiletypes = config.backend.filesys.watchFiletypes
         this.workspaceDir = config.backend.filesys.workspaceDir
         this.初始化工作空间()
         this.初始化外部资源()
         this.初始化依赖加载()
         this.开始监听文件修改()
+        this.加载编译器()
+    }
+    加载编译器(){
+        
     }
     初始化工作空间() {
         this.pathConstructor = new pathConstructor(this.naive)
     }
     初始化外部资源() {
-        
+
     }
     初始化依赖加载() {
-        
+
     }
     开始监听文件修改() {
         let standalone = this.standalone
@@ -37,7 +51,7 @@ export default class FileSys {
         this.fileWatcher = fs.watch(
             this.workspaceDir, option, (type, fileName) => {
                 if (!standalone && watchFiletypes && watchFiletypes.indexOf(获取文件扩展名(fileName)) >= 0) {
-                    naive.重新加载()
+                    relaod()
                 }
             }
         )
