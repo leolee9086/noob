@@ -65,7 +65,7 @@ export const setTableAlign = (protyle: IProtyle, cellElements: HTMLElement[], no
         });
     }
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
-    nodeElement.querySelector("wbr").remove();
+    focusByWbr(tableElement, range);
 };
 
 export const insertRow = (protyle: IProtyle, range: Range, cellElement: HTMLElement, nodeElement: Element) => {
@@ -94,7 +94,9 @@ export const insertRow = (protyle: IProtyle, range: Range, cellElement: HTMLElem
     }
     range.selectNodeContents(newRowElememt.cells[getColIndex(cellElement)]);
     range.collapse(true);
+    focusByRange(range);
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
+    scrollCenter(protyle, newRowElememt);
 };
 
 export const insertRowAbove = (protyle: IProtyle, range: Range, cellElement: HTMLElement, nodeElement: Element) => {
@@ -143,7 +145,9 @@ export const insertRowAbove = (protyle: IProtyle, range: Range, cellElement: HTM
     }
     range.selectNodeContents(newRowElememt.cells[getColIndex(cellElement)]);
     range.collapse(true);
+    focusByRange(range);
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
+    scrollCenter(protyle, newRowElememt);
 };
 
 export const insertColumn = (protyle: IProtyle, nodeElement: Element, cellElement: HTMLElement, type: InsertPosition, range: Range) => {
@@ -154,14 +158,18 @@ export const insertColumn = (protyle: IProtyle, nodeElement: Element, cellElemen
     const index = getColIndex(cellElement);
     const tableElement = nodeElement.querySelector("table");
     for (let i = 0; i < tableElement.rows.length; i++) {
-        const colCellElement =  tableElement.rows[i].cells[index];
+        const colCellElement = tableElement.rows[i].cells[index];
         const newCellElement = document.createElement(colCellElement.tagName);
+        colCellElement.insertAdjacentElement(type, newCellElement);
         if (colCellElement.isSameNode(cellElement)) {
             newCellElement.innerHTML = "<wbr> ";
+            // 滚动条横向定位
+            if (newCellElement.offsetLeft + newCellElement.clientWidth > nodeElement.firstElementChild.scrollLeft + nodeElement.firstElementChild.clientWidth) {
+                nodeElement.firstElementChild.scrollLeft = newCellElement.offsetLeft + newCellElement.clientWidth - nodeElement.firstElementChild.clientWidth;
+            }
         } else {
             newCellElement.textContent = " ";
         }
-        colCellElement.insertAdjacentElement(type, newCellElement);
     }
     tableElement.querySelectorAll("col")[index].insertAdjacentHTML(type, "<col>");
     focusByWbr(nodeElement, range);
@@ -170,14 +178,15 @@ export const insertColumn = (protyle: IProtyle, nodeElement: Element, cellElemen
 
 export const deleteRow = (protyle: IProtyle, range: Range, cellElement: HTMLElement, nodeElement: Element) => {
     if (cellElement.parentElement.parentElement.tagName !== "THEAD") {
-        range.insertNode(document.createElement("wbr"));
+        const wbrElement = document.createElement("wbr");
+        range.insertNode(wbrElement);
         const html = nodeElement.outerHTML;
-
+        wbrElement.remove();
+        const index = getColIndex(cellElement);
         const tbodyElement = cellElement.parentElement.parentElement;
+        let previousTrElement = tbodyElement.previousElementSibling.lastElementChild as HTMLTableRowElement;
         if (cellElement.parentElement.previousElementSibling) {
-            range.selectNodeContents(cellElement.parentElement.previousElementSibling.lastElementChild);
-        } else {
-            range.selectNodeContents(tbodyElement.previousElementSibling.lastElementChild.lastElementChild);
+            previousTrElement = cellElement.parentElement.previousElementSibling as HTMLTableRowElement;
         }
 
         if (tbodyElement.childElementCount === 1) {
@@ -185,22 +194,28 @@ export const deleteRow = (protyle: IProtyle, range: Range, cellElement: HTMLElem
         } else {
             cellElement.parentElement.remove();
         }
-
-        range.collapse(false);
-        range.insertNode(document.createElement("wbr"));
+        range.selectNodeContents(previousTrElement.cells[index]);
+        range.collapse(true);
+        focusByRange(range);
+        scrollCenter(protyle, previousTrElement);
         updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
-        focusByWbr(nodeElement, range);
     }
 };
 
 export const deleteColumn = (protyle: IProtyle, range: Range, nodeElement: Element, cellElement: HTMLElement) => {
-    range.insertNode(document.createElement("wbr"));
+    const wbrElement = document.createElement("wbr");
+    range.insertNode(wbrElement);
     const html = nodeElement.outerHTML;
+    wbrElement.remove();
     const index = getColIndex(cellElement);
-    if (cellElement.previousElementSibling || cellElement.nextElementSibling) {
-        range.selectNodeContents(cellElement.previousElementSibling || cellElement.nextElementSibling);
+    const sideCellElement = (cellElement.previousElementSibling || cellElement.nextElementSibling) as HTMLElement;
+    if (sideCellElement) {
+        range.selectNodeContents(sideCellElement);
         range.collapse(true);
-        range.insertNode(document.createElement("wbr"));
+        // 滚动条横向定位
+        if (sideCellElement.offsetLeft + sideCellElement.clientWidth > nodeElement.firstElementChild.scrollLeft + nodeElement.firstElementChild.clientWidth) {
+            nodeElement.firstElementChild.scrollLeft = sideCellElement.offsetLeft + sideCellElement.clientWidth - nodeElement.firstElementChild.clientWidth;
+        }
     }
     const tableElement = nodeElement.querySelector("table");
     for (let i = 0; i < tableElement.rows.length; i++) {
@@ -213,7 +228,7 @@ export const deleteColumn = (protyle: IProtyle, range: Range, nodeElement: Eleme
     }
     nodeElement.querySelectorAll("col")[index]?.remove();
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
-    focusByWbr(nodeElement, range);
+    focusByRange(range);
 };
 
 export const moveRowToUp = (protyle: IProtyle, range: Range, cellElement: HTMLElement, nodeElement: Element) => {
@@ -242,6 +257,7 @@ export const moveRowToUp = (protyle: IProtyle, range: Range, cellElement: HTMLEl
     }
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
     focusByWbr(nodeElement, range);
+    scrollCenter(protyle, rowElement);
 };
 
 export const moveRowToDown = (protyle: IProtyle, range: Range, cellElement: HTMLElement, nodeElement: Element) => {
@@ -271,6 +287,7 @@ export const moveRowToDown = (protyle: IProtyle, range: Range, cellElement: HTML
     }
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
     focusByWbr(nodeElement, range);
+    scrollCenter(protyle, rowElement);
 };
 
 export const moveColumnToLeft = (protyle: IProtyle, range: Range, cellElement: HTMLElement, nodeElement: Element) => {
@@ -286,9 +303,14 @@ export const moveColumnToLeft = (protyle: IProtyle, range: Range, cellElement: H
             return true;
         }
     });
+
     nodeElement.querySelectorAll("tr").forEach((trElement) => {
         trElement.cells[cellIndex].after(trElement.cells[cellIndex - 1]);
     });
+    // 滚动条横向定位
+    if (cellElement.offsetLeft < nodeElement.firstElementChild.scrollLeft) {
+        nodeElement.firstElementChild.scrollLeft = cellElement.offsetLeft;
+    }
     const colElements = nodeElement.querySelectorAll("col");
     colElements[cellIndex].after(colElements[cellIndex - 1]);
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);
@@ -311,6 +333,10 @@ export const moveColumnToRight = (protyle: IProtyle, range: Range, cellElement: 
     nodeElement.querySelectorAll("tr").forEach((trElement) => {
         trElement.cells[cellIndex].before(trElement.cells[cellIndex + 1]);
     });
+    // 滚动条横向定位
+    if (cellElement.offsetLeft + cellElement.clientWidth > nodeElement.firstElementChild.scrollLeft + nodeElement.firstElementChild.clientWidth) {
+        nodeElement.firstElementChild.scrollLeft = cellElement.offsetLeft + cellElement.clientWidth - nodeElement.firstElementChild.clientWidth;
+    }
     const colElements = nodeElement.querySelectorAll("col");
     colElements[cellIndex].before(colElements[cellIndex + 1]);
     updateTransaction(protyle, nodeElement.getAttribute("data-node-id"), nodeElement.outerHTML, html);

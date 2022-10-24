@@ -2,9 +2,8 @@ import {openSearch} from "../search/spread";
 import {exportLayout, JSONToLayout, resizeDrag, resizeTabs} from "../layout/util";
 import {hotKey2Electron, updateHotkeyTip} from "../protyle/util/compatibility";
 /// #if !BROWSER
-import {getCurrentWindow} from "@electron/remote";
+import {dialog, getCurrentWindow} from "@electron/remote";
 import {ipcRenderer, OpenDialogReturnValue} from "electron";
-import {dialog} from "@electron/remote";
 import * as fs from "fs";
 import * as path from "path";
 import {afterExport} from "../protyle/export/util";
@@ -15,8 +14,7 @@ import {globalShortcut} from "./globalShortcut";
 import {fetchPost} from "./fetch";
 import {mountHelp, newDailyNote} from "./mount";
 import {MenuItem} from "../menus/Menu";
-import {initAssets, loadAssets, setInlineStyle} from "./assets";
-import {goBack, goForward} from "./backForward";
+import {initAssets, loadAssets, renderSnippet, setInlineStyle, setMode} from "./assets";
 import {getOpenNotebookCount} from "./pathName";
 import {openFileById} from "../editor/util";
 import {focusByRange} from "../protyle/util/selection";
@@ -28,6 +26,7 @@ import {initStatus} from "../layout/status";
 import {syncGuide} from "../sync/syncGuide";
 import {showMessage} from "../dialog/message";
 import {replaceLocalPath} from "../editor/rename";
+import {editor} from "../config/editor";
 
 const matchKeymap = (keymap: Record<string, IKeymapItem>, key1: "general" | "editor", key2?: "general" | "insert" | "heading" | "list" | "table") => {
     if (key1 === "general") {
@@ -145,6 +144,7 @@ export const onGetConfig = (isStart: boolean) => {
     initWindow();
     appearance.onSetappearance(window.siyuan.config.appearance, isBrowser());
     initAssets();
+    renderSnippet();
     setInlineStyle();
     let resizeTimeout = 0;
     window.addEventListener("resize", () => {
@@ -161,54 +161,67 @@ export const onGetConfig = (isStart: boolean) => {
 
 const initBar = () => {
     document.querySelector(".toolbar").innerHTML = `<div id="toolbarVIP" class="fn__flex"></div>
-<div id="barDailyNote" data-menu="true" aria-label="${window.siyuan.languages.dailyNote} ${updateHotkeyTip(window.siyuan.config.keymap.general.dailyNote.custom)}" class="toolbar__item b3-tooltips b3-tooltips__se${window.siyuan.config.readonly ? " fn__none" : ""}">
-    <svg>
-        <use xlink:href="#iconCalendar"></use>
-    </svg>
-</div>
-<div id="barSearch" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.globalSearch} ${updateHotkeyTip(window.siyuan.config.keymap.general.globalSearch.custom)}">
-    <svg>
-        <use xlink:href="#iconSearch"></use>
-    </svg>
-</div>
-<div id="barHistory" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.dataHistory} ${updateHotkeyTip(window.siyuan.config.keymap.general.dataHistory.custom)}">
-    <svg>
-        <use xlink:href="#iconVideo"></use>
-    </svg>
-</div>
-<div id="barSetting" class="toolbar__item b3-tooltips b3-tooltips__se${window.siyuan.config.readonly ? " fn__none" : ""}" aria-label="${window.siyuan.languages.config} ${updateHotkeyTip(window.siyuan.config.keymap.general.config.custom)}">
-    <svg>
-        <use xlink:href="#iconSettings"></use>
-    </svg>
-</div>
 <div id="barSync" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.config.sync.stat || (window.siyuan.languages.syncNow + " " + updateHotkeyTip(window.siyuan.config.keymap.general.syncNow.custom))}">
     <svg><use xlink:href="#iconCloud"></use></svg>
 </div>
-<button id="barBack" data-menu="true" class="toolbar__item toolbar__item--disabled b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.goBack} ${updateHotkeyTip(window.siyuan.config.keymap.general.goBack.custom)}">
-    <svg>
-        <use xlink:href="#iconLeft"></use>
-    </svg>
-</button>
-<button id="barForward" data-menu="true" class="toolbar__item toolbar__item--disabled b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.goForward} ${updateHotkeyTip(window.siyuan.config.keymap.general.goForward.custom)}">
-    <svg>
-        <use xlink:href="#iconRight"></use>
-    </svg>
-</button>
+<div id="barHistory" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.dataHistory} ${updateHotkeyTip(window.siyuan.config.keymap.general.dataHistory.custom)}">
+    <svg><use xlink:href="#iconHistory"></use></svg>
+</div>
+<div id="barDailyNote" data-menu="true" aria-label="${window.siyuan.languages.dailyNote} ${updateHotkeyTip(window.siyuan.config.keymap.general.dailyNote.custom)}" class="toolbar__item b3-tooltips b3-tooltips__se${window.siyuan.config.readonly ? " fn__none" : ""}">
+    <svg><use xlink:href="#iconCalendar"></use></svg>
+</div>
 <div class="fn__flex-1 fn__ellipsis" id="drag"><span class="fn__none">开发版，使用前请进行备份 Development version, please backup before use</span></div>
+<div id="barSearch" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.globalSearch} ${updateHotkeyTip(window.siyuan.config.keymap.general.globalSearch.custom)}">
+    <svg><use xlink:href="#iconSearch"></use></svg>
+</div>
+<div id="barReadonly" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.use} ${window.siyuan.config.editor.readOnly ? window.siyuan.languages.editMode : window.siyuan.languages.editReadonly}">
+    <svg><use xlink:href="#icon${window.siyuan.config.editor.readOnly ? "Preview" : "Edit"}"></use></svg>
+</div>
+<div id="barMode" class="toolbar__item b3-tooltips b3-tooltips__se" aria-label="${window.siyuan.languages.appearanceMode}">
+    <svg><use xlink:href="#icon${window.siyuan.config.appearance.modeOS ? "Mode" : (window.siyuan.config.appearance.mode === 0 ? "Light" : "Dark")}"></use></svg>
+</div>
+<div id="barSetting" class="toolbar__item b3-tooltips b3-tooltips__se${window.siyuan.config.readonly ? " fn__none" : ""}" aria-label="${window.siyuan.languages.config} ${updateHotkeyTip(window.siyuan.config.keymap.general.config.custom)}">
+    <svg><use xlink:href="#iconSettings"></use></svg>
+</div>
 <div class="fn__flex" id="windowControls"></div>`;
     document.querySelector(".toolbar").addEventListener("click", (event: MouseEvent) => {
         let target = event.target as HTMLElement;
         while (!target.classList.contains("toolbar")) {
-            if (target.id === "barBack") {
-                goBack();
-                event.stopPropagation();
-                break;
-            } else if (target.id === "barSync") {
+            if (target.id === "barSync") {
                 syncGuide(target);
                 event.stopPropagation();
                 break;
-            } else if (target.id === "barForward") {
-                goForward();
+            } else if (target.id === "barReadonly") {
+                editor.setMode();
+                event.stopPropagation();
+                break;
+            } else if (target.id === "barMode") {
+                window.siyuan.menus.menu.remove();
+                window.siyuan.menus.menu.append(new MenuItem({
+                    label: window.siyuan.languages.themeLight,
+                    icon: "iconLight",
+                    current: window.siyuan.config.appearance.mode === 0 && !window.siyuan.config.appearance.modeOS,
+                    click: () => {
+                        setMode(0);
+                    }
+                }).element);
+                window.siyuan.menus.menu.append(new MenuItem({
+                    label: window.siyuan.languages.themeDark,
+                    current: window.siyuan.config.appearance.mode === 1 && !window.siyuan.config.appearance.modeOS,
+                    icon: "iconDark",
+                    click: () => {
+                        setMode(1);
+                    }
+                }).element);
+                window.siyuan.menus.menu.append(new MenuItem({
+                    label: window.siyuan.languages.themeOS,
+                    current: window.siyuan.config.appearance.modeOS,
+                    icon: "iconMode",
+                    click: () => {
+                        setMode(2);
+                    }
+                }).element);
+                window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY + 18});
                 event.stopPropagation();
                 break;
             } else if (target.id === "barHistory") {
@@ -246,7 +259,7 @@ const initBar = () => {
                             }).element);
                         }
                     });
-                    window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
+                    window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY + 18});
                 }
                 event.stopPropagation();
                 break;
@@ -300,6 +313,9 @@ const initWindow = () => {
     /// #if !BROWSER
     const currentWindow = getCurrentWindow();
     currentWindow.on("focus", winOnFocus);
+    currentWindow.on("blur", () => {
+        document.body.classList.add("body--blur");
+    });
     ipcRenderer.on(Constants.SIYUAN_OPENURL, (event, url) => {
         if (!/^siyuan:\/\/blocks\/\d{14}-\w{7}/.test(url)) {
             return;
@@ -440,17 +456,17 @@ const initWindow = () => {
     }
     const controlsElement = document.querySelector("#windowControls");
     document.body.classList.add("body--win32");
-    controlsElement.innerHTML = `<div class="toolbar__item toolbar__item--win b3-tooltips b3-tooltips__sw" aria-label="${window.siyuan.languages.min}" id="minWindow">
+    controlsElement.innerHTML = `<div class="toolbar__item b3-tooltips b3-tooltips__sw" aria-label="${window.siyuan.languages.min}" id="minWindow">
     <svg>
         <use xlink:href="#iconMin"></use>
     </svg>
 </div>
-<div aria-label="${window.siyuan.languages.max}" class="b3-tooltips b3-tooltips__sw toolbar__item toolbar__item--win" id="maxWindow">
-    <svg style="height: 11px">
+<div aria-label="${window.siyuan.languages.max}" class="b3-tooltips b3-tooltips__sw toolbar__item" id="maxWindow">
+    <svg>
         <use xlink:href="#iconMax"></use>
     </svg>
 </div>
-<div aria-label="${window.siyuan.languages.restore}" class="b3-tooltips b3-tooltips__sw toolbar__item toolbar__item--win" id="restoreWindow">
+<div aria-label="${window.siyuan.languages.restore}" class="b3-tooltips b3-tooltips__sw toolbar__item" id="restoreWindow">
     <svg>
         <use xlink:href="#iconRestore"></use>
     </svg>
@@ -491,10 +507,6 @@ const initWindow = () => {
         maxBtnElement.style.display = "none";
     });
     currentWindow.on("leave-full-screen", toggleMaxRestoreButtons);
-
-    currentWindow.on("blur", () => {
-        document.body.classList.add("body--blur");
-    });
     const minBtnElement = document.getElementById("minWindow");
     const closeBtnElement = document.getElementById("closeWindow");
     minBtnElement.addEventListener("click", () => {

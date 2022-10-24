@@ -28,7 +28,24 @@ export default class naive {
       require.setExternalDeps(this.public.config.backend.filesys.workspaceDir + `/conf/appearance/themes/naive/script/node_modules`)
       require.setExternalBase(this.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps`)
     }
+    this.public.deps = {
+      "dependencies": {
+        "@vue/compiler-sfc": "^3.2.40",
+        "ajv": "^8.11.0",
+        "body-parser": "^1.20.1",
+        "compression": "^1.7.4",
+        "esbuild": "^0.15.10",
+        "express": "^4.18.2",
+        "express-session": "^1.17.3",
+        "express-ws": "^5.0.2",
+        "fast-glob": "^3.2.12",
+        "fs-extra": "^10.1.0",
+        "http-proxy-middleware": "^2.0.6",
+        "log4js": "^6.7.0",
+        "passport": "^0.6.0",
 
+      }
+    }
     this.合并设置()
     this.初始化()
   }
@@ -48,19 +65,35 @@ export default class naive {
   async 初始化() {
     if (require) {
       await this.初始化命令行工具()
+      await this.安装依赖()
       await this.初始化日志()
       await this.初始化后端()
     }
-    console.log(this)
-    await this.初始化前端()
-    await this.加载插件()
+   // console.log(this)
+    //await this.初始化前端()
+   // await this.加载插件()
 
   }
   初始化命令行工具() {
     this.shellCmd = shellCmd
     this.npmCmd = npmCmd
   }
+  安装依赖(){
+    let fs = require("fs")
+    //这里将会安装依赖列表
+    if(!fs.existsSync(this.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps/package.json`)){
+      fs.writeFileSync(
+        this.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps/package.json`,JSON.stringify(this.public.deps)
+      )
+      npmCmd(`i`,this.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps/`).then(
+        w=>{
+      //   reload()
+        }
+      )
+    }
+  }
   async 加载插件() {
+    //从加载插件开始，由naive的后端服务器接管请求
     import(`${this.backend.server.host}/pluginHandler/index.js`)
   }
   初始化日志() {

@@ -2,10 +2,9 @@ import {Divider} from "./Divider";
 import {Font, hasSameTextStyle, setFontStyle} from "./Font";
 import {ToolbarItem} from "./ToolbarItem";
 import {
-    fixTableRange,
+    fixTableRange, focusBlock,
     focusByRange,
     focusByWbr,
-    focusSideBlock,
     getEditorRange,
     getSelectionPosition,
     setFirstNodeRange,
@@ -329,7 +328,7 @@ export class Toolbar {
                     const types = item.getAttribute("data-type").split(" ");
                     if (type === "clear") {
                         for (let i = 0; i < types.length; i++) {
-                            if (["strong", "em", "u", "s", "mark", "sup", "sub"].includes(types[i])) {
+                            if (Constants.INLINE_TYPE.includes(types[i])) {
                                 types.splice(i, 1);
                                 i--;
                             }
@@ -538,6 +537,24 @@ export class Toolbar {
                 i--;
             } else {
                 this.range.insertNode(currentNewNode);
+                // https://github.com/siyuan-note/siyuan/issues/6155
+                if (currentNewNode.nodeType !== 3 && ["code", "tag", "kbd"].includes(type)) {
+                    if (!hasPreviousSibling(currentNewNode)) {
+                        currentNewNode.before(document.createTextNode(Constants.ZWSP));
+                    }
+                    if (!currentNewNode.textContent.startsWith(Constants.ZWSP)) {
+                        currentNewNode.textContent = Constants.ZWSP + currentNewNode.textContent;
+                    }
+                    const currentNextSibling = hasNextSibling(currentNewNode);
+                    if (!currentNextSibling ||
+                        (currentNextSibling && (
+                                currentNextSibling.nodeType !== 3 ||
+                                (currentNextSibling.nodeType === 3 && !currentNextSibling.textContent.startsWith(Constants.ZWSP)))
+                        )
+                    ) {
+                        currentNewNode.after(document.createTextNode(Constants.ZWSP));
+                    }
+                }
                 this.range.collapse(false);
             }
         }
@@ -596,6 +613,7 @@ export class Toolbar {
             // 需进行 mergeNode ，否用 alt+x 为相同颜色 aaabbb 中的 bbb 再次赋值后无法选中
             this.range.setEnd(previousElement.firstChild, previousElement.firstChild.textContent.length);
         }
+        let needFocus = true;
         if (type === "inline-math") {
             mathRender(nodeElement);
             if (selectText === "") {
@@ -610,6 +628,7 @@ export class Toolbar {
         } else if (type === "a") {
             const aElement = newNodes[0] as HTMLElement;
             if (aElement.textContent.replace(Constants.ZWSP, "") === "" || !aElement.getAttribute("data-href")) {
+                needFocus = false;
                 linkMenu(protyle, aElement, aElement.getAttribute("data-href") ? true : false);
             } else {
                 this.range.collapse(false);
@@ -621,7 +640,7 @@ export class Toolbar {
         if (wbrElement) {
             wbrElement.remove();
         }
-        if (isMobile()) {
+        if (needFocus) {
             focusByRange(this.range);
         }
     }
@@ -1030,22 +1049,25 @@ export class Toolbar {
             }
 
             // 光标定位
-            if (renderElement.tagName === "SPAN") {
-                if (inlineLastNode) {
-                    if (inlineLastNode.parentElement) {
-                        this.range.setStartAfter(inlineLastNode);
+            if (getSelection().rangeCount === 0) {  // https://ld246.com/article/1665306093005
+                if (renderElement.tagName === "SPAN") {
+                    if (inlineLastNode) {
+                        if (inlineLastNode.parentElement) {
+                            this.range.setStartAfter(inlineLastNode);
+                            this.range.collapse(true);
+                            focusByRange(this.range);
+                        } else {
+                            focusByWbr(nodeElement, this.range);
+                        }
+                    } else if (renderElement.parentElement) {
+                        this.range.setStartAfter(renderElement);
                         this.range.collapse(true);
                         focusByRange(this.range);
-                    } else {
-                        focusByWbr(nodeElement, this.range);
                     }
-                } else if (renderElement.parentElement) {
-                    this.range.setStartAfter(renderElement);
-                    this.range.collapse(true);
-                    focusByRange(this.range);
+                } else {
+                    focusBlock(renderElement);
+                    renderElement.classList.add("protyle-wysiwyg--select");
                 }
-            } else {
-                focusSideBlock(renderElement);
             }
 
             nodeElement.setAttribute("updated", dayjs().format("YYYYMMDDHHmmss"));

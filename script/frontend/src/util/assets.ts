@@ -1,11 +1,13 @@
 import {Constants} from "../constants";
 import {addScript} from "../protyle/util/addScript";
 import {addStyle} from "../protyle/util/addStyle";
-import {setCodeTheme} from "../protyle/ui/setCodeTheme";
 /// #if !MOBILE
+import {ipcRenderer} from "electron";
 import {getAllModels} from "../layout/getAll";
+import {exportLayout} from "../layout/util";
 /// #endif
 import {isMobile} from "./functions";
+import {fetchPost} from "./fetch";
 
 export const loadAssets = (data: IAppearance) => {
     const defaultStyleElement = document.getElementById("themeDefaultStyle");
@@ -53,16 +55,49 @@ export const loadAssets = (data: IAppearance) => {
         addScript(themeScriptAddress, "themeScript");
     }
 
-    const scriptElement = document.getElementById("iconScript");
-    const iconURL = `/appearance/icons/${data.icon}/icon.js?v=${data.iconVer}`;
-    if (scriptElement) {
-        if (!scriptElement.getAttribute("src").startsWith(iconURL)) {
-            scriptElement.remove();
-            addScript(iconURL, "iconScript");
+    const iconDefaultScriptElement = document.getElementById("iconDefaultScript");
+    // 不能使用 data.iconVer，因为其他主题也需要加载默认图标，此时 data.iconVer 为其他图标的版本号
+    const iconURL = `/appearance/icons/${["ant", "material"].includes(data.icon) ? data.icon : "material"}/icon.js?v=${Constants.SIYUAN_VERSION}`;
+    if (iconDefaultScriptElement) {
+        if (!iconDefaultScriptElement.getAttribute("src").startsWith(iconURL)) {
+            iconDefaultScriptElement.remove();
+            addScript(iconURL, "iconDefaultScript");
         }
     } else {
-        addScript(iconURL, "iconScript");
+        addScript(iconURL, "iconDefaultScript");
     }
+    if (!["ant", "material"].includes(data.icon)) {
+        const iconScriptElement = document.getElementById("iconScript");
+        const iconURL = `/appearance/icons/${data.icon}/icon.js?v=${data.iconVer}`;
+        if (iconScriptElement) {
+            if (!iconScriptElement.getAttribute("src").startsWith(iconURL)) {
+                iconScriptElement.remove();
+                addScript(iconURL, "iconScript");
+            }
+        } else {
+            addScript(iconURL, "iconScript");
+        }
+    }
+};
+
+export const renderSnippet = () => {
+    fetchPost("/api/snippet/getSnippet", {type: "all", enabled: 1}, (response) => {
+        response.data.snippets.forEach((item: {
+            "name": string
+            "type": string
+            "content": string
+        }) => {
+            if (item.type === "css") {
+                document.head.insertAdjacentHTML("beforeend", `<style id="snippetCSS${item.name}">${item.content}</style>`);
+            } else if (item.type === "js") {
+                const scriptElement = document.createElement("script");
+                scriptElement.type = "text/javascript";
+                scriptElement.text = item.content;
+                scriptElement.id = `snippetJS${item.name}`;
+                document.head.appendChild(scriptElement);
+            }
+        });
+    });
 };
 
 export const initAssets = () => {
@@ -106,4 +141,57 @@ export const setInlineStyle = (set = true) => {
         document.getElementById("editorFontSize").innerHTML = style;
     }
     return style;
+};
+
+export const setCodeTheme = (cdn = Constants.PROTYLE_CDN) => {
+    const protyleHljsStyle = document.getElementById("protyleHljsStyle") as HTMLLinkElement;
+    let css;
+    if (window.siyuan.config.appearance.mode === 0) {
+        css = window.siyuan.config.appearance.codeBlockThemeLight;
+        if (!Constants.SIYUAN_CONFIG_APPEARANCE_LIGHT_CODE.includes(css)) {
+            css = "default";
+        }
+    } else {
+        css = window.siyuan.config.appearance.codeBlockThemeDark;
+        if (!Constants.SIYUAN_CONFIG_APPEARANCE_DARK_CODE.includes(css)) {
+            css = "github-dark";
+        }
+    }
+    const href = `${cdn}/js/highlight.js/styles/${css}.min.css?v=11.5.0`;
+    if (!protyleHljsStyle) {
+        addStyle(href, "protyleHljsStyle");
+    } else if (!protyleHljsStyle.href.includes(href)) {
+        protyleHljsStyle.remove();
+        addStyle(href, "protyleHljsStyle");
+    }
+};
+
+export const setMode = (modeElementValue: number) => {
+    /// #if !MOBILE
+    fetchPost("/api/setting/setAppearance", Object.assign({}, window.siyuan.config.appearance, {
+        mode: modeElementValue === 2 ? window.siyuan.config.appearance.mode : modeElementValue,
+        modeOS: modeElementValue === 2,
+    }), response => {
+        if ((
+                window.siyuan.config.appearance.themeJS && !response.data.modeOS &&
+                (
+                    response.data.mode !== window.siyuan.config.appearance.mode ||
+                    window.siyuan.config.appearance.themeLight !== response.data.themeLight ||
+                    window.siyuan.config.appearance.themeDark !== response.data.themeDark
+                )
+            ) ||
+            (response.data.modeOS && !window.siyuan.config.appearance.modeOS)
+        ) {
+            exportLayout(true);
+            return;
+        }
+        window.siyuan.config.appearance = response.data;
+        /// #if !BROWSER
+        ipcRenderer.send(Constants.SIYUAN_CONFIG_THEME, response.data.modeOS ? "system" : (response.data.mode === 1 ? "dark" : "light"));
+        ipcRenderer.send(Constants.SIYUAN_CONFIG_CLOSE, response.data.closeButtonBehavior);
+        /// #endif
+        loadAssets(response.data);
+        document.querySelector("#barMode use").setAttribute("xlink:href", `#icon${window.siyuan.config.appearance.modeOS ? "Mode" : (window.siyuan.config.appearance.mode === 0 ? "Light" : "Dark")}`);
+    });
+    /// #endif
 };

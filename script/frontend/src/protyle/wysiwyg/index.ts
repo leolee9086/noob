@@ -1093,7 +1093,7 @@ export class WYSIWYG {
                 }
             }
             protyle.hint.render(protyle);
-            event.clipboardData.setData("text/plain", protyle.lute.BlockDOM2StdMd(html));
+            event.clipboardData.setData("text/plain", protyle.lute.BlockDOM2StdMd(html).trimEnd());  // 需要 trimEnd，否则 \n 会导致 https://github.com/siyuan-note/siyuan/issues/6218
             event.clipboardData.setData("text/html", Constants.ZWSP + html);
         });
 
@@ -1404,7 +1404,7 @@ export class WYSIWYG {
             const backlinkBreadcrumbItemElement = hasClosestByClassName(event.target, "protyle-breadcrumb__item");
             if (backlinkBreadcrumbItemElement) {
                 if (backlinkBreadcrumbItemElement.getAttribute("data-id")) {
-                    loadBreadcrumb(backlinkBreadcrumbItemElement);
+                    loadBreadcrumb(protyle, backlinkBreadcrumbItemElement);
                 } else {
                     // 引用标题时的更多加载
                     getBacklinkHeadingMore(backlinkBreadcrumbItemElement);

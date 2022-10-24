@@ -5,6 +5,7 @@ import {Constants} from "../../constants";
 import {processRender} from "../util/processCode";
 import {highlightRender} from "../markdown/highlightRender";
 import {blockRender} from "../markdown/blockRender";
+import {disabledProtyle} from "../util/onGet";
 
 export const renderBacklink = (protyle: IProtyle, backlinkData: {
     blockPaths: IBreadcrumb[],
@@ -21,6 +22,9 @@ export const renderBacklink = (protyle: IProtyle, backlinkData: {
     highlightRender(protyle.wysiwyg.element);
     blockRender(protyle, protyle.wysiwyg.element);
     removeLoading(protyle);
+    if (window.siyuan.config.readonly || window.siyuan.config.editor.readOnly) {
+        disabledProtyle(protyle);
+    }
 };
 
 const setBacklinkFold = (html: string, expand: boolean) => {
@@ -48,7 +52,7 @@ const setBacklinkFold = (html: string, expand: boolean) => {
     return tempDom.innerHTML;
 };
 
-export const loadBreadcrumb = (element: HTMLElement) => {
+export const loadBreadcrumb = (protyle: IProtyle, element: HTMLElement) => {
     fetchPost("/api/filetree/getDoc", {
         id: element.getAttribute("data-id"),
         size: Constants.SIZE_GET_MAX,
@@ -62,6 +66,12 @@ export const loadBreadcrumb = (element: HTMLElement) => {
             tempElement.remove();
         }
         element.parentElement.insertAdjacentHTML("afterend", setBacklinkFold(getResponse.data.content, true));
+        processRender(protyle.wysiwyg.element);
+        highlightRender(protyle.wysiwyg.element);
+        blockRender(protyle, protyle.wysiwyg.element);
+        if (window.siyuan.config.readonly || window.siyuan.config.editor.readOnly) {
+            disabledProtyle(protyle);
+        }
     });
 };
 
@@ -74,10 +84,10 @@ export const getBacklinkHeadingMore = (moreElement: HTMLElement) => {
     moreElement.remove();
 };
 
-const genBreadcrumb = (blockPaths: IBreadcrumb[]) => {
+export const genBreadcrumb = (blockPaths: IBreadcrumb[], renderFirst = false) => {
     let html = "";
     blockPaths.forEach((item, index) => {
-        if (index === 0) {
+        if (index === 0 && !renderFirst) {
             return;
         }
         html += `<span class="protyle-breadcrumb__item${index === blockPaths.length - 1 ? " protyle-breadcrumb__item--active" : ""}" data-id="${item.id}">

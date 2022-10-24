@@ -45,8 +45,8 @@ export class Hint {
         this.element = document.createElement("div");
         this.element.setAttribute("data-close", "false");
         // height 402 根据 .emojis max-height+8 得来
-        this.element.setAttribute("style", `z-index: 201;overflow:auto;max-height:402px;width:${Math.max(protyle.element.clientWidth / 2, 320)}px;box-sizing: border-box;`);
-        this.element.className = "b3-menu b3-list b3-list--background fn__none";
+        this.element.setAttribute("style", `width:${Math.max(protyle.element.clientWidth / 2, 320)}px;`);
+        this.element.className = "protyle-hint b3-list b3-list--background fn__none";
         this.element.addEventListener("click", (event) => {
             const eventTarget = event.target as HTMLElement;
             if (eventTarget.tagName === "INPUT") {
@@ -128,9 +128,8 @@ ${unicode2Emoji(emoji.unicode, true)}</button>`;
         const currentLineValue = protyle.toolbar.range.startContainer.textContent.substring(0, start) || "";
         const key = this.getKey(currentLineValue, protyle.options.hint.extend);
         if (typeof key === "undefined" ||
-            (   // 除 emoji 提示外，其余在 tag/inline math/inline-code 内移动不进行提示
-                this.splitChar !== ":" &&
-                (protyle.toolbar.getCurrentType(protyle.toolbar.range).length > 0 || hasClosestByAttribute(protyle.toolbar.range.startContainer, "data-type", "NodeCodeBlock"))
+            (   // 除 emoji 提示外，其余在 inline-code 内移动不进行提示
+                this.splitChar !== ":" && hasClosestByAttribute(protyle.toolbar.range.startContainer, "data-type", "NodeCodeBlock")
             )
         ) {
             this.element.classList.add("fn__none");
@@ -210,7 +209,7 @@ ${unicode2Emoji(emoji.unicode, true)}</button>`;
             if (hintData.html === "separator") {
                 hintsHTML += '<div class="b3-menu__separator"></div>';
             } else {
-                hintsHTML += `<button class="b3-list-item b3-list-item--two fn__block${focusClass}" data-value="${encodeURIComponent(hintData.value)}">${hintData.html}</button>`;
+                hintsHTML += `<button style="width: calc(100% - 16px)" class="b3-list-item b3-list-item--two${focusClass}" data-value="${encodeURIComponent(hintData.value)}">${hintData.html}</button>`;
             }
         });
         if (hasSearch) {

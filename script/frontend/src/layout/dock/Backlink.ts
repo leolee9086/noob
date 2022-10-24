@@ -19,7 +19,7 @@ export class Backlink extends Model {
     private tree: Tree;
     private notebookId: string;
     private mTree: Tree;
-    private editors: Protyle[] = [];
+    public editors: Protyle[] = [];
     public status: {
         [key: string]: {
             sort: string,
@@ -148,7 +148,6 @@ export class Backlink extends Model {
             ctrlClick(element) {
                 openFileById({
                     id: element.getAttribute("data-node-id"),
-                    keepCursor: true,
                     action: [Constants.CB_GET_CONTEXT]
                 });
             },
@@ -179,7 +178,6 @@ export class Backlink extends Model {
             ctrlClick(element) {
                 openFileById({
                     id: element.getAttribute("data-node-id"),
-                    keepCursor: true,
                     action: [Constants.CB_GET_CONTEXT]
                 });
             },
@@ -233,7 +231,7 @@ export class Backlink extends Model {
             if (this.type === "local") {
                 setPanelFocus(this.element.parentElement.parentElement);
             } else {
-                setPanelFocus(this.element.firstElementChild);
+                setPanelFocus(this.element);
             }
             let target = event.target as HTMLElement;
             while (target && !target.isEqualNode(this.element)) {
@@ -295,10 +293,10 @@ export class Backlink extends Model {
             }
         });
 
-        this.searchBacklinks();
+        this.searchBacklinks(true);
 
         if (this.type === "pin") {
-            setPanelFocus(this.element.firstElementChild);
+            setPanelFocus(this.element);
         }
     }
 
@@ -369,6 +367,10 @@ export class Backlink extends Model {
 
     private toggleItem(liElement: HTMLElement, isMention: boolean) {
         const svgElement = liElement.firstElementChild.firstElementChild;
+        if (svgElement.getAttribute("disabled")) {
+            return;
+        }
+        svgElement.setAttribute("disabled", "disabled");
         const docId = liElement.getAttribute("data-node-id");
         if (svgElement.classList.contains("b3-list-item__arrow--open")) {
             svgElement.classList.remove("b3-list-item__arrow--open");
@@ -380,12 +382,14 @@ export class Backlink extends Model {
                 }
             });
             liElement.nextElementSibling?.remove();
+            svgElement.removeAttribute("disabled");
         } else {
-            svgElement.classList.add("b3-list-item__arrow--open");
             fetchPost(isMention ? "/api/ref/getBackmentionDoc" : "/api/ref/getBacklinkDoc", {
                 defID: this.blockId,
                 refTreeID: docId
             }, (response) => {
+                svgElement.removeAttribute("disabled");
+                svgElement.classList.add("b3-list-item__arrow--open");
                 const editorElement = document.createElement("div");
                 editorElement.style.minHeight = "auto";
                 editorElement.setAttribute("data-defid", this.blockId);
@@ -415,9 +419,9 @@ export class Backlink extends Model {
         });
     }
 
-    private searchBacklinks(reload = false) {
+    private searchBacklinks(init = false) {
         const element = this.element.querySelector('.block__icon[data-type="refresh"] svg');
-        if (element.classList.contains("fn__rotate") && !reload) {
+        if (element.classList.contains("fn__rotate")) {
             return;
         }
         element.classList.add("fn__rotate");
@@ -428,7 +432,9 @@ export class Backlink extends Model {
             mk: this.inputsElement[1].value,
             id: this.blockId,
         }, response => {
-            this.saveStatus();
+            if (!init) {
+                this.saveStatus();
+            }
             this.render(response.data);
         });
     }

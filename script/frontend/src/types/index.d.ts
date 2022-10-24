@@ -172,6 +172,7 @@ interface IOperation {
     parentID?: string
     previousID?: string
     retData?: any
+    nextID?: string // insert 专享
 }
 
 interface IObject {
@@ -230,6 +231,7 @@ declare interface IExport {
 }
 
 declare interface IEditor {
+    readOnly: boolean;
     katexMacros: string;
     fullWidth: boolean;
     fontSize: number;

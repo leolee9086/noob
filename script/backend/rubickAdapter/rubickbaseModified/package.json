@@ -1,0 +1,54 @@
+{
+  "name": "rubickbaseModified",
+  "version": "1.4.2",
+  "os": [
+    "linux",
+    "win32",
+    "darwin"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "description": "Expand native capabilities for nodejs and electron based on rust",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "author": "sovlookup <gonorth@qq.com>",
+  "email": "gonorth@qq.com",
+  "license": "MPLv2",
+  "homepage": "https://github.com/SOVLOOKUP/rubickbase",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SOVLOOKUP/rubickbase"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./*": {
+      "require": "./dist/*.js",
+      "import": "./dist/*.mjs"
+    }
+  },
+  "optionalDependencies": {
+    "rubick_backend-darwin": "*",
+    "rubick_backend-linux": "*",
+    "rubick_backend-win32": "*"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.4.1",
+    "@grpc/proto-loader": "^0.6.5",
+    "@silvia-odwyer/photon-node": "^0.3.1",
+    "consola": "^2.15.3",
+    "fs-extra": "^10.0.0",
+    "mali": "^0.45.0"
+  },
+  "devDependencies": {
+    "protobufjs": "^6.11.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {}
+}

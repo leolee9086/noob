@@ -5,7 +5,7 @@
 //async是为了能够在函数中使用await
 //只有下面这段代码是必须的
 
-
+//如果窗口在iframe中加载，隐藏工具栏，用于将移动端作为编辑器使用
 if (window.frameElement) {
   let style = document.createElement('style')
   style.innerHTML = `.toolbar{
@@ -13,7 +13,9 @@ if (window.frameElement) {
   }`
   document.head.appendChild(style)
 }
+
 (async function () {
+  //初始化naive的路径
   this.naivePath = '../naive/script/index.js'
   let meta = document.createElement("meta")
   meta.setAttribute('name', 'referrer')
@@ -40,30 +42,6 @@ if (window.frameElement) {
     options= (await import (`http://${window.location.hostname}:${port}/config/naiveConfig.js`)).default()
     this.naivePath = `http://${window.location.hostname}:${port}/naive/script/index.js`
   }
-  //获取用户配置文件
-/*{
-    frontend:{
-      theme:"ZHANG-Light",
-      cssSnippets:""
-    },
-    backend:{
-      filesys:{
-        workspaceDir:window.siyuan.config.system.workspaceDir,
-        confDir:window.siyuan.config.system.workspaceDir+'/conf/naiveConf',
-        watchFiletypes:['js']
-      },
-      server:{
-        port:"80",
-        location:"127.0.0.1"
-      }
-    },
-    plugin:{},
-    log:{},
-    doc:{},
-    publish:{}
-  }*/
-
-  //加载naive
   import(this.naivePath).then(
     module => {
       let naive = module.default

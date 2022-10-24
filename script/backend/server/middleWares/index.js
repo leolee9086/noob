@@ -33,13 +33,11 @@ export const urlencoded = bodyParser.urlencoded({
     extended: true,
 })
 export const allowCors = function (req, res, next) {
-    console.log(req);
     res.setHeader("Access-Control-Allow-Private-Network", true);
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
 }
 export function checkFileAccess(req, res, next) {
-    console.log(req)
     if (req.session) {
         console.error(req.session)
     }
@@ -48,7 +46,6 @@ export function checkFileAccess(req, res, next) {
 export const auth = requireInstall("express-session")
 export { syProxy as syProxy}
 export const json解析器 = async function (req, res, next) {
-    console.log(req.method, req.url)
     if (req.headers["content-type"] == "text/plain;charset=UTF-8" && JSON.stringify(req.body) == '{}') {
         req.body = await unzipJSON(req)
     }

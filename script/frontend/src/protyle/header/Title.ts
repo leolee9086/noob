@@ -274,7 +274,7 @@ export class Title {
                 label: window.siyuan.languages.copy,
                 icon: "iconCopy",
                 type: "submenu",
-                submenu: copySubMenu(protyle.block.rootID, "")
+                submenu: copySubMenu(protyle.block.rootID)
             }).element);
             if (!window.siyuan.config.readonly) {
                 window.siyuan.menus.menu.append(movePathToMenu(protyle.notebookId, protyle.path));
@@ -286,7 +286,7 @@ export class Title {
                     }
                 }).element);
             }
-            if (!window.siyuan.config.readonly) {
+            if (!window.siyuan.config.readonly && !window.siyuan.config.editor.readOnly) {
                 window.siyuan.menus.menu.append(new MenuItem({type: "separator"}).element);
                 window.siyuan.menus.menu.append(new MenuItem({
                     label: window.siyuan.languages.attr,

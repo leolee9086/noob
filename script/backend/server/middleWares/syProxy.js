@@ -13,7 +13,7 @@ const jsonApiproxy = async function (req, res) {
         return async function (req1, res1) {
             let syres = {}
             let apitoken = ""
-            let url = "http://" + naive.publishOption.思源伺服地址 + ":" + naive.publishOption.思源伺服端口 + req1.originalUrl;
+            let url = "http://" + "127.0.0.1" + ":" + "6806" + req1.originalUrl;
             try {
                 let data = req1.body
                 let data_1 = await preFix(data, req1, res1)
@@ -43,7 +43,7 @@ const jsonApiproxy = async function (req, res) {
     }
     let syres = {}
     let apitoken = ""
-    let url = "http://" + naive.publishOption.思源伺服地址 + ":" + naive.publishOption.思源伺服端口 + req.originalUrl;
+    let url = "http://" + "127.0.0.1" + ":" + "6806" + req.originalUrl;
     try {
         let data = req.body
         syres = await fetch(url, {

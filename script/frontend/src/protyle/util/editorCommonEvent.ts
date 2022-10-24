@@ -1,4 +1,4 @@
-import {focusBlock, focusByRange, focusByWbr} from "./selection";
+import {focusBlock, focusByRange} from "./selection";
 import {hasClosestBlock, hasClosestByAttribute, hasClosestByClassName} from "./hasClosest";
 import {Constants} from "../../constants";
 import {paste} from "./paste";
@@ -6,8 +6,6 @@ import {cancelSB, genEmptyElement, genSBElement} from "../../block/util";
 import {transaction} from "../wysiwyg/transaction";
 import {getTopAloneElement} from "../wysiwyg/getBlock";
 import {updateListOrder} from "../wysiwyg/list";
-import {hideElements} from "../ui/hideElements";
-import {mathRender} from "../markdown/mathRender";
 import {fetchPost, fetchSyncPost} from "../../util/fetch";
 import {onGet} from "./onGet";
 /// #if !MOBILE
@@ -17,7 +15,6 @@ import {updatePanelByEditor} from "../../editor/util";
 /// #endif
 import {Editor} from "../../editor";
 import {blockRender} from "../markdown/blockRender";
-import {highlightRender} from "../markdown/highlightRender";
 import {uploadLocalFiles} from "../upload";
 import {insertHTML} from "./insertHTML";
 import {isBrowser} from "../../util/functions";
@@ -39,7 +36,7 @@ const dragSb = (protyle: IProtyle, sourceElements: Element[], targetElement: Ele
         action: "move",
         id: targetElement.getAttribute("data-node-id"),
         previousID: targetElement.previousElementSibling?.getAttribute("data-node-id"),
-        parentID: targetElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID
+        parentID: targetElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID || protyle.block.rootID
     }];
     let topSourceElement: Element;
     let oldSourceParentElement = sourceElements[0].parentElement;
@@ -49,8 +46,9 @@ const dragSb = (protyle: IProtyle, sourceElements: Element[], targetElement: Ele
         action: "insert",
         data: sbElement.outerHTML,
         id: sbElement.getAttribute("data-node-id"),
+        nextID: sbElement.nextElementSibling?.getAttribute("data-node-id"),
         previousID: sbElement.previousElementSibling?.getAttribute("data-node-id"),
-        parentID: sbElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID
+        parentID: sbElement.parentElement.getAttribute("data-node-id") || protyle.block.parentID || protyle.block.rootID
     }];
     if (newSourceElement) {
         sbElement.insertAdjacentElement("afterbegin", targetElement);
@@ -73,8 +71,7 @@ const dragSb = (protyle: IProtyle, sourceElements: Element[], targetElement: Ele
                 action: "insert",
                 data: newSourceElement.outerHTML,
                 id: newSourceElement.getAttribute("data-node-id"),
-                previousID: newSourceElement.previousElementSibling?.getAttribute("data-node-id"),
-                parentID: newSourceElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID
+                nextID: targetElement.getAttribute("data-node-id"),
             });
         }
         sourceElements.reverse().forEach((item, index) => {
@@ -197,7 +194,7 @@ const dragSb = (protyle: IProtyle, sourceElements: Element[], targetElement: Ele
             data: topSourceElement.outerHTML,
             id: topSourceElement.getAttribute("data-node-id"),
             previousID: topSourceElement.previousElementSibling?.getAttribute("data-node-id"),
-            parentID: topSourceElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID
+            parentID: topSourceElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID || protyle.block.rootID
         });
         if (!isSameDoc) {
             // 打开两个相同的文档
@@ -308,6 +305,9 @@ const dragSame = (protyle: IProtyle, sourceElements: Element[], targetElement: E
                     topSourceElement = getTopAloneElement(item);
                     if (topSourceElement.isSameNode(item)) {
                         topSourceElement = undefined;
+                    } else if (topSourceElement.contains(item) && topSourceElement.contains(targetElement)) {
+                        // * * 1 列表项拖拽到父级列表项下 https://ld246.com/article/1665448570858
+                        topSourceElement = targetElement;
                     }
                 }
                 undoOperations.push({
@@ -339,8 +339,7 @@ const dragSame = (protyle: IProtyle, sourceElements: Element[], targetElement: E
                 action: "insert",
                 data: newSourceElement.outerHTML,
                 id: newSourceElement.getAttribute("data-node-id"),
-                previousID: newSourceElement.previousElementSibling?.getAttribute("data-node-id"),
-                parentID: newSourceElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID
+                nextID: targetElement.getAttribute("data-node-id"),
             });
             sourceElements.reverse().forEach((item, index) => {
                 if (index === sourceElements.length - 1) {
@@ -380,6 +379,9 @@ const dragSame = (protyle: IProtyle, sourceElements: Element[], targetElement: E
                     topSourceElement = getTopAloneElement(item);
                     if (topSourceElement.isSameNode(item)) {
                         topSourceElement = undefined;
+                    } else if (topSourceElement.contains(item) && topSourceElement.contains(targetElement)) {
+                        // * * 1 列表项拖拽到父级列表项上 https://ld246.com/article/1665448570858
+                        topSourceElement = targetElement;
                     }
                 }
                 undoOperations.push({
@@ -400,7 +402,7 @@ const dragSame = (protyle: IProtyle, sourceElements: Element[], targetElement: E
                     action: "move",
                     id: item.getAttribute("data-node-id"),
                     previousID: item.previousElementSibling?.getAttribute("data-node-id"),
-                    parentID: item.parentElement?.getAttribute("data-node-id") || protyle.block.parentID
+                    parentID: item.parentElement?.getAttribute("data-node-id") || protyle.block.parentID || protyle.block.rootID
                 });
             });
             undoOperations.reverse();
@@ -475,7 +477,7 @@ const dragSame = (protyle: IProtyle, sourceElements: Element[], targetElement: E
             data: topSourceElement.outerHTML,
             id: topSourceElement.getAttribute("data-node-id"),
             previousID: topSourceElement.previousElementSibling?.getAttribute("data-node-id"),
-            parentID: topSourceElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID
+            parentID: topSourceElement.parentElement?.getAttribute("data-node-id") || protyle.block.parentID || protyle.block.rootID
         });
         oldSourceParentElement = topSourceElement.parentElement;
         topSourceElement.remove();
@@ -549,57 +551,8 @@ export const dropEvent = (protyle: IProtyle, editorElement: HTMLElement) => {
     editorElement.addEventListener("drop", async (event: DragEvent & { target: HTMLElement }) => {
         if (event.dataTransfer.getData(Constants.SIYUAN_DROP_EDITOR)) {
             // 编辑器内选中文字拖拽
-            if (getSelection().rangeCount === 0) {
-                return;
-            }
-            const targetElement = hasClosestBlock(event.target);
-            const sourceElement = hasClosestBlock(getSelection().getRangeAt(0).startContainer);
-            if (!targetElement || !sourceElement) {
-                return;
-            }
-            hideElements(["toolbar"], protyle);
-            const isSameNode = targetElement.isSameNode(sourceElement);
-            const undoOperations: IOperation[] = [{
-                action: "update",
-                data: targetElement.outerHTML,
-                id: targetElement.getAttribute("data-node-id"),
-            }];
-            if (!isSameNode) {
-                undoOperations.push({
-                    action: "update",
-                    data: sourceElement.outerHTML,
-                    id: sourceElement.getAttribute("data-node-id"),
-                });
-            }
-            setTimeout(() => {
-                const range = getSelection().getRangeAt(0);
-                range.insertNode(document.createElement("wbr"));
-                const targetHTML = protyle.lute.SpinBlockDOM(targetElement.outerHTML);
-                targetElement.outerHTML = targetHTML;
-                const doOperations: IOperation[] = [{
-                    action: "update",
-                    data: targetHTML,
-                    id: targetElement.getAttribute("data-node-id"),
-                }];
-                if (!isSameNode) {
-                    const sourceHTML = protyle.lute.SpinBlockDOM(sourceElement.outerHTML);
-                    sourceElement.outerHTML = sourceHTML;
-                    doOperations.push({
-                        action: "update",
-                        data: sourceHTML,
-                        id: sourceElement.getAttribute("data-node-id"),
-                    });
-                }
-                transaction(protyle, doOperations, undoOperations);
-                mathRender(protyle.wysiwyg.element);
-                if (targetElement.classList.contains("code-block")) {
-                    highlightRender(protyle.wysiwyg.element);
-                } else {
-                    focusByWbr(protyle.wysiwyg.element, range);
-                }
-                // 拖拽后无法使用快捷键
-                protyle.selectElement.classList.add("fn__none");
-            });
+            event.preventDefault();
+            event.stopPropagation();
             return;
         }
         const targetElement = editorElement.querySelector(".dragover__bottom") || editorElement.querySelector(".dragover__top") || editorElement.querySelector(".dragover__left") || editorElement.querySelector(".dragover__right");
@@ -618,6 +571,10 @@ export const dropEvent = (protyle: IProtyle, editorElement: HTMLElement) => {
             });
             sourceElements.forEach(item => {
                 item.classList.remove("protyle-wysiwyg--select", "protyle-wysiwyg--hl");
+                // 反链提及有高亮，如果拖拽到正文的话，应移除
+                item.querySelectorAll('[data-type="search-mark"]').forEach(markItem => {
+                    markItem.outerHTML = markItem.innerHTML;
+                });
             });
             if (event.altKey) {
                 focusByRange(document.caretRangeFromPoint(event.clientX, event.clientY));

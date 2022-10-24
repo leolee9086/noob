@@ -6,10 +6,10 @@ export default class pathConstructor {
     this.主题根目录思源URL = ``;
     this.themeName = "naive"
   }
-  requireScript(filepath) {
-    let path = require("path");
+  requireInstallScript(filepath) {
+    let path = requireInstall("path");
     console.log(path.join(this.naivePath() + "/script", filepath))
-    return require(path.join(this.naivePath() + "/script", filepath));
+    return requireInstall(path.join(this.naivePath() + "/script", filepath));
   }
   cusoptionPath() {
     let filePath = `${this.workspaceDir}/conf/naiveConf/config/publish.json`;
@@ -38,9 +38,9 @@ export default class pathConstructor {
     return `${this.workspaceDir}/conf/appearance/themes/${this.themeName}/script/plugin/corePlugins`;
   }
   sslPath() {
-    let fs = require("fs");
-    let path = require("path");
-    let mkdirp = require("mkdirp");
+    let fs = requireInstall("fs");
+    let path = requireInstall("path");
+    let mkdirp = requireInstall("mkdirp");
     let filePath = `${this.workspaceDir}/conf/naiveConf/ssl`;
     let e = fs.existsSync(filePath);
     fs.existsSync(filePath);
@@ -62,9 +62,9 @@ export default class pathConstructor {
     return filePath;
   }
   cachePath() {
-    let fs = require("fs");
-    let path = require("path");
-    let mkdirp = require("mkdirp");
+    let fs = requireInstall("fs");
+    let path = requireInstall("path");
+    let mkdirp = requireInstall("mkdirp");
     let filePath = `${this.workspaceDir}/temp/naiveCache`;
     let e = fs.existsSync(filePath);
     if (e) {
@@ -74,9 +74,9 @@ export default class pathConstructor {
     return filePath;
   }
   uploadCachePath() {
-    let fs = require("fs");
-    let path = require("path");
-    let mkdirp = require("mkdirp");
+    let fs = requireInstall("fs");
+    let path = requireInstall("path");
+    let mkdirp = requireInstall("mkdirp");
     let filePath = `${this.workspaceDir}/temp/naiveCache/uploadFiles`;
     let e = fs.existsSync(filePath);
     if (e) {
@@ -87,9 +87,9 @@ export default class pathConstructor {
 
   }
   downloadCachePath() {
-    let fs = require("fs");
-    let path = require("path");
-    let mkdirp = require("mkdirp");
+    let fs = requireInstall("fs");
+    let path = requireInstall("path");
+    let mkdirp = requireInstall("mkdirp");
     let filePath = `${this.workspaceDir}/temp/naiveCache/downloadFiles`;
     let e = fs.existsSync(filePath);
     if (e) {
@@ -101,8 +101,8 @@ export default class pathConstructor {
 
   }
   mkfilep(filePath, data) {
-    let fs = require("fs");
-    let mkdirp = require("mkdirp");
+    let fs = requireInstall("fs");
+    let mkdirp = requireInstall("mkdirp");
     let lastSlashIndex = filePath.lastIndexOf("/");
     let dirPath = filePath.slice(0, lastSlashIndex);
     mkdirp.sync(dirPath);
@@ -113,7 +113,7 @@ export default class pathConstructor {
     }
   }
   initFilep(filePath, data) {
-    let fs = require("fs");
+    let fs = requireInstall("fs");
     let e = fs.existsSync(filePath);
     if (!e) {
       this.mkfilep(filePath, data);
@@ -125,8 +125,8 @@ export default class pathConstructor {
     else return filePath
   }
   initDirp(dirpath) {
-    let fs = require("fs");
-    let mkdirp = require("mkdirp");
+    let fs = requireInstall("fs");
+    let mkdirp = requireInstall("mkdirp");
     let e = fs.existsSync(dirpath);
     if (!e) {
       mkdirp.sync(dirpath);

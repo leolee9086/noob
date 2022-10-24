@@ -28,17 +28,28 @@ import {pdfResize} from "../asset/renderAssets";
 import {Backlink} from "./dock/Backlink";
 
 export const setPanelFocus = (element: Element) => {
-    if (element.classList.contains("block__icons--active") || element.classList.contains("layout__wnd--active")) {
+    if (element.classList.contains("layout__tab--active") || element.classList.contains("layout__wnd--active")) {
         return;
     }
-    document.querySelectorAll(".block__icons--active").forEach(item => {
-        item.classList.remove("block__icons--active");
+    document.querySelectorAll(".layout__tab--active").forEach(item => {
+        item.classList.remove("layout__tab--active");
+    });
+    document.querySelectorAll(".dock__item--activefocus").forEach(item => {
+        item.classList.remove("dock__item--activefocus");
     });
     document.querySelectorAll(".layout__wnd--active").forEach(item => {
         item.classList.remove("layout__wnd--active");
     });
-    if (element.classList.contains("block__icons")) {
-        element.classList.add("block__icons--active");
+    if (element.getAttribute("data-type") === "wnd") {
+        element.classList.add("layout__wnd--active");
+    } else {
+        element.classList.add("layout__tab--active");
+        ["file", "inbox", "backlink", "tag", "bookmark", "graph", "globalGraph", "outline"].find(item => {
+            if (element.classList.contains("sy__" + item)) {
+                document.querySelector(`.dock__item[data-type="${item}"]`).classList.add("dock__item--activefocus");
+                return true;
+            }
+        });
         const blockElement = hasClosestBlock(document.activeElement);
         if (blockElement) {
             const editElement = getContenteditableElement(blockElement) as HTMLElement;
@@ -46,8 +57,6 @@ export const setPanelFocus = (element: Element) => {
                 editElement.blur();
             }
         }
-    } else {
-        element.classList.add("layout__wnd--active");
     }
 };
 
@@ -403,11 +412,15 @@ export const layoutToJSON = (layout: Layout | Wnd | Tab | Model, json: any) => {
 
 export const resizeDrag = () => {
     const dragElement = document.getElementById("drag");
-    const right = dragElement.getBoundingClientRect().left - document.querySelector("#windowControls").clientWidth;
-    if (right < dragElement.clientWidth) {
-        dragElement.style.paddingRight = right + "px";
+    const width = dragElement.clientWidth;
+    const left = dragElement.getBoundingClientRect().left;
+    const right = document.querySelector("#windowControls").clientWidth + document.querySelector("#barSearch").clientWidth * 4;
+    if (left > right && left - right < width) {
+        dragElement.style.paddingRight = (left - right) + "px";
+    } else if (left < right && right - left < width) {
+        dragElement.style.paddingLeft = (right - left) + "px";
     } else {
-        dragElement.style.paddingRight = "";
+        dragElement.style.padding = "";
     }
 };
 
@@ -550,7 +563,9 @@ export const addResize = (obj: Layout | Wnd) => {
                 const nextElement = resizeElement.nextElementSibling as HTMLElement;
                 const previousElement = resizeElement.previousElementSibling as HTMLElement;
                 nextElement.style.transition = "";
+                nextElement.style.overflow = "auto"; // 拖动时 layout__resize 会出现 https://github.com/siyuan-note/siyuan/issues/6221
                 previousElement.style.transition = "";
+                previousElement.style.overflow = "auto";
                 setSize(nextElement, direction);
                 setSize(previousElement, direction);
                 const x = event[direction === "lr" ? "clientX" : "clientY"];
@@ -614,7 +629,9 @@ export const addResize = (obj: Layout | Wnd) => {
                         focusByRange(range);
                     }
                     nextElement.style.transition = "var(--b3-width-transition)";
+                    nextElement.style.overflow = "";
                     previousElement.style.transition = "var(--b3-width-transition)";
+                    previousElement.style.overflow = "";
                 };
             });
         };

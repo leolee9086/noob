@@ -1,5 +1,5 @@
 import {fetchPost} from "../../util/fetch";
-import {focusBlock, focusByRange, focusByWbr, focusSideBlock, getEditorRange} from "../util/selection";
+import {focusBlock, focusByWbr, focusSideBlock, getEditorRange} from "../util/selection";
 import {getTopAloneElement} from "./getBlock";
 import {Constants} from "../../constants";
 import {blockRender} from "../markdown/blockRender";
@@ -447,16 +447,10 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, focus: b
         return;
     }
     if (operation.action === "move") {
-        let cloneRange;
         let range;
         if (focus && getSelection().rangeCount > 0) {
             range = getSelection().getRangeAt(0);
-            cloneRange = {
-                startContainer: range.startContainer,
-                startOffset: range.startOffset,
-                endContainer: range.endContainer,
-                endOffset: range.endOffset,
-            };
+            range.insertNode(document.createElement("wbr"));
         }
         /// #if !MOBILE
         if (updateElements.length === 0) {
@@ -502,13 +496,17 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, focus: b
                 removeTopElement(item, protyle);
             }
         });
-        if (focus && cloneRange && range) {
+        if (focus && range) {
             if (operation.data === "focus") {
-                focusBlock(updateElements[0]);
+                // 标记需要 focus，https://ld246.com/article/1650018446988/comment/1650081404993?r=Vanessa#comments
+                Array.from(protyle.wysiwyg.element.querySelectorAll(`[data-node-id="${operation.id}"]`)).find(item => {
+                    if (!hasClosestByAttribute(item.parentElement, "data-type", "NodeBlockQueryEmbed")) {
+                        focusBlock(item);
+                        return true;
+                    }
+                });
             } else {
-                range.setStart(cloneRange.startContainer, cloneRange.startOffset);
-                range.setEnd(cloneRange.endContainer, cloneRange.endOffset);
-                focusByRange(range);
+                focusByWbr(protyle.wysiwyg.element, range);
             }
         }
         // 更新 ws 嵌入块
@@ -578,18 +576,6 @@ export const onTransaction = (protyle: IProtyle, operation: IOperation, focus: b
                 wbrElement.remove();
             }
         });
-
-        // 更新 ws 嵌入块
-        protyle.wysiwyg.element.querySelectorAll(`[data-type="NodeBlockQueryEmbed"][data-node-id="${operation.id}"]`).forEach((item) => {
-            item.removeAttribute("data-render");
-            blockRender(protyle, item);
-        });
-        protyle.wysiwyg.element.querySelectorAll('[data-type="NodeBlockQueryEmbed"]').forEach((item) => {
-            if (item.querySelector(`[data-node-id="${operation.id}"]`)) {
-                item.removeAttribute("data-render");
-                blockRender(protyle, item);
-            }
-        });
         // 更新 ws 引用块
         updateRef(protyle, operation.id);
         return;
@@ -640,7 +626,7 @@ export const turnsIntoOneTransaction = (options: { protyle: IProtyle, selectsEle
         action: "insert",
         id,
         data: parentElement.outerHTML,
-        previousID: previousId,
+        nextID: previousId,
         parentID: parentId
     }];
     const undoOperations: IOperation[] = [];

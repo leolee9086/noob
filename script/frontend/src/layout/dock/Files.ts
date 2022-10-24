@@ -93,7 +93,7 @@ export class Files extends Model {
         this.element = this.actionsElement.nextElementSibling as HTMLElement;
         this.closeElement = options.tab.panelElement.lastElementChild as HTMLElement;
         this.closeElement.addEventListener("click", (event) => {
-            setPanelFocus(this.actionsElement);
+            setPanelFocus(this.element.parentElement);
             let target = event.target as HTMLElement;
             while (target && !target.isEqualNode(this.closeElement)) {
                 const type = target.getAttribute("data-type");
@@ -180,7 +180,7 @@ export class Files extends Model {
                 }
                 target = target.parentElement;
             }
-            setPanelFocus(this.actionsElement);
+            setPanelFocus(this.element.parentElement);
         });
         let clickTimeout: number;
         this.element.addEventListener("click", (event) => {
@@ -229,7 +229,7 @@ export class Files extends Model {
                         if (event.detail === 1) {
                             needFocus = false;
                             clickTimeout = window.setTimeout(() => {
-                                this.setCurrent(target);
+                                this.setCurrent(target, false);
                                 if (target.getAttribute("data-type") === "navigation-file") {
                                     if (window.siyuan.altIsPressed) {
                                         openFileById({
@@ -245,13 +245,13 @@ export class Files extends Model {
                                     }
                                 } else if (target.getAttribute("data-type") === "navigation-root") {
                                     this.getLeaf(target, notebookId);
-                                    setPanelFocus(this.actionsElement);
+                                    setPanelFocus(this.element.parentElement);
                                 }
                             }, Constants.TIMEOUT_DBLCLICK);
                         } else if (event.detail === 2) {
                             clearTimeout(clickTimeout);
                             this.getLeaf(target, notebookId);
-                            this.setCurrent(target);
+                            this.setCurrent(target, false);
                         }
                         window.siyuan.menus.menu.remove();
                         event.stopPropagation();
@@ -262,7 +262,7 @@ export class Files extends Model {
                 }
             }
             if (needFocus) {
-                setPanelFocus(this.actionsElement);
+                setPanelFocus(this.element.parentElement);
             }
         });
         // b3-list-item--focus 样式会遮挡拖拽排序的上下线条
@@ -467,7 +467,7 @@ export class Files extends Model {
             newElement.classList.remove("dragover", "dragover__bottom", "dragover__top");
         });
         this.init();
-        setPanelFocus(this.actionsElement);
+        setPanelFocus(this.element.parentElement);
     }
 
     private genNotebook(item: INotebook) {
@@ -764,7 +764,7 @@ export class Files extends Model {
         this.setCurrent(this.element.querySelector(`ul[data-url="${data.box}"] li[data-path="${filePath}"]`));
     }
 
-    private setCurrent(target: HTMLElement) {
+    private setCurrent(target: HTMLElement, isScroll = true) {
         if (!target) {
             return;
         }
@@ -772,7 +772,9 @@ export class Files extends Model {
             liItem.classList.remove("b3-list-item--focus");
         });
         target.classList.add("b3-list-item--focus");
-        this.element.scrollTop = target.offsetTop - this.element.clientHeight / 2 - this.actionsElement.clientHeight;
+        if (isScroll) {
+            this.element.scrollTop = target.offsetTop - this.element.clientHeight / 2 - this.actionsElement.clientHeight;
+        }
     }
 
     public getLeaf(liElement: Element, notebookId: string) {

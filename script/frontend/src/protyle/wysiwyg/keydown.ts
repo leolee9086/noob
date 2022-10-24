@@ -592,7 +592,8 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
                         nodeElement.contains(firstEditElement)
                     ) ||
                     (!firstEditElement && nodeElement.isSameNode(protyle.wysiwyg.element.firstElementChild))) {
-                    if (nodeEditableElement?.textContent.substr(0, position.end).indexOf("\n") === -1) {
+                    // 不能用\n判断，否则文字过长折行将错误 https://github.com/siyuan-note/siyuan/issues/6156
+                    if (getSelectionPosition(nodeElement, range).top - protyle.wysiwyg.element.getBoundingClientRect().top < 40) {
                         if (protyle.title && (protyle.wysiwyg.element.firstElementChild.getAttribute("data-eof") === "true" ||
                             protyle.contentElement.scrollTop === 0)) {
                             protyle.title.editElement.focus();
@@ -680,6 +681,12 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
         const selectText = range.toString();
         // 删除，不可使用 !isCtrl(event)，否则软删除回导致 https://github.com/siyuan-note/siyuan/issues/5607
         if (!event.altKey && !event.shiftKey && (event.key === "Backspace" || event.key === "Delete")) {
+            if (protyle.wysiwyg.element.querySelector(".protyle-wysiwyg--select")) {
+                removeBlock(protyle, nodeElement, range);
+                event.stopPropagation();
+                event.preventDefault();
+                return;
+            }
             // https://github.com/siyuan-note/siyuan/issues/5547
             const previousSibling = hasPreviousSibling(range.startContainer) as HTMLElement;
             if (range.startOffset === 1 && range.startContainer.textContent === Constants.ZWSP &&
@@ -701,7 +708,7 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
             }
             // 行首转义符前删除 https://github.com/siyuan-note/siyuan/issues/6092
             if (range.startOffset === 0 &&
-                previousSibling && previousSibling.parentElement.getAttribute("data-type").indexOf("backslash") > -1 &&
+                previousSibling && previousSibling.parentElement.getAttribute("data-type")?.indexOf("backslash") > -1 &&
                 previousSibling.nodeType !== 3 && (previousSibling as HTMLElement).outerHTML === "<span>\\</span>" &&
                 !hasPreviousSibling(previousSibling)) {
                 range.setStartBefore(previousSibling.parentElement);
@@ -712,7 +719,7 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
             }
             // 光标位于转义符前 F5 后，rang 和点击后的不同，也需进行判断
             if (range.startOffset === 1 && range.startContainer.nodeType !== 3 &&
-                range.startContainer.parentElement.getAttribute("data-type").indexOf("backslash") > -1 &&
+                range.startContainer.parentElement.getAttribute("data-type")?.indexOf("backslash") > -1 &&
                 !hasPreviousSibling(range.startContainer.parentElement)) {
                 range.setStartBefore(range.startContainer.parentElement);
                 removeBlock(protyle, nodeElement, range);
@@ -721,12 +728,7 @@ export const keydown = (protyle: IProtyle, editorElement: HTMLElement) => {
                 return;
             }
             const imgSelectElement = protyle.wysiwyg.element.querySelector(".img--select");
-            if (protyle.wysiwyg.element.querySelector(".protyle-wysiwyg--select")) {
-                removeBlock(protyle, nodeElement, range);
-                event.stopPropagation();
-                event.preventDefault();
-                return;
-            } else if (imgSelectElement) {
+            if (imgSelectElement) {
                 imgSelectElement.insertAdjacentHTML("afterend", "<wbr>");
                 imgSelectElement.classList.remove("img--select");
                 const oldHTML = nodeElement.outerHTML;

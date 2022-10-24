@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@grpc/grpc-js": "^1.7.1",
+    "mali": "^0.47.1",
+    "rubick_backend-win32": "^1.4.2"
+  }
+}

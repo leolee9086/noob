@@ -1,15 +1,22 @@
 import { session, json, urlencoded, compression, allowCors, json解析器, passport } from './middleWares/index.js'
 import naiveApi from './util/api.js';
 import apiSet from "./api/index.js"
+import compilers from "../fileSys/compilers/index.js"
+import addDevSurppoert from './middleWares/dependenciesParser.js'
+import { apiProxy, proxy as syProxy } from './middleWares/syProxy.js';
+import { wsProxy } from "./api/wsProxy.js"
+import apiLoader from "./api/loader.js"
+const { parse } = require('url');
 const express = requireInstall('express')
-const expressWs = requireInstall('express-ws');
+const { Server } = requireInstall('ws');
+const expressWS = require("express-ws")
 const http = requireInstall("http");
 const https = requireInstall("https");
 export default class naiveServer {
   constructor(naive) {
+    this.naive = naive
     this.app = express()
-    const app = this.app
-    expressWs(app)
+    let app = this.app
     //使用session
     app.use(session)
     //解析json
@@ -24,24 +31,37 @@ export default class naiveServer {
     app.use(json解析器);
     //向请求写入auth
     app.use(passport.authenticate('session'));
+    //增减开发依赖支持
+    addDevSurppoert(app)
     this.port = naive.public.config.backend.server.port
     this.host = "http://" + naive.public.config.backend.server.location + ":" + naive.public.config.backend.server.port
     this.sslPort = "443"
     this.publishServer = http.createServer(app);
+    this.app = expressWS(app,this.publishServer).app
     this.api = new naiveApi(app)
     this.设定用户组权限()
     this.初始化基础api()
     this.初始化插件api()
+    this.加载模块化api()
+    app.ws('/clientws', function (ws, req) {
+      ws.on('message', function (msg) {
+        console.log(ws)
+        ws.send(1111);
+      });
+    }
+    )
   }
   设定用户组权限() {
-
+  }
+  加载模块化api(){
+    this.api加载器 = new apiLoader()
   }
   开始服务() {
     let { port } = this
     this.publishServer.listen(port, () => {
       console.log(`publish app listening on port ${port}`);
     })
-    window.open(`http://127.0.0.1:${port}`)
+  
   }
   初始化插件api() {
     this.api.注册(
@@ -58,8 +78,6 @@ export default class naiveServer {
       一级分组: 'siyuanPublisher',
       二级分组: 'block'
     })
-
-
   }
   初始化基础api() {
     console.log(this.api)
@@ -80,6 +98,7 @@ export default class naiveServer {
       一级分组: 'siyuanPublisher',
       二级分组: 'block'
     })
+
     this.api.注册('/naive/script', {
       名称: '主要路径',
       功能: '包含naive自身的程序和方法等,不包括配置文件寄',
@@ -93,6 +112,95 @@ export default class naiveServer {
       一级分组: 'siyuanPublisher',
       二级分组: 'block'
     })
+    this.api.注册('/src', {
+      名称: '思源前端代码的主要路径',
+      功能: `
+      文件夹位于naive/scripts/frontend/src文件夹.
+      包含思源的前端源代码，你可以通过在hack文件夹创建同样路径结构的文件来对思源的源代码进行hack`,
+      方法: {
+        use: async (req, res) => {
+          res.setHeader(
+            'content-type', 'application/javascript; charset=UTF-8'
+          )
+          const path = require("path")
+          let filePath = path.join(`${window.siyuan.config.system.workspaceDir}/conf/appearance/themes/naive/script/frontend/src`, "\\", req.url)
+          const fs = require('fs-extra')
+          if (fs.existsSync(filePath + "\\index.ts")) {
+            filePath = filePath + "\\index.ts"
+          }
+          let options = {
+            defs: {
+              APP: false,
+              MOBILE: false,
+              BROWSER: true
+            },
+            veborse: true,
+            tripleSlash: true,
+            fillWithBlanks: false,
+            hackPath: `${window.siyuan.config.system.workspaceDir}/conf/appearance/themes/naive/script/frontend/hack`,
+            replace: {
+              path: "path-browserify"
+            }
+          }
+          if (!filePath.endsWith(".scss")) {
+            res.end(
+              (await new compilers().ts.parseFile(filePath, options))
+            )
+          }
+          else {
+            res.end(
+              await new compilers().sass.parseFile(filePath, options)
+            )
+          }
+        }
+      },
+      //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
+      权限: 'public',
+      请求值: 'todo',
+      返回值: 'todo',
+      一级分组: 'siyuanPublisher',
+      二级分组: 'block'
+    })
+    this.api.注册(
+      "/client", {
+      名称: '客户端',
+      功能: 'naive客户端文件，用于热加载',
+      方法: {
+        use: express.static(`${window.siyuan.config.system.workspaceDir}/conf/appearance/themes/naive/script/frontend/client`)
+      },
+      //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
+      权限: 'public',
+      请求值: 'todo',
+      返回值: 'todo',
+      一级分组: 'siyuanPublisher',
+      二级分组: 'block'
+    }
+    )
+    this.api.注册("/editor", {
+      名称: "编辑器",
+      功能: "魔改之后的思源编辑器页面",
+      方法: {
+        use: async (req, res) => {
+          let filePath = `${window.siyuan.config.system.workspaceDir}/conf/appearance/themes/naive/script/frontend/index.html`
+          console.log(filePath)
+          res.sendFile(
+            filePath)
+        }
+      },
+      //权限为public的api固定所有用户都可以访问并获取正确的结果,不过可以在方法中加上别的过滤选项
+      权限: 'public',
+      请求值: 'todo',
+      返回值: 'todo',
+      一级分组: 'siyuanPublisher',
+      二级分组: 'block'
+    }
+    )
+    this.app.use('/api', (req, res) => apiProxy(req, res))
+   // this.app.use("/ws", wsProxy)
+    this.app.use("/appearance", syProxy)
+    this.app.use("/stage", syProxy)
+    this.app.use("/assets", syProxy)
+
   }
 }
 /*const middlewares = require("./middleWares/index.js")

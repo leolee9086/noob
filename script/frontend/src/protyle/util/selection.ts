@@ -204,7 +204,8 @@ export const getSelectionPosition = (nodeElement: Element, range?: Range) => {
             }
         }
     } else {
-        cursorRect = range.getBoundingClientRect();
+        const rects = range.getClientRects(); // 由于长度过长折行，光标在行首时有多个 rects https://github.com/siyuan-note/siyuan/issues/6156
+        cursorRect = rects[rects.length - 1];
     }
 
     return {
@@ -305,6 +306,10 @@ export const setFirstNodeRange = (editElement: Element, range: Range) => {
     }
     let firstChild = editElement.firstChild as HTMLElement;
     while (firstChild && firstChild.nodeType !== 3 && !firstChild.classList.contains("render-node")) {
+        if (firstChild.classList.contains("img")) { // https://ld246.com/article/1665360254842
+            range.setStartBefore(firstChild);
+            return range;
+        }
         firstChild = firstChild.firstChild as HTMLElement;
     }
     if (!firstChild) {
