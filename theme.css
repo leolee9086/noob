@@ -1,5 +1,0 @@
-.protyle-wysiwyg [data-node-id]::before{
-    content:attr(custom-lastedit-describe);
-    font-size: xx-small
-    
-}
