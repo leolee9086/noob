@@ -2,12 +2,7 @@
 export default async function relaod() {
     if (window.require&&window.notMain) {
         const { webContents } = require('@electron/remote');
-
-        await window.rubickAdapter.close()
-        window.rubickAdapter = undefined
-
-       window.location.reload()
-
+        window.location.reload()
         setTimeout(() => {
             webContents.getAllWebContents().forEach(element => {
                element.reloadIgnoringCache()

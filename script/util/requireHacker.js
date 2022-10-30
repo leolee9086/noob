@@ -1,7 +1,6 @@
 import { npmCmd } from "./shell.js"
 let re = null
-let realRequire =null
-
+let realRequire = null
 if (window.require) {
         const fs = require("fs")
         const path = require("path")
@@ -9,8 +8,8 @@ if (window.require) {
         if (!window) {
                 const window = global
         }
-        if(window.require.cache){
-                realRequire=window.require
+        if (window.require.cache) {
+                realRequire = window.require
         }
         if (realRequire) {
                 const path = require("path")
@@ -23,7 +22,7 @@ if (window.require) {
                                                 try {
                                                         (_load.bind(this))(filename)
                                                 } catch (e) {
-                                                        if (e.message.indexOf('Cannot find module') >= 0&&e.message.indexOf(filename)>=0) {
+                                                        if (e.message.indexOf('Cannot find module') >= 0 && e.message.indexOf(filename) >= 0) {
                                                                 if (global.ExternalDepPathes) {
                                                                         let flag
                                                                         let modulePath
@@ -31,10 +30,14 @@ if (window.require) {
                                                                                 if (fs.existsSync(path.join(depPath, moduleName))) {
                                                                                         if (!flag) {
                                                                                                 console.file_warn ? console.file_warn(`模块${moduleName}未找到,重定向到${path.join(depPath, moduleName)}`) : console.warn(`模块${moduleName}未找到,重定向到${path.join(depPath, moduleName)}`)
-                                                                                                filename = path.join(depPath, filename)
+                                                                                                filename = path.join(depPath, filename);
+                                                                                                try{
                                                                                                         (_load.bind(this))(filename)
-
+                                                                                                
                                                                                                 flag = true
+                                                                                                }catch(e){
+
+                                                                                                }
                                                                                         } else {
 
                                                                                                 console.warn(`模块${moduleName}在${modulePath}已经找到,请检查外部路径${path.join(depPath, moduleName)}是否重复安装`)
@@ -51,13 +54,12 @@ if (window.require) {
                                                                 }
                                                                 else {
                                                                         console.error(e)
-
                                                                         throw new Error(`无法加载模块${realfilename}`)
                                                                 }
                                                         }
-                                                        else{
+                                                        else {
 
-                                                                throw(e)
+                                                                throw (e)
                                                         }
 
                                                 }
@@ -76,9 +78,9 @@ if (window.require) {
                         if (base) {
                                 moduleName = path.resolve(base, moduleName)
                         }
-
+                        workspaceDir=window.workspaceDir
                         if (global.naive && global.naive.public) {
-                                workspaceDir = naive.public.config.backend.filesys.workspaceDir
+                                workspaceDir = naive.public.config.backend.filesys.workspaceDir||window.workspaceDir
                         }
 
                         if (window.siyuan) {
@@ -121,7 +123,7 @@ if (window.require) {
                                                 } else {
                                                         moduleName = path.resolve(module.path, moduleName)
                                                 }
-                                                if (that && window.naive.plugin && that instanceof window.naive.plugin) {
+                                                if (that && window.naive && window.naive.plugin && that instanceof window.naive.plugin) {
                                                         try {
                                                                 moduleName = path.resolve(that.selfPath, moduleName)
                                                                 return window.require(moduleName)
@@ -146,17 +148,17 @@ if (window.require) {
                                         }
                                 }
                         }
-                        else return window.realRequire.require(moduleName)
+                        else return window.require(moduleName)
                 }
         }
 
 }
-if (window.require&&re) {
+if (window.require && re) {
         window.require = re
         window.realRequire = realRequire
-        if(window.realRequire&&window.realRequire.cache){
-        window.realRequire.cache.electron.__proto__.realRequire = realRequire.cache.electron.__proto__.require
-        window.realRequire.cache.electron.__proto__.require = re
+        if (window.realRequire && window.realRequire.cache) {
+                window.realRequire.cache.electron.__proto__.realRequire = realRequire.cache.electron.__proto__.require
+                window.realRequire.cache.electron.__proto__.require = re
         }
         window.require.setExternalDeps = (path) => {
                 if (!window.ExternalDepPathes) {
@@ -192,7 +194,7 @@ if (window.require&&re) {
                         console.log(e, window.require)
                         npmCmd(`--registry https://registry.npmmirror.com install ${moduleName} `, window.ExternalBase).then(w => {
                                 console.log(w.data)
-                              //  window.location.reload()
+                                //  window.location.reload()
                         }).catch(
                                 e => {
                                         console.error(e.data)

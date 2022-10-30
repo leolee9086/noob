@@ -1,0 +1,65 @@
+@import "mixin";
+@import "tooltips";
+@import "typography";
+@import "wysiwyg";
+@import "function";
+@import "button";
+@import "select";
+@import "switch";
+@import "slider";
+
+.protyle-wysiwyg {
+  font-family: var(--b3-font-family);
+}
+
+.protyle-wysiwyg a,
+.b3-typography a {
+  color: var(--b3-protyle-inline-link-color);
+  cursor: pointer;
+  transition: var(--b3-transition);
+}
+
+svg {
+  fill: currentColor;
+  display: inline-block;
+}
+
+.protyle-wysiwyg [data-node-id].iframe:hover .protyle-action__drag {
+  display: none;
+}
+
+.b3-typography table, .protyle-wysiwyg table {
+  display: table;
+}
+
+.protyle-attr {
+  position: absolute;
+  right: 0;
+  top: -9px;
+  display: flex;
+  opacity: 0;
+  font-size: 12px;
+
+  & > div {
+    margin: 0 4px;
+    display: flex;
+    align-items: center;
+    line-height: 16px;
+    color: var(--b3-theme-on-surface);
+
+    &:hover {
+      color: var(--b3-theme-on-background);
+    }
+
+    svg {
+      height: 12px;
+      width: 12px;
+      margin-right: 2px;
+      flex-shrink: 0;
+    }
+  }
+
+  &:empty {
+    display: none;
+  }
+}

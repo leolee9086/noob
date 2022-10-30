@@ -15,6 +15,7 @@ if (window.frameElement) {
 }
 
 (async function () {
+  //检查是否通过
   //初始化naive的路径
   this.naivePath = '../naive/script/index.js'
   let meta = document.createElement("meta")

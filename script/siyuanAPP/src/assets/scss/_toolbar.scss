@@ -1,0 +1,84 @@
+.protyle {
+  &-toolbar {
+    background-color: var(--b3-theme-background);
+    z-index: 3;
+    position: fixed;
+    box-shadow: var(--b3-point-shadow);
+    border-radius: 4px;
+    display: flex;
+    transition: top .15s cubic-bezier(0, 0, .2, 1) 0ms;
+
+    &__item {
+      color: var(--b3-theme-on-surface);
+      border: 0;
+      background-color: transparent;
+      height: 29px;
+      box-sizing: border-box;
+      font-size: 0;
+      padding: 0 6px;
+
+      &:focus {
+        outline: none;
+      }
+
+      svg {
+        fill: currentColor;
+        display: inline-block;
+        stroke-width: 0;
+        stroke: currentColor;
+        width: 14px;
+        height: 14px;
+      }
+
+      &--current {
+        color: var(--b3-theme-primary);
+      }
+
+      &:hover {
+        background-color: var(--b3-theme-surface-lighter);
+      }
+    }
+
+    &__divider {
+      border-left: 1px solid var(--b3-theme-surface-lighter);
+      margin: 6px 4px;
+    }
+  }
+
+  &-hint {
+    position: fixed;
+    border-radius: 4px;
+    box-shadow: var(--b3-dialog-shadow);
+    background-color: var(--b3-menu-background);
+    z-index: 201;
+    overflow: auto;
+    max-height: 402px;
+    box-sizing: border-box;
+    padding: 8px 0;
+  }
+
+  &-util {
+    @extend .b3-menu;
+    z-index: 200;
+  }
+
+  &-font {
+    font-size: 12px;
+    padding: 4px 8px;
+
+    &__style {
+      background-color: transparent;
+      margin-right: 4px;
+      transition: var(--b3-transition);
+      padding: 0 4px;
+      border-radius: 2px;
+      border: 1px solid transparent;
+      color: var(--b3-theme-on-background);
+      white-space: nowrap;
+
+      &:hover {
+        border-color: var(--b3-theme-surface-lighter);
+      }
+    }
+  }
+}

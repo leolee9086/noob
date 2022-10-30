@@ -30,10 +30,7 @@ export function  shellCmd(target,cmd,path){
         });
     });
 }
-export async function requireInstall(moduleName){
-    await pnpmCmd(`install ${moduleName}`,self.public.config.backend.filesys.workspaceDir + `/conf/naiveConf/deps`)
-    return window.require(moduleName)
-}
+
 export function npmCmd(cmd, path) {    
     if(window.npmPath){
         return shellCmd(window.npmPath,cmd,path)
