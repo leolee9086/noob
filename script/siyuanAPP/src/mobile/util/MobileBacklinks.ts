@@ -71,6 +71,8 @@ export class MobileBacklinks {
                             this.turnToRef(element, true);
                         }
                     }).element);
+                    window.siyuan.menus.menu.renderCustom("mobile-link")
+
                     window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
                 } else {
                     openMobileFileById(element.getAttribute("data-node-id"), [Constants.CB_GET_FOCUS, Constants.CB_GET_CONTEXT]);

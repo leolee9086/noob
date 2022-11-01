@@ -212,6 +212,8 @@ export class Title {
                     focusByRange(range);
                 }
             }).element);
+            window.siyuan.menus.menu.renderCustom("editor-title")
+
             window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
         });
         this.element.querySelector(".protyle-attr").addEventListener("click", (event: MouseEvent & { target: HTMLElement }) => {
@@ -338,6 +340,8 @@ export class Title {
                 label: `${window.siyuan.languages.modifiedAt} ${dayjs(response.data.ial.updated).format("YYYY-MM-DD HH:mm:ss")}<br>
 ${window.siyuan.languages.createdAt} ${dayjs(response.data.ial.id.substr(0, 14)).format("YYYY-MM-DD HH:mm:ss")}`
             }).element);
+            window.siyuan.menus.menu.renderCustom("editor-title")
+
             window.siyuan.menus.menu.popup(position);
         });
     }

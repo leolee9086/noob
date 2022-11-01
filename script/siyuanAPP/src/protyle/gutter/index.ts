@@ -182,6 +182,8 @@ export class Gutter {
                 openAttr(protyle.wysiwyg.element.querySelector(`[data-node-id="${id}"]`), protyle);
             } else {
                 this.renderMenu(protyle, buttonElement);
+                window.siyuan.menus.menu.renderCustom("editor-block")
+
                 window.siyuan.menus.menu.popup({x: event.clientX - 16, y: event.clientY - 16}, true);
                 // https://ld246.com/article/1648433751993
                 if (!protyle.toolbar.range) {
@@ -197,6 +199,8 @@ export class Gutter {
             }
             if (!window.siyuan.ctrlIsPressed && !window.siyuan.altIsPressed && !window.siyuan.shiftIsPressed) {
                 this.renderMenu(protyle, buttonElement);
+                window.siyuan.menus.menu.renderCustom("editor-block")
+
                 window.siyuan.menus.menu.popup({x: event.clientX - 16, y: event.clientY - 16}, true);
             }
             event.preventDefault();

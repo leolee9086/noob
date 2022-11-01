@@ -118,6 +118,9 @@ export default class commonMenuRegistry extends Menu {
             }
         }
     }
+    public renderCustom(menuType,option){
+        this.element.setAttribute("menu-type",menuType)
+    }
     public renderBlockCustomMenu(type){
         let customBlockSetting =this.registry.blockMenu[type]
         console.log(customBlockSetting.customMenuItem)

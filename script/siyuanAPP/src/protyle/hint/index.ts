@@ -626,6 +626,8 @@ ${unicode2Emoji(emoji.unicode, true)}</button>`;
                 } else if (value.startsWith("<iframe") || value.startsWith("<video") || value.startsWith("<audio")) {
                     protyle.gutter.renderMenu(protyle, nodeElement);
                     const rect = nodeElement.getBoundingClientRect();
+                    window.siyuan.menus.menu.renderCustom("editor-hint")
+
                     window.siyuan.menus.menu.popup({
                         x: rect.left,
                         y: rect.top

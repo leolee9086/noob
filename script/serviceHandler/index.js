@@ -110,6 +110,17 @@ export default class naiveService extends EventEmitter {
                 this.重新初始化()
             }
         })
+        let options = {
+            persistent: true,
+            recursive: true,
+        };
+
+        fs.watch(
+            this.path,options,(type,fileName)=>{
+                    this.文件被修改=true
+                    this.自杀计数 = 10
+            }
+        )
     }
     自杀计数器 = () => {
         this.自杀计数 += 1
@@ -121,7 +132,12 @@ export default class naiveService extends EventEmitter {
             return
         }
         if (this.自杀计数 >= 5) {
-            console.log(`服务${this.path}失联,重新启动`)
+            if(this.文件被修改){
+            console.log(`服务${this.path}源代码改动,重新启动`)
+                this.文件被修改=false
+            }else{
+                console.log(`服务${this.path}失联,重新启动`)
+            }
             if (this.serverHost && !this.destoyed) {
                 this.serverHost.close()
                 this.serverHost = undefined

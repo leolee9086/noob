@@ -512,6 +512,7 @@ export class Wnd {
                 current: item.classList.contains("item--focus")
             }).element);
         });
+        window.siyuan.menus.menu.renderCustom("wnd",this)
         window.siyuan.menus.menu.popup({
             x: event.clientX,
             y: event.clientY,

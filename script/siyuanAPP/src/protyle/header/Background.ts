@@ -467,6 +467,8 @@ export class Background {
                 this.addTags(listItemElement.textContent, protyle);
             });
             const rect = this.iconElement.nextElementSibling.getBoundingClientRect();
+            window.siyuan.menus.menu.renderCustom("editor-background")
+
             window.siyuan.menus.menu.popup({x: rect.left, y: rect.top + rect.height});
             inputElement.focus();
         });

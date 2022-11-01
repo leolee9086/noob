@@ -65,6 +65,8 @@ app.use('/siyuan/',compile(options))
 app.use('/stage/',express.static(path.join(appDir,'stage')))
 app.use('/appearance/',express.static(path.join(workspaceDir,"\\conf\\appearance")))
 app.use('/api', (req, res) => apiProxy(req, res))
+app.use('/assets', (req, res) => syProxy(req, res))
+
 app.use('/fonts/', express.static(path.join(workspaceDir,"\\conf\\appearance\\themes\\naive\\script\\siyuanAPP\\src\\assets\\fonts")))
 
 app.use(wsProxy)

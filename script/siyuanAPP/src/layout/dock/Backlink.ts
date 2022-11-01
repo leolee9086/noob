@@ -255,6 +255,8 @@ export class Backlink extends Model {
                         case "sort":
                         case "mSort":
                             this.showSortMenu(type, target.getAttribute("data-sort"));
+                            window.siyuan.menus.menu.renderCustom("backlink-sort")
+
                             window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
                             event.stopPropagation();
                             break;

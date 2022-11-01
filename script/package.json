@@ -2,6 +2,7 @@
   "dependencies": {
     "@simonwep/pickr": "^1.8.2",
     "compression": "^1.7.4",
+    "cross-spawn": "^7.0.3",
     "es-module-lexer": "^1.1.0",
     "esbuild": "^0.15.12",
     "express": "^4.18.2",

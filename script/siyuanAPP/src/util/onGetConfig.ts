@@ -255,6 +255,8 @@ const initBar = () => {
                         setMode(2);
                     }
                 }).element);
+                window.siyuan.menus.menu.renderCustom("toolbar-mode")
+
                 window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY + 18});
                 event.stopPropagation();
                 break;
@@ -294,6 +296,8 @@ const initBar = () => {
                             }).element);
                         }
                     });
+                    window.siyuan.menus.menu.renderCustom("toolbar-dailynote")
+
                     window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY + 18});
                 }
                 event.stopPropagation();

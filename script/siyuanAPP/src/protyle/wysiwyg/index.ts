@@ -840,6 +840,8 @@ export class WYSIWYG {
                                 }
                             }
                         }).element);
+                        window.siyuan.menus.menu.renderCustom("editor-table")
+
                         window.siyuan.menus.menu.popup({x: mouseUpEvent.clientX - 8, y: mouseUpEvent.clientY - 16});
                     }
                 }
@@ -1111,6 +1113,8 @@ export class WYSIWYG {
                 // 多选块
                 hideElements(["util"], protyle);
                 protyle.gutter.renderMenu(protyle, selectElements[0]);
+                window.siyuan.menus.menu.renderCustom("editor-multiBlock")
+
                 window.siyuan.menus.menu.popup({x, y});
                 return;
             }
@@ -1121,6 +1125,8 @@ export class WYSIWYG {
                     focusSideBlock(embedElement);
                 }
                 protyle.gutter.renderMenu(protyle, embedElement);
+                window.siyuan.menus.menu.renderCustom("editor-embed")
+
                 window.siyuan.menus.menu.popup({x, y});
                 return false;
             }
@@ -1175,6 +1181,8 @@ export class WYSIWYG {
             ) {
                 if (!isMobile() || protyle.toolbar?.element.classList.contains("fn__none")) {
                     contentMenu(protyle, nodeElement);
+                    window.siyuan.menus.menu.renderCustom("editor-contentMenu")
+
                     window.siyuan.menus.menu.popup({x, y: y + 13, h: 26});
                     protyle.toolbar?.element.classList.add("fn__none");
                     if (nodeElement.classList.contains("table")) {
@@ -1187,6 +1195,8 @@ export class WYSIWYG {
                 if (protyle.gutter) {
                     protyle.gutter.renderMenu(protyle, nodeElement);
                 }
+                window.siyuan.menus.menu.renderCustom("editor-contentMenu")
+
                 window.siyuan.menus.menu.popup({x, y});
                 protyle.toolbar?.element.classList.add("fn__none");
             }
@@ -1656,6 +1666,8 @@ export class WYSIWYG {
             if (menuElement) {
                 protyle.gutter.renderMenu(protyle, menuElement.parentElement.parentElement);
                 const rect = menuElement.getBoundingClientRect();
+                window.siyuan.menus.menu.renderCustom("editor-action")
+
                 window.siyuan.menus.menu.popup({
                     x: rect.left,
                     y: rect.top
@@ -1748,6 +1760,8 @@ export class WYSIWYG {
                             updateTransaction(protyle, actionElement.parentElement.getAttribute("data-node-id"), actionElement.parentElement.outerHTML, html);
                         } else {
                             protyle.gutter.renderMenu(protyle, actionElement.parentElement);
+                            window.siyuan.menus.menu.renderCustom("editor-block")
+
                             window.siyuan.menus.menu.popup({
                                 x: event.clientX - 16,
                                 y: event.clientY - 16

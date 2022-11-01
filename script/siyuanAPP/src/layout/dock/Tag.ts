@@ -119,6 +119,8 @@ export class Tag extends Model {
                         });
                     },
                 }).element);
+                window.siyuan.menus.menu.renderCustom("tag")
+
                 window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
             },
         });
@@ -189,6 +191,8 @@ export class Tag extends Model {
                                     this.update();
                                 },
                             }).element);
+                            window.siyuan.menus.menu.renderCustom("tag")
+
                             window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
                             event.preventDefault();
                             event.stopPropagation();

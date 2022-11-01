@@ -141,6 +141,8 @@ ${(Lute.New()).MarkdownStr("", response.data.shorthandContent)}
                                         }).element);
                                     }
                                 });
+                                window.siyuan.menus.menu.renderCustom("inbox")
+
                                 window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
                                 break;
                             case "back":
@@ -231,6 +233,8 @@ ${(Lute.New()).MarkdownStr("", data.shorthandContent)}
                 });
             }
         }).element);
+        window.siyuan.menus.menu.renderCustom("inbox")
+
         window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
     }
 

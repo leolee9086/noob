@@ -264,6 +264,8 @@ export const refMenu = (protyle: IProtyle, element: HTMLElement) => {
         }
     }).element);
     const rect = element.getBoundingClientRect();
+    window.siyuan.menus.menu.renderCustom("editor-ref")
+
     window.siyuan.menus.menu.popup({
         x: rect.left,
         y: rect.top + 26,
@@ -696,6 +698,8 @@ export const imgMenu = (protyle: IProtyle, range: Range, assetElement: HTMLEleme
         window.siyuan.menus.menu.append(new MenuItem({type: "separator"}).element);
         openMenu(imgSrc, false, false);
     }
+    window.siyuan.menus.menu.renderCustom("editor-image")
+
     window.siyuan.menus.menu.popup({x: position.clientX, y: position.clientY});
     window.siyuan.menus.menu.element.querySelector("input").focus();
 };
@@ -877,6 +881,8 @@ export const linkMenu = (protyle: IProtyle, linkElement: HTMLElement, focusText 
         }
     }).element);
     const rect = linkElement.getBoundingClientRect();
+    window.siyuan.menus.menu.renderCustom("editor-link")
+
     window.siyuan.menus.menu.popup({
         x: rect.left,
         y: rect.top + 26,

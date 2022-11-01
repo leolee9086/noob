@@ -146,6 +146,8 @@ export class Bookmark extends Model {
                         });
                     }
                 }).element);
+                window.siyuan.menus.menu.renderCustom("bookmark")
+
                 window.siyuan.menus.menu.popup({x: event.clientX, y: event.clientY});
             },
             ctrlClick(element: HTMLElement) {
