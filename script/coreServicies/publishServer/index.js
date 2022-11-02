@@ -128,7 +128,11 @@ app.use("/obsidian/",async(req,res,next)=>{
     }
    if(fs.existsSync(filePath)){
         console.log(filePath)
+        if(filePath.endsWith(".md")){
         res.end(await ob管线渲染(req,res))
+        }else{
+            res.sendFile(filePath)
+        }
     }
     else{
         res.status("404")
@@ -330,6 +334,24 @@ api.describeApi(
     },
 )
 let publishServer = http.createServer(app);
+
+
+app.get("/*",async(req,res,next)=>{
+
+    let reg =/^\d{14}\-[0-9a-z]{7}$/
+    let _path = decodeURI(req.path)
+    console.log(_path)
+    if(reg.test(_path)){
+        next()
+    }
+    
+    else{
+        
+    let id =await pathToId(_path)
+    let data=await fetch(`http://127.0.0.1/block?id=${id}`)
+    res.end(await data.text())
+    }
+})
 async function cacheAll() {
     let stmt = `select * from blocks where type = 'd'`
     await 核心api.sql({ stmt: stmt }, "", (data) => {
@@ -346,20 +368,4 @@ publishServer.listen(port, () => {
     setTimeout(
         cacheAll, 1000
     )
-})
-app.get("/*",async(req,res,next)=>{
-
-    let reg =/^\d{14}\-[0-9a-z]{7}$/
-    let _path = decodeURI(req.path)
-    console.log(_path)
-    if(reg.test(_path)){
-        next()
-    }
-    
-    else{
-        
-    let id =await pathToId(_path)
-    let data=await fetch(`http://127.0.0.1/block?id=${id}`)
-    res.end(await data.text())
-    }
 })

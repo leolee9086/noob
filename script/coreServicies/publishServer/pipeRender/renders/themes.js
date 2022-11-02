@@ -23,9 +23,6 @@ export function 修改发布主题(req, res, 渲染结果) {
     let publishFixStyle = 渲染结果.head.querySelector("#publishFixStyle")
     publishFixStyle.setAttribute('href', `/appearance/themes/${theme}/publishFix.css`)
     渲染结果.currentTheme = theme
-    渲染结果.obsidian=true
-    if(渲染结果.obsidian){  
-        themeStyle.setAttribute('href', `/obsidian/themes/${设置.obsidian主题}/theme.css`)
-    }
+
     return 渲染结果
 }

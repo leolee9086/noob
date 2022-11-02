@@ -78,8 +78,9 @@ export default class pathConstructor {
   mkfilep(filePath, data) {
     let fs = require("fs");
     let mkdirp = require("mkdirp");
+    let path =require("path")
     let lastSlashIndex = filePath.lastIndexOf("/");
-    let dirPath = filePath.slice(0, lastSlashIndex);
+    let dirPath = path.dirname(filePath)
     mkdirp.sync(dirPath);
     if (data) {
       fs.writeFileSync(filePath, data);
