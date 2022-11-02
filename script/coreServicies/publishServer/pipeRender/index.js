@@ -41,6 +41,19 @@ function 鉴权(req,res,渲染结果){
   return 渲染结果;
 
 }
+function 重写资源链接(req,res,渲染结果){
+  let assets =渲染结果.body.querySelectorAll('[src]')
+  assets.forEach(
+    asset=>{
+      if(asset.getAttribute("src").startsWith('assets')){
+        //将相对地址的assets链接替换为绝对地址
+        asset.setAttribute("src","/"+asset.getAttribute("src"))
+      }
+    }
+  )
+  return 渲染结果;
+
+}
 export default  [
   注入文档元数据,
   注入块属性,
@@ -56,6 +69,7 @@ export default  [
   生成文档树,
   生成文档大纲,
   生成导航栏,
-  生成脚注
+  生成脚注,
+  重写资源链接
 ]
 

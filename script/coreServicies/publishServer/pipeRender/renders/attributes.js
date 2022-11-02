@@ -10,6 +10,13 @@ export async function 注入块属性(req, res, 渲染结果) {
     if (blockid == "unidefined") {
       blockid = ''
     }
+    //如果没有设置聚焦模式,那么直接返回整个文档
+    if(!req.query.focus){
+      let breadcrumb =await 核心api.getBlockBreadcrumb(
+          {id:blockid},""
+      )
+      blockid = breadcrumb[0].id
+    }
     let block = await 核心api.getDoc(
       { id: blockid, k: "", size: 102400, mode: 0 },
       ""

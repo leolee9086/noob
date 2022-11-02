@@ -6,21 +6,26 @@ export function 修改发布主题(req, res, 渲染结果) {
     let theme
     let themeDefault
     theme = 设置.发布主题
-    themeDefault = 设置.发布模式
+    themeDefault = 设置.发布模式=="明亮"?"daylight":"midnight"
     if (渲染结果.block && 渲染结果.block.docInfor && 渲染结果.block.docInfor.ial) {
-        theme = 渲染结果.block.docInfor.ial['custom-publish-theme'] ||theme       
+        theme = 渲染结果.block.docInfor.ial['custom-publish-theme'] || theme
     }
-    if(!theme){
+    if (!theme) {
         theme = "daylight"
     }
-    if(!themeDefault){
+    if (!themeDefault) {
         themeDefault = "daylight"
     }
     let themeStyle = 渲染结果.head.querySelector("#themeStyle")
     let themeDefaultStyle = 渲染结果.head.querySelector("#themeDefaultStyle")
-        themeStyle.setAttribute('href', `/appearance/themes/${themeDefault}/theme.css`)
-        themeDefaultStyle.setAttribute('href', `/appearance/themes/${theme}/theme.css`)
+    themeStyle.setAttribute('href', `/appearance/themes/${theme}/theme.css`)
+    themeDefaultStyle.setAttribute('href', `/appearance/themes/${themeDefault}/theme.css`)
     let publishFixStyle = 渲染结果.head.querySelector("#publishFixStyle")
     publishFixStyle.setAttribute('href', `/appearance/themes/${theme}/publishFix.css`)
+    渲染结果.currentTheme = theme
+    渲染结果.obsidian=true
+    if(渲染结果.obsidian){  
+        themeStyle.setAttribute('href', `/obsidian/themes/${设置.obsidian主题}/theme.css`)
+    }
     return 渲染结果
 }

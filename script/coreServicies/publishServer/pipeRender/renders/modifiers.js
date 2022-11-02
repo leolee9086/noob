@@ -31,19 +31,15 @@ export async function 获取嵌入块内容(嵌入块, docid) {
   if (嵌入块信息 && 嵌入块信息["data"] && 嵌入块信息["data"][0]) {
     当前父id = 嵌入块信息["data"][0]["parent_id"];
   }
-  当前文档id ? id数组.push(当前文档id) : null;
-  当前父id ? id数组.push(当前父id) : null;
-  嵌入块id ? id数组.push(嵌入块id) : null;
-  嵌入块.getAttribute("data-node-id")
-    ? id数组.push(嵌入块.getAttribute("data-node-id"))
-    : null;
+  id数组=[嵌入块id,当前文档id]
   let res =
     (await 核心api.searchEmbedBlock(
       {
+        breadcrumb:false,
         stmt: smt,
         excludeIDs: id数组,
-        headingMode: 0
-
+        headingMode: 0,
+        embedBlockID:嵌入块id
       },
       "",
 
@@ -54,7 +50,7 @@ export async function 获取嵌入块内容(嵌入块, docid) {
   let 嵌入块内容 = "";
   blocks.forEach((el) => {
     console.log(el);
-    嵌入块内容 = 嵌入块内容 + el.content;
+    嵌入块内容 = 嵌入块内容 + el.block.content;
   });
 
   嵌入块.innerHTML = 嵌入块内容 + 嵌入块.innerHTML;

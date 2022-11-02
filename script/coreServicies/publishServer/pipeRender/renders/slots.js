@@ -6,7 +6,7 @@ export async function 生成导航栏(req,res,渲染结果){
     let 导航栏容器 = 渲染结果.querySelector('.publishNavi')
     let html = `<li data-type="tab-header" data-position="center" class="item">
     <span class="item__icon favicon" style="width: 30px;height: 30px;">
-        <img src="/stage/favicon.png">
+        <img src="/favicon/">
     </span>
     <a href="/block/${设置.首页.思源文档id}">
         ${设置.首页.显示名称||'首页'}
@@ -68,6 +68,13 @@ export  async function 生成脚注(req,res,渲染结果){
     )
     let footer = fs.readFileSync(设置.templatePath+'/footer.html','utf8')
     html+=footer
+    let theme = 渲染结果.currentTheme
+    let themeURL = fs.readJSONSync(workspaceDir+`/conf/appearance/themes/${theme}/theme.json`).url
+    html+= `<div data-type="footer-item" data-position="center" class="item">
+    <span>
+        <span class="item__text"><a href="${themeURL}">当前外观主题为${theme},如果喜欢的话,去给作者一点支持吧♥</a></span>
+    </span>
+</div>`
     文档容器.parentElement.innerHTML+=html+"</div>"
     return 渲染结果
 }

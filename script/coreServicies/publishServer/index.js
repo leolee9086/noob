@@ -13,11 +13,13 @@ import { 判定id权限 } from './middlewares/jsonReq.js'
 import jsonReq from './middlewares/jsonReq.js'
 import 渲染管线 from "./pipeRender/index.js"
 import { 生成管线渲染器 } from './util/pipe.js'
-import { proxy } from "./middleWares/syProxy.js"
+import syProxy, { proxy } from "./middleWares/syProxy.js"
 import PathConstructor from './util/pathConstructor.js'
 import { Model } from "http://127.0.0.1:6809/siyuan/src/layout/Model.ts";
 import { genUUID } from "http://127.0.0.1:6809/siyuan/src/util/genID.ts";
-
+import {pathToId} from "./util/pathToNotePath.js"
+import 设置 from "./config.js"
+import ob渲染管线 from "./obPipeRender/index.js"
 /*let model = new Model(
     {
         id: genUUID(),
@@ -51,6 +53,7 @@ console.log(model)*/
 const pathConstructor = new PathConstructor(workspaceDir)
 const path = require("path")
 let 管线渲染 = 生成管线渲染器(渲染管线)
+let ob管线渲染 = 生成管线渲染器(ob渲染管线)
 const { 转发JSON请求 } = jsonReq
 const 核心api = new kernelApiList()
 const unAuthedPageTemplate = {
@@ -59,9 +62,6 @@ const unAuthedPageTemplate = {
 }
 const 默认发布设置 = "private"
 window.私有块字典 = {}
-const 设置 = {
-    首页: "20200812220555-lj3enxa"
-}
 const express = require('express')
 const http = require("http");
 let app = express()
@@ -92,6 +92,11 @@ app.use("/", (req, res, next) => {
         next()
     }
 })
+
+app.use("/favicon/*",(req,res)=>{res.sendFile(设置.网站图标)})
+app.use("/fonts/*",express.static(path.join(appDir, "stage","build","fonts")))
+
+app.use("/assets",proxy)
 app.use("/stage", (req, res, next) => {
     //console.log(req)
     if (req.url.endsWith("base.css")) {
@@ -108,6 +113,28 @@ app.use("/stage",
     express.static(path.join(appDir, "stage"))
 )
 app.use("/appearance", express.static(path.join(workspaceDir, "conf", "appearance")))
+app.use("/obsidian/themes",express.static(设置.obsidian库地址))
+app.use("/obsidian/",async(req,res,next)=>{
+    let path  = decodeURI(req.path)
+    req._path= path
+    let _path =require("path")
+    let fs =require("fs-extra")
+    let filePath = _path.join(设置.obsidian库地址,path)
+    if(!fs.existsSync(filePath)){
+        filePath=filePath+'.md'
+    }
+    if(!fs.existsSync(filePath)){
+        filePath=filePath+'/index.md'
+    }
+   if(fs.existsSync(filePath)){
+        console.log(filePath)
+        res.end(await ob管线渲染(req,res))
+    }
+    else{
+        res.status("404")
+        res.end("文件不存在")
+    }
+})
 api.describeApi(
     //这表示这些api采用了完全一样的配置
     ['/block/:blockid', '/block/'],
@@ -319,4 +346,20 @@ publishServer.listen(port, () => {
     setTimeout(
         cacheAll, 1000
     )
+})
+app.get("/*",async(req,res,next)=>{
+
+    let reg =/^\d{14}\-[0-9a-z]{7}$/
+    let _path = decodeURI(req.path)
+    console.log(_path)
+    if(reg.test(_path)){
+        next()
+    }
+    
+    else{
+        
+    let id =await pathToId(_path)
+    let data=await fetch(`http://127.0.0.1/block?id=${id}`)
+    res.end(await data.text())
+    }
 })
