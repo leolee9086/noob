@@ -124,10 +124,12 @@ function 解析文本(item,flag) {
     if(!markdown||flag){
         markdown= fs.readFileSync(item.filePath, "utf-8",)
     }
-    let lines = markdown.split(/\r\n\r\n|\n\n|\r\r/)
+    let stringLines,  lines; 
+    stringLines=  lines  = markdown.split(/\r\n\r\n|\n\n|\r\r/)
+    
     for (let i = 0, len = lines.length; i < len; i++) {
         let line = lines[i]
-
+        let links =[]
         if (line) {
             ipcRenderer.send(
                 window.id, { type: "tickTok" }
@@ -180,19 +182,34 @@ function 解析文本(item,flag) {
                         if (fs.existsSync(_path.join(设置.obsidian库地址, _path.dirname(path), `${fileName}`, `index.md`))) {
                             name = _path.join(_path.dirname(path), `${fileName}/index.md`)
                         }*/
+                        links.push(
+                            {
+                                href:path,
+                                query:query,
+                                hrefName:fileName,
+                                alias:alias
+                            }
+                        )
+
                         magicline.overwrite(start, end, `[${alias}](${path}${query})`)
                     }
                 )
             }
+            let string = magicline.toString()
             lines[i] = {
-                markdown: magicline.toString(),
-                html: lute.Md2HTML(magicline.toString()),
-                blockDOM: lute.Md2BlockDOM(magicline.toString())
+                markdown: string,
+                html: lute.Md2HTML(string),
+                blockDOM: lute.Md2BlockDOM(string),
+                links:links,
             }
+            stringLines[i]=magicline.toString()
         }
-
     }
     item.lines = lines
+    let string = stringLines.join("\r\n\r\n")
+    console.log(string)
+    item.blockDOM = lute.Md2BlockDOM(string)
+    item.html = lute.Md2HTML(string)
     return item
 }
 export default function (req, res, 渲染结果) {
@@ -226,14 +243,18 @@ export default function (req, res, 渲染结果) {
     if (item && item.lines) {
         item.lines.forEach(
             line => {
-                if (line && line.html) {
-                    DOM += line.html
+                if (line && line.blockDOM) {
+                    DOM += line.blockDOM
                 }
             }
         )
     }
     let content = html.querySelector("[data-doc-type]");
-    content.innerHTML = DOM
+    //content.innerHTML = DOM
+    if(!item.blockDOM){
+        解析文本(item)
+    }
+    content.innerHTML = item.blockDOM
     return 渲染结果
 }
 export function aaa(req, res, 渲染结果) {

@@ -10,14 +10,7 @@
         import "http://127.0.0.1:6809/siyuan/src/assets/scss/base.scss";
     </script>
     <link id="themeDefaultStyle" rel="stylesheet" type="text/css" href="http://127.0.0.1:6806/appearance/themes/daylight/theme.css?v=2.4.8">
-    <script type="module">
-        import { Layout } from "http://127.0.0.1:6809/siyuan/src/layout/index.ts"
-        console.log(Layout)
-        let center =new Layout({element: document.getElementById("layouts")})
-        let child  = new Layout({
-                direction: "lr",
-            });
-            center.addLayout(child)
+    <script type="module" >
         if (window.require) {
             import("./index.js")
         }

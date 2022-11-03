@@ -18,6 +18,10 @@ import {
     json解析器,
     passport
 } from '../../publishServer/middleWares/index.js'
+//启动esmsh服务器
+import {esm} from "./esm/index.js"
+import addEsmSurrport from "./esm/esmProxy.js"
+esm("6810")
 app.use(session)
 //解析json
 app.use(json); //body-parser 解析json格式数据
@@ -32,7 +36,8 @@ app.use(json解析器);
 //向请求写入auth
 app.use(passport.authenticate('session'));
 
-addDevSurppoert(app)
+//addDevSurppoert(app)
+addEsmSurrport(app,"6810")
 ipcRenderer.on(
     "setPath",(event,dirs)=>{
         dirs.forEach(dirSet => {
@@ -68,7 +73,6 @@ app.use('/api', (req, res) => apiProxy(req, res))
 app.use('/assets', (req, res) => syProxy(req, res))
 
 app.use('/fonts/', express.static(path.join(workspaceDir,"\\conf\\appearance\\themes\\naive\\script\\siyuanAPP\\src\\assets\\fonts")))
-
 app.use(wsProxy)
 complieServer.on('upgrade', wsProxy.upgrade)
 complieServer.listen(6809,()=>{

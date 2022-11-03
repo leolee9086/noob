@@ -13,43 +13,13 @@ import { 判定id权限 } from './middlewares/jsonReq.js'
 import jsonReq from './middlewares/jsonReq.js'
 import 渲染管线 from "./pipeRender/index.js"
 import { 生成管线渲染器 } from './util/pipe.js'
-import syProxy, { proxy } from "./middleWares/syProxy.js"
+import { proxy } from "./middleWares/syProxy.js"
 import PathConstructor from './util/pathConstructor.js'
-import { Model } from "http://127.0.0.1:6809/siyuan/src/layout/Model.ts";
 import { genUUID } from "http://127.0.0.1:6809/siyuan/src/util/genID.ts";
 import {pathToId} from "./util/pathToNotePath.js"
 import 设置 from "./config.js"
 import ob渲染管线 from "./obPipeRender/index.js"
-/*let model = new Model(
-    {
-        id: genUUID(),
-        type: "main",
-        msgCallback: (data) => {
-            console.log(data)
-            switch (data.cmd) {
-                case "transactions":
-                    let id = data.data[0].doOperations
-                case "heading2doc":
-                case "li2doc":
-                case "rename":
-                case "moveDoc":
-                case "unmount":
-                case "remove":
-                case "progress":
-                case "syncing":
-                case "create":
-                case "createdailynote":
-                case "txerr":
-                case "statusbar":
-                case "downloadProgress":
-                case "refreshtheme":
-            }
-
-        },
-        host:"127.0.0.1:6806"
-    }
-)
-console.log(model)*/
+import addEsmSurrport from '../../compiler/esm/esmProxy.js'
 const pathConstructor = new PathConstructor(workspaceDir)
 const path = require("path")
 let 管线渲染 = 生成管线渲染器(渲染管线)
@@ -83,16 +53,17 @@ const port = "80"
 const host = "http://" + '127.0.0.1' + ":" + "80"
 const sslPort = "443"
 let api = new Api(app)
+addEsmSurrport(app,6810)
+
 app.use("/", (req, res, next) => {
     /// console.log(req.socket.remoteAddress)
-    // console.log(req.url)
-    if (req.url === "/") {
+     console.log(req.originalUrl)
+    if (req.originalUrl === "/") {
         res.redirect(`/block/?id=${设置.首页}`)
     } else {
         next()
     }
 })
-
 app.use("/favicon/*",(req,res)=>{res.sendFile(设置.网站图标)})
 app.use("/fonts/*",express.static(path.join(appDir, "stage","build","fonts")))
 
@@ -112,6 +83,7 @@ app.use("/stage", (req, res, next) => {
 app.use("/stage",
     express.static(path.join(appDir, "stage"))
 )
+app.use("/ui",express.static(path.join(workspaceDir,"\\conf\\appearance\\themes\\naive\\script\\coreServicies\\publishServer\\ui")))
 app.use("/appearance", express.static(path.join(workspaceDir, "conf", "appearance")))
 app.use("/obsidian/themes",express.static(设置.obsidian库地址))
 app.use("/obsidian/",async(req,res,next)=>{
@@ -139,6 +111,31 @@ app.use("/obsidian/",async(req,res,next)=>{
         res.end("文件不存在")
     }
 })
+app.use("/mdApi/backLinks",async(req,res)=>{
+        let list = window.obsidianFileList
+        let query=req.query
+        console.log(query)
+        if(query){
+            let k = query.k
+            let item =list.find(
+                el=>{
+                    return el.lines&&el.lines.find(
+                        line=>{
+                           return line.markdown&&line.markdown.indexOf(k)>=0
+                        }
+                    )
+                }
+            )
+            console.log(item)
+            res.setHeader("Content-Type", "application/json; charset=utf-8"
+            )
+            res.end(JSON.stringify(item||{}))
+        }
+        
+        
+    }
+)
+
 api.describeApi(
     //这表示这些api采用了完全一样的配置
     ['/block/:blockid', '/block/'],
@@ -341,7 +338,7 @@ app.get("/*",async(req,res,next)=>{
     let reg =/^\d{14}\-[0-9a-z]{7}$/
     let _path = decodeURI(req.path)
     console.log(_path)
-    if(reg.test(_path)){
+    if(!reg.test(_path)){
         next()
     }
     
@@ -357,7 +354,9 @@ async function cacheAll() {
     await 核心api.sql({ stmt: stmt }, "", (data) => {
         data.forEach(
             doc => {
-                fetch(`http://127.0.0.1/block?id=${doc.id}&&clear=true`)
+                fetch(`http://127.0.0.1/block?id=${doc.id}&&clear=true`).then(
+                    ()=>{核心api.pushMsg({msg:`${doc.id}发布缓存刷新`},'')}
+                )
             }
         )
     })
@@ -365,6 +364,7 @@ async function cacheAll() {
 publishServer.listen(port, () => {
     console.log("发布服务已经启动")
     ipcRenderer.send('服务启动完成', "发布服务已经启动")
+    import("http://127.0.0.1/ui/ui.js")
     setTimeout(
         cacheAll, 1000
     )
