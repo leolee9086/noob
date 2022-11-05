@@ -131,7 +131,7 @@ export default class naiveService extends EventEmitter {
             }
             return
         }
-        if (this.自杀计数 >= 5) {
+        if (this.自杀计数 >= 50) {
             if(this.文件被修改){
             console.log(`服务${this.path}源代码改动,重新启动`)
                 this.文件被修改=false

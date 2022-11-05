@@ -16,7 +16,7 @@ import { 生成管线渲染器 } from './util/pipe.js'
 import { proxy } from "./middleWares/syProxy.js"
 import PathConstructor from './util/pathConstructor.js'
 import { genUUID } from "http://127.0.0.1:6809/siyuan/src/util/genID.ts";
-import {pathToId} from "./util/pathToNotePath.js"
+import { pathToId } from "./util/pathToNotePath.js"
 import 设置 from "./config.js"
 import ob渲染管线 from "./obPipeRender/index.js"
 import addEsmSurrport from '../../compiler/esm/esmProxy.js'
@@ -53,21 +53,21 @@ const port = "80"
 const host = "http://" + '127.0.0.1' + ":" + "80"
 const sslPort = "443"
 let api = new Api(app)
-addEsmSurrport(app,6810)
+addEsmSurrport(app, 6810)
 
 app.use("/", (req, res, next) => {
     /// console.log(req.socket.remoteAddress)
-     console.log(req.originalUrl)
+    console.log(req.originalUrl)
     if (req.originalUrl === "/") {
         res.redirect(`/block/?id=${设置.首页}`)
     } else {
         next()
     }
 })
-app.use("/favicon/*",(req,res)=>{res.sendFile(设置.网站图标)})
-app.use("/fonts/*",express.static(path.join(appDir, "stage","build","fonts")))
+app.use("/favicon/*", (req, res) => { res.sendFile(设置.网站图标) })
+app.use("/fonts/*", express.static(path.join(appDir, "stage", "build", "fonts")))
 
-app.use("/assets",proxy)
+app.use("/assets", proxy)
 app.use("/stage", (req, res, next) => {
     //console.log(req)
     if (req.url.endsWith("base.css")) {
@@ -83,57 +83,54 @@ app.use("/stage", (req, res, next) => {
 app.use("/stage",
     express.static(path.join(appDir, "stage"))
 )
-app.use("/ui",express.static(path.join(workspaceDir,"\\conf\\appearance\\themes\\naive\\script\\coreServicies\\publishServer\\ui")))
+app.use("/ui", express.static(path.join(workspaceDir, "\\conf\\appearance\\themes\\naive\\script\\coreServicies\\publishServer\\ui")))
 app.use("/appearance", express.static(path.join(workspaceDir, "conf", "appearance")))
-app.use("/obsidian/themes",express.static(设置.obsidian库地址))
-app.use("/obsidian/",async(req,res,next)=>{
-    let path  = decodeURI(req.path)
-    req._path= path
-    let _path =require("path")
-    let fs =require("fs-extra")
-    let filePath = _path.join(设置.obsidian库地址,path)
-    if(!fs.existsSync(filePath)){
-        filePath=filePath+'.md'
+app.use("/obsidian/themes", express.static(设置.obsidian库地址))
+app.use("/obsidian/", async (req, res, next) => {
+    let path = decodeURI(req.path)
+    req._path = path
+    let _path = require("path")
+    let fs = require("fs-extra")
+    let filePath = _path.join(设置.obsidian库地址, path)
+    if (!fs.existsSync(filePath)) {
+        filePath = filePath + '.md'
     }
-    if(!fs.existsSync(filePath)){
-        filePath=filePath+'/index.md'
+    if (!fs.existsSync(filePath)) {
+        filePath = filePath + '/index.md'
     }
-   if(fs.existsSync(filePath)){
+    if (fs.existsSync(filePath)) {
         console.log(filePath)
-        if(filePath.endsWith(".md")){
-        res.end(await ob管线渲染(req,res))
-        }else{
+        if (filePath.endsWith(".md")) {
+            res.end(await ob管线渲染(req, res))
+        } else {
             res.sendFile(filePath)
         }
     }
-    else{
+    else {
         res.status("404")
         res.end("文件不存在")
     }
 })
-app.use("/mdApi/backLinks",async(req,res)=>{
-        let list = window.obsidianFileList
-        let query=req.query
-        console.log(query)
-        if(query){
-            let k = query.k
-            let item =list.find(
-                el=>{
-                    return el.lines&&el.lines.find(
-                        line=>{
-                           return line.markdown&&line.markdown.indexOf(k)>=0
-                        }
-                    )
-                }
-            )
-            console.log(item)
-            res.setHeader("Content-Type", "application/json; charset=utf-8"
-            )
-            res.end(JSON.stringify(item||{}))
-        }
-        
-        
+app.use("/mdApi/backLinks", async (req, res) => {
+    let list = window.obsidianFileList
+    let query = req.query
+    console.log(query)
+    if (query) {
+        let k = query.k
+        console.log(k)
+        let item = list.filter(
+            el => {
+                return el.lines 
+            }
+        )
+        console.log(item)
+        res.setHeader("Content-Type", "application/json; charset=utf-8"
+        )
+        res.end(JSON.stringify(item || {}))
     }
+
+
+}
 )
 
 api.describeApi(
@@ -218,7 +215,7 @@ api.describeApi(
                         let { updated } = await 核心api.getBlockAttrs(
                             { id: id }, ""
                         )
-        
+
                         let state = fs.statSync(cachePath)
                         if (state) {
                             let cacheTime = require("dayjs")(state.mtime).format("YYYYMMDDHHmmss");
@@ -245,9 +242,9 @@ api.describeApi(
                             }
                         );
                     }
-                    else{
+                    else {
                         fs.writeFileSync(
-                            cachePath,content
+                            cachePath, content
                         )
                     }
 
@@ -333,20 +330,20 @@ api.describeApi(
 let publishServer = http.createServer(app);
 
 
-app.get("/*",async(req,res,next)=>{
+app.get("/*", async (req, res, next) => {
 
-    let reg =/^\d{14}\-[0-9a-z]{7}$/
+    let reg = /^\d{14}\-[0-9a-z]{7}$/
     let _path = decodeURI(req.path)
     console.log(_path)
-    if(!reg.test(_path)){
+    if (!reg.test(_path)) {
         next()
     }
-    
-    else{
-        
-    let id =await pathToId(_path)
-    let data=await fetch(`http://127.0.0.1/block?id=${id}`)
-    res.end(await data.text())
+
+    else {
+
+        let id = await pathToId(_path)
+        let data = await fetch(`http://127.0.0.1/block?id=${id}`)
+        res.end(await data.text())
     }
 })
 async function cacheAll() {
@@ -355,7 +352,7 @@ async function cacheAll() {
         data.forEach(
             doc => {
                 fetch(`http://127.0.0.1/block?id=${doc.id}&&clear=true`).then(
-                    ()=>{核心api.pushMsg({msg:`${doc.id}发布缓存刷新`},'')}
+                    () => { 核心api.pushMsg({ msg: `${doc.id}发布缓存刷新` }, '') }
                 )
             }
         )

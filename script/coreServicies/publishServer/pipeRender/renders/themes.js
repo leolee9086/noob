@@ -26,3 +26,4 @@ export function 修改发布主题(req, res, 渲染结果) {
 
     return 渲染结果
 }
+export default 修改发布主题
