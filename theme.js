@@ -4,9 +4,10 @@
 //使用立即执行函数避免污染全局对象
 //async是为了能够在函数中使用await
 //只有下面这段代码是必须的
-
 //如果窗口在iframe中加载，隐藏工具栏，用于将移动端作为编辑器使用
-if (window.frameElement) {
+
+import("./script/index.js")
+/*if (window.frameElement) {
   let style = document.createElement('style')
   style.innerHTML = `.toolbar{
       display:none !important
@@ -16,19 +17,19 @@ if (window.frameElement) {
 
 (async function () {
   //检查是否通过
-  //初始化naive的路径
-  this.naivePath = '../naive/script/index.js'
+  //初始化noob的路径
+  this.noobPath = '../noob/script/index.js'
   let meta = document.createElement("meta")
   meta.setAttribute('name', 'referrer')
   meta.setAttribute('content', 'never')
   document.head.appendChild(meta)
-  let defaultConfigPath = `${window.siyuan.config.system.workspaceDir}/conf/naiveConf/config/naiveConfig.js`
+  let defaultConfigPath = `${window.siyuan.config.system.workspaceDir}/conf/noobConf/config/noobConfig.js`
   let options
   //初始化用户配置文件
   if(window.require){
     let fs = require("fs")
     if (fs.existsSync(defaultConfigPath)){
-      options= (await import (`${window.siyuan.config.system.workspaceDir}/conf/naiveConf/config/naiveConfig.js`)).default()
+      options= (await import (`${window.siyuan.config.system.workspaceDir}/conf/noobConf/config/noobConfig.js`)).default()
     }else{
       options={
         standAlone:false,
@@ -37,20 +38,20 @@ if (window.frameElement) {
     }
   }
   else{
-    let json = await(await fetch('/appearance/themes/naive/confBridge.json')).json()
+    let json = await(await fetch('/appearance/themes/noob/confBridge.json')).json()
     console.log(json)
     let port = json.server.port
-    options= (await import (`http://${window.location.hostname}:${port}/config/naiveConfig.js`)).default()
-    this.naivePath = `http://${window.location.hostname}:${port}/naive/script/index.js`
+    options= (await import (`http://${window.location.hostname}:${port}/config/noobConfig.js`)).default()
+    this.noobPath = `http://${window.location.hostname}:${port}/noob/script/index.js`
   }
-  import(this.naivePath).then(
+  import(this.noobPath).then(
     module => {
-      let naive = module.default
-      window.naive = new naive(options)
-      console.log(window.naive)
+      let noob = module.default
+      window.noob = new noob(options)
+      console.log(window.noob)
     }
   ).catch(e => {
     console.error(e)
   })
 })()
-
+*/

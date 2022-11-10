@@ -1,3 +1,5 @@
+//这里需要处理一些边界情况
+//1 webcontent已经销毁的时候的处理
 import Button from "./UI/button.js"
 const { EventEmitter } = require("stream")
 const {
@@ -20,10 +22,10 @@ let createServiceHost = (icon) => {
             width: screen.getPrimaryDisplay().size.width / 2,
             height: screen.getPrimaryDisplay().workAreaSize.height / 2,
             frame: true,
-            icon: icon||path.join(appDir, 'stage', 'icon-large.png'),
+            icon: icon || path.join(appDir, 'stage', 'icon-large.png'),
             show: false,
             webPreferences: {
-                preload: 'D:\\newSiyuan\\conf\\appearance\\themes\\naive\\script\\serviceHandler\\UI\\preload.js',
+                preload: 'D:\\newSiyuan\\conf\\appearance\\themes\\noob\\script\\serviceHandler\\UI\\preload.js',
                 nativeWindowOpen: true,
                 nodeIntegration: true,
                 webviewTag: true,
@@ -33,8 +35,12 @@ let createServiceHost = (icon) => {
         }
     )
     window.addEventListener('beforeunload', () => {
+        try{
         serverHost.close()
-        serverHost.webContents.destroy
+        serverHost.webContents.destroy()
+        }catch(e){
+            console.warn(e)
+        }
         serverHost.webContents.send("重新加载", {})
 
     })
@@ -43,7 +49,7 @@ let createServiceHost = (icon) => {
     require("@electron/remote").require("@electron/remote/main").enable(serverHost.webContents)
     return serverHost
 }
-export default class naiveService extends EventEmitter {
+export default class noobService extends EventEmitter {
     constructor(_path, option) {
         super()
         this.option = option
@@ -52,50 +58,55 @@ export default class naiveService extends EventEmitter {
         }
         this.hosts = []
         this.id = _path
-        if(fs.existsSync(path.join(_path, "favicon.png"))){
+        this.path = _path
+        //心跳计数
+        ipcMain.on(this.id, (event, msg) => {
+            this.自杀计数 = 0
+        })
+        //读取图标
+        if (fs.existsSync(path.join(_path, "favicon.png"))) {
             this.icon = path.join(_path, "favicon.png")
-        }else if(fs.existsSync(path.join(_path, "favicon.ico"))){
+        } else if (fs.existsSync(path.join(_path, "favicon.ico"))) {
             this.icon = path.join(_path, "favicon.ico")
-        }else if(fs.existsSync(path.join(_path, "favicon.svg"))){
+        } else if (fs.existsSync(path.join(_path, "favicon.svg"))) {
             this.icon = path.join(_path, "favicon.svg")
-        }else{
+        } else {
             this.icon = path.join(appDir, 'stage', 'icon-large.png')
         }
-        let serverHost = createServiceHost(this.icon)
-        this.serverHost = serverHost
+        this.button = new Button(this.id, this.icon, this)
+        if (option.url) {
+            this.url = option.url
+        }
 
-        this.button = new Button(this.id,  this.icon, this)
-        serverHost.webContents.on('did-finish-load', () => {
-            if (!serverHost) {
-                return
+        this.初始化()
+        this.开始自杀计数()
+        let options = {
+            persistent: true,
+            recursive: true,
+        };
+        fs.watch(
+            this.path, options, (type, fileName) => {
+                this.文件被修改 = true
+                this.自杀计数 = 10
             }
-
-        })
-        ipcMain.on('服务启动完成', (event, msg) => {
+        )
+    }
+    绑定事件() {
+        let option = this.options
+        ipcMain.once('服务启动完成', (event, msg) => {
             try {
+                this.emit("服务启动完成", msg)
                 console.log(msg)
-                this.emit("服务启动完成",msg)
             } catch (e) {
                 console.log(e)
             }
         })
-        this.自杀计数 = 0
-        ipcMain.on(this.id, (event, msg) => {
-            this.自杀计数 = 0
+        ipcMain.on("error", (event, msg) => {
+            if (msg && msg.服务名&&this.id.indexOf(服务名)) {
+                
+                this.button.setColor("error")
+            }
         })
-        this.path = _path
-        if (option.url) {
-            this.url = option.url
-        } else {
-            this.url = this.path
-        }
-        this.加载服务界面()
-        this.加载脚本()
-        this.开始自杀计数()
-        if (option && option.show) {
-            this.是否显示界面 = true
-            this.显示界面()
-        }
         this.serverHost.webContents.on("close", () => {
             this.destoyed = true
             this.button.remove()
@@ -110,17 +121,13 @@ export default class naiveService extends EventEmitter {
                 this.重新初始化()
             }
         })
-        let options = {
-            persistent: true,
-            recursive: true,
-        };
-
-        fs.watch(
-            this.path,options,(type,fileName)=>{
-                    this.文件被修改=true
-                    this.自杀计数 = 10
+        this.serverHost.webContents.on("destoyed", () => {
+            this.destoyed = true
+            this.button.remove()
+            if (option && option.stayAlive) {
+                this.重新初始化()
             }
-        )
+        })
     }
     自杀计数器 = () => {
         this.自杀计数 += 1
@@ -131,11 +138,11 @@ export default class naiveService extends EventEmitter {
             }
             return
         }
-        if (this.自杀计数 >= 50) {
-            if(this.文件被修改){
-            console.log(`服务${this.path}源代码改动,重新启动`)
-                this.文件被修改=false
-            }else{
+        if (this.自杀计数 >= 5) {
+            if (this.文件被修改) {
+                console.log(`服务${this.path}源代码改动,重新启动`)
+                this.文件被修改 = false
+            } else {
                 console.log(`服务${this.path}失联,重新启动`)
             }
             if (this.serverHost && !this.destoyed) {
@@ -159,38 +166,27 @@ export default class naiveService extends EventEmitter {
         if (!this.destoyed) {
             return
         }
-        let serverHost = createServiceHost()
+        else {
+            this.初始化()
+        }
+    }
+    初始化() {
+        let serverHost = createServiceHost(this.icon)
         this.serverHost = serverHost
         serverHost.webContents.on('did-finish-load', () => {
             if (!serverHost) {
                 return
             }
         })
-        ipcMain.on('服务启动完成', (event, msg) => {
-            try {
-                this.emit("服务启动完成",msg)
-
-                console.log(msg)
-
-            } catch (e) {
-                console.log(e)
-            }
-        })
         this.自杀计数 = 0
         this.加载服务界面()
+        this.加载脚本()
         if (this.是否显示界面) {
             this.显示界面()
         }
         this.button.setColor('success')
         this.destoyed = false
-        this.serverHost.webContents.on("close", () => {
-            this.destoyed = true
-            this.button.remove()
-        })
-        this.serverHost.webContents.on("destoyed", () => {
-            this.destoyed = true
-            this.button.remove()
-        })
+        this.绑定事件()
     }
     改变可见性() {
         if (this.destoyed) {
@@ -200,23 +196,25 @@ export default class naiveService extends EventEmitter {
             if (this.serverHost.isVisible()) {
                 this.serverHost.hide()
                 this.button.setColor('info')
-
             } else {
                 this.serverHost.show()
                 this.button.setColor('success')
             }
-
         }
     }
     加载服务界面() {
-        if (fs.existsSync(this.path+'/index.html')) {
-            console.log(this.option)
+        let indexPath = path.join(this.path, "index.html")
+        if (fs.existsSync(indexPath)) {
             try {
-                if(this.option&&!this.option.widget){
-                this.serverHost.loadURL(this.path+'/index.html')
-                }else{
-                    console.log("http://"+"127.0.0.1:"+window.location.port+`/widgets/${this.path.split('\\').pop()}/index.html`)
-                    let url =new URL("http://"+"127.0.0.1:"+window.location.port+`/widgets/${this.path.split('\\').pop()}/index.html`)
+                if (this.url) {
+                    this.serverHost.loadURL(this.url)
+                }
+                else if (this.option && !this.option.widget) {
+                    this.serverHost.loadURL(indexPath)
+                }
+                else {
+                    console.log("http://" + "127.0.0.1:" + window.location.port + `/widgets/${this.path.split('\\').pop()}/index.html`)
+                    let url = new URL("http://" + "127.0.0.1:" + window.location.port + `/widgets/${this.path.split('\\').pop()}/index.html`)
                     this.serverHost.loadURL(url.href)
                 }
                 this.serverHost.send("id", this.id)
@@ -224,8 +222,17 @@ export default class naiveService extends EventEmitter {
                 console.error(e)
             }
         } else {
+            this.销毁服务()
             throw (`${this.path}下不存在index或者index.html,请检查`)
         }
+    }
+    销毁服务() {
+        let that = this
+        this.button.destroy()
+        try{
+        this.serverHost.webContents.destroy()
+        }catch(e){}
+        that = undefined
     }
     加载脚本(filePath) {
         if (fs.existsSync(filePath)) {
@@ -241,5 +248,8 @@ export default class naiveService extends EventEmitter {
         if (this.serverHost.isVisible()) {
             this.serverHost.hide()
         }
+    }
+    send(...args) {
+        this.serverHost.webContents.send(...args)
     }
 }

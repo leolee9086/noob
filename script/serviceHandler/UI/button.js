@@ -62,8 +62,11 @@ export default class Button {
         })
     }
     remove(){
-        this.setColor('error')
+        this.setColor('warning')
     }        
+    destroy(){
+        this.element.remove()
+    }
     setColor(color){
         this.element.style.backgroundColor=`var(--b3-card-${color}-background)`
         this.element.style.borderColor=`var(--b3-card-${color}-color)`

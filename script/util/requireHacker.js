@@ -1,4 +1,5 @@
 import { npmCmd } from "./shell.js"
+import {workspaceDir} from "./file.js"
 let re = null
 let realRequire = null
 if (window.require) {
@@ -79,8 +80,8 @@ if (window.require) {
                                 moduleName = path.resolve(base, moduleName)
                         }
                         workspaceDir=window.workspaceDir
-                        if (global.naive && global.naive.public) {
-                                workspaceDir = naive.public.config.backend.filesys.workspaceDir||window.workspaceDir
+                        if (global.noob && global.noob.public) {
+                                workspaceDir = noob.public.config.backend.filesys.workspaceDir||window.workspaceDir
                         }
 
                         if (window.siyuan) {
@@ -123,7 +124,7 @@ if (window.require) {
                                                 } else {
                                                         moduleName = path.resolve(module.path, moduleName)
                                                 }
-                                                if (that && window.naive && window.naive.plugin && that instanceof window.naive.plugin) {
+                                                if (that && window.noob && window.noob.plugin && that instanceof window.noob.plugin) {
                                                         try {
                                                                 moduleName = path.resolve(that.selfPath, moduleName)
                                                                 return window.require(moduleName)
@@ -169,8 +170,8 @@ if (window.require && re) {
                         window.ExternalDepPathes = Array.from(new Set(window.ExternalDepPathes))
                 }
         }
-        if (global.naive) {
-                re.setExternalDeps(`${naive.public.config.backend.filesys.workspaceDir}`)
+        if (global.noob) {
+                re.setExternalDeps(`${noob.public.config.backend.filesys.workspaceDir}`)
         }
         window.require.setExternalBase = (path) => {
                 if (!window.ExternalDepPathes) {
@@ -207,5 +208,8 @@ if (window.require && re) {
 else {
         const require = {}
 }
+require.setExternalDeps(workspaceDir + `/conf/noobConf/deps/node_modules`)
+require.setExternalDeps(workspaceDir + `/conf/appearance/themes/noob/script/node_modules`)
+require.setExternalBase(workspaceDir + `/conf/noobConf/deps`)
 
 export default window.require

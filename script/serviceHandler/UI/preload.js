@@ -20,6 +20,7 @@ ipcRenderer.on(
 )
 ipcRenderer.on("id",(event,id)=>{
     window.id = id
+    window._selfPath= id
 })
 ipcRenderer.on("加载脚本", (event, path) => {
     if(!document.head.querySelector(`[path='${path}']`)){
@@ -46,6 +47,12 @@ setInterval(
         )
     }
     ,window.waitTime
+)
+window.addEventListener(
+    "error",()=>{
+        ipcRenderer.send("error",{})
+    }
+    ,true
 )
 
 window.ipcRenderer = ipcRenderer

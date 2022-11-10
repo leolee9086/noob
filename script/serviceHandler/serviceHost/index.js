@@ -23,7 +23,7 @@ export class serverHost extends EventEmitter{
                 icon: path.join(appDir, 'stage', 'icon-large.png'),
                 show:false,
                 webPreferences: {
-                    preload:'D:\\newSiyuan\\conf\\appearance\\themes\\naive\\script\\service\\UI\\preload.js',
+                    preload:'D:\\newSiyuan\\conf\\appearance\\themes\\noob\\script\\service\\UI\\preload.js',
                     nativeWindowOpen: true,
                     nodeIntegration: true,
                     webviewTag: true,
@@ -38,3 +38,4 @@ export class serverHost extends EventEmitter{
         this.host=host
     }
 }
+export default serverHost
