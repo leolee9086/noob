@@ -6,5 +6,5 @@ export const noob缓存路径 = `${workspaceDir}/temp/noobCache`
 export const noob主题路径 = `${workspaceDir}/conf/appearance/themes/noob`
 export const noob服务文件夹路径 = `${workspaceDir}/conf/noobConf/servicies`
 export const 思源设置路径 = `${workspaceDir}/conf/appearance/conf.json`
-export const 核心服务列表 = ['noob-service-compiler','noob-service-sypublisher','noob-service-vite']
+export const 核心服务列表 = ['noob-service-compiler','noob-service-sypublisher','noob-service-vite','noob-service-pm2']
 export const 核心依赖列表 = ['noob-lib-middleware','noob-lib-util']

@@ -50,7 +50,11 @@ export async function 启动配置服务() {
     }
     new noobService(配置服务路径, option)
 }
-export function 监听服务添加(信道, 注册表) {
+export async function 监听服务添加(信道, 注册表) {
+    let 设置 = await 解析用户设置()
+    if(!设置.冒险模式){
+        return
+    }
     let { ipcMain } = require("@electron/remote")
     ipcMain.on(信道,async (event, msg) => {
         if (msg && msg.端口号 && msg.服务名) {
@@ -82,6 +86,10 @@ export function 监听服务添加(信道, 注册表) {
 }
 
 export async function 启动挂件服务(){
+    let 设置 = await 解析用户设置()
+    if(!设置.冒险模式){
+        return
+    }
     const fs = require("fs")
     const path = require('path')
     fetch("/api/search/searchWidget", { method: "POST", body: JSON.stringify({ k: "" }) }).then(res => {
@@ -110,5 +118,5 @@ export async function 启动挂件服务(){
             });
         }
     )
-
 }
+export async function 启动第三方服务(){}
