@@ -3,7 +3,7 @@ import requireHacker from "./util/requireHacker.js"
 //这里包含了一些基础配置
 import { 创建设置文件夹, 创建服务文件夹, 安装基础依赖 } from "./util/firstInstall.js"
 import { 升级核心服务 } from "./serviceHandler/util/installer.js"
-import { 启动核心服务, 启动配置服务,启动挂件服务, 启动第三方服务,监听服务添加 } from "./serviceHandler/util/launcher.js"
+import { 启动核心服务, 启动配置服务, 启动挂件服务, 启动第三方服务, 监听服务添加 } from "./serviceHandler/util/launcher.js"
 import { noob设置文件路径 } from "./util/constants.js"
 import clear from "./serviceHandler/util/clear.js"
 
@@ -22,14 +22,15 @@ export default class noob {
                 this.初始化()
             }
             else {
-                监听服务添加("viteService",this.vite服务列表)
+                监听服务添加("viteService", this.vite服务列表)
                 this.启动()
             }
         }
+        if (!window.siyuan.api) {
+            this.加载api()
+        }
     }
-
     校验是否开发模式() {
-
         this.开发模式 = window.noobDevMode ? true : false
     }
     校验是否第一次安装() {
@@ -44,26 +45,23 @@ export default class noob {
     }
     async 启动() {
         await 升级核心服务()
+        //核心服务主要是compiler，用于伺服各个服务的脚本以及提供websocket连接。
+        //sypublisher是一个思源的发布服务。
+        //vite用于直接伺服vite项目作为服务使用，因为思源在本地运行，所以编译等开支应该是可以接受的。
+        //在服务器运行时，可以放行80和443端口用于发布服务
         this.核心服务组 = await 启动核心服务()
         await 启动配置服务()
         await 启动挂件服务()
         await 启动第三方服务()
     }
-    /*   加载api() {
-           window.SIYUAN_VERSION="2.4.7"
-           window.NODE_ENV={}
-           this.SSCService.on(
-               "服务启动完成",()=>{
-                   import("http://127.0.0.1:6809/siyuan/src/api.ts").then(
-                       module => {
-                           window.siyuan.api=new module["default"]()
-                       }
-                   )
-       
-               }
-           )
-          
-       }
+    加载api() {
+        import("http://127.0.0.1:6809/siyuan/src/api.ts").then(
+            module => {
+                window.siyuan.api = new module["default"]()
+            }
+        )
+    }
+    /*
        合并设置() {
            if (window.siyuan) {
                this.public.status.workspaceDir = window.siyuan.config.system.workspaceDir

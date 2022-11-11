@@ -1,6 +1,7 @@
 //这里需要处理一些边界情况
 //1 webcontent已经销毁的时候的处理
 import Button from "./UI/button.js"
+import MessageBridge from "../messageBridge/index.js"
 const { EventEmitter } = require("stream")
 const {
     app,
@@ -59,10 +60,17 @@ export default class noobService extends EventEmitter {
         this.hosts = []
         this.id = _path
         this.path = _path
+        this.messageBridge =new MessageBridge(this)
+   
+
+        this.messageBridge.handler("msg",(data)=>{
+            return data.msg
+        })
         //心跳计数
         ipcMain.on(this.id, (event, msg) => {
             this.自杀计数 = 0
         })
+        
         //读取图标
         if (fs.existsSync(path.join(_path, "favicon.png"))) {
             this.icon = path.join(_path, "favicon.png")
