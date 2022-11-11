@@ -80,3 +80,35 @@ export function 监听服务添加(信道, 注册表) {
         }
     })
 }
+
+export async function 启动挂件服务(){
+    const fs = require("fs")
+    const path = require('path')
+    fetch("/api/search/searchWidget", { method: "POST", body: JSON.stringify({ k: "" }) }).then(res => {
+        return res.json()
+    }).then(
+        json => {
+            console.log(json.data)
+            json.data.blocks.forEach(widget => {
+                let widgetPath = path.join(workspaceDir, 'data', "widgets", widget.content, 'index.html')
+                let preloadPath = path.join(workspaceDir, 'data', "widgets", widget.content, 'preload.js')
+                if (fs.existsSync(widgetPath) && fs.existsSync(preloadPath)) {
+                    import("../index.js").then(
+                        module => {
+                            new module["default"](
+                                widgetPath,
+                                {
+                                    show: false,
+                                    stayAlive: false,
+                                    widget: true,
+                                    preload: preloadPath
+                                }
+                            )
+                        }
+                    )
+                }
+            });
+        }
+    )
+
+}

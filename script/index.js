@@ -3,7 +3,7 @@ import requireHacker from "./util/requireHacker.js"
 //这里包含了一些基础配置
 import { 创建设置文件夹, 创建服务文件夹, 安装基础依赖 } from "./util/firstInstall.js"
 import { 升级核心服务 } from "./serviceHandler/util/installer.js"
-import { 启动核心服务, 启动配置服务, 监听服务添加 } from "./serviceHandler/util/launcher.js"
+import { 启动核心服务, 启动配置服务,启动挂件服务, 监听服务添加 } from "./serviceHandler/util/launcher.js"
 import { noob设置文件路径 } from "./util/constants.js"
 import clear from "./serviceHandler/util/clear.js"
 
@@ -46,8 +46,8 @@ export default class noob {
     async 启动() {
         await 升级核心服务()
         this.核心服务组 = await 启动核心服务()
-
         await 启动配置服务()
+        await 启动挂件服务()
     }
     /*   加载api() {
            window.SIYUAN_VERSION="2.4.7"
@@ -100,36 +100,6 @@ export default class noob {
                            stayAlive: false,
                        }
                    )
-               }
-           )
-       }
-       加载挂件服务() {
-           const fs = require("fs")
-           const path = require('path')
-           fetch("/api/search/searchWidget", { method: "POST", body: JSON.stringify({ k: "" }) }).then(res => {
-               return res.json()
-           }).then(
-               json => {
-                   console.log(json.data)
-                   json.data.blocks.forEach(widget => {
-                       let widgetPath = path.join(this.public.status.workspaceDir, 'data', "widgets", widget.content, 'index.html')
-                       let preloadPath = path.join(this.public.status.workspaceDir, 'data', "widgets", widget.content, 'preload.js')
-                       if (fs.existsSync(widgetPath) && fs.existsSync(preloadPath)) {
-                           import("./serviceHandler/index.js").then(
-                               module => {
-                                   new module["default"](
-                                       widgetPath,
-                                       {
-                                           show: false,
-                                           stayAlive: false,
-                                           widget: true,
-                                           preload: preloadPath
-                                       }
-                                   )
-                               }
-                           )
-                       }
-                   });
                }
            )
        }
