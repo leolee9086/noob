@@ -42,5 +42,5 @@ export class 主题扩展 {
     )
   }
 }
-export { 主题扩展 as plugin };
+export { 主题扩展 as extension };
 

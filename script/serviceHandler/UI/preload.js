@@ -21,6 +21,9 @@ ipcRenderer.on(
 ipcRenderer.on("id",(event,id)=>{
     window.id = id
     window._selfPath= id
+    if(fs.existsSync(path.join(id,'backend.js'))){
+        require(path.join(id,'backend.js').replace(/\\/g,"/"))
+    }
 })
 ipcRenderer.on("加载脚本", (event, path) => {
     if(!document.head.querySelector(`[path='${path}']`)){

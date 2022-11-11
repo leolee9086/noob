@@ -2,3 +2,34 @@
     content:attr(custom-lastedit-describe);
     font-size: xx-small
 }
+#status{
+    height:50px;
+    background-color: var(--b3-toolbar-background);
+    color:var(--b3-toolbar-color)
+}
+#status div{
+    margin:auto
+}
+.service-container{
+    top:calc(100vh - 47.5px);
+    position:absolute;
+}
+.service-container button{
+    border-radius:10px;
+    height:45px;
+    width:45px;
+    background-color: transparent ;
+}
+.service-container button:hover{
+    background-color: var(--b3-theme-on-surface) ;
+}
+
+.service-container button img{
+    width:35px;
+    height:35px;
+    margin:0;
+    padding:0;
+    left:2.5px;
+    top:2.5px;
+    Object-fit:contain
+}
