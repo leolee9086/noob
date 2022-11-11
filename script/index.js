@@ -23,7 +23,6 @@ export default class noob {
             }
             else {
                 监听服务添加("viteService",this.vite服务列表)
-
                 this.启动()
             }
         }
@@ -71,37 +70,6 @@ export default class noob {
                module.__dirname = this.public.status.workspaceDir + '/conf/appearance/themes/noob/script'
            }
            this.selfPath = this.public.status.workspaceDir + '/conf/appearance/themes/noob/script'
-       }
-       加载内部服务() {
-           let that = this
-           //noob的中间层服务器和文件系统
-           import("./serviceHandler/index.js").then(
-               module => {
-                   that.SSCService = new module["default"](
-                       this.public.status.workspaceDir + '/conf/appearance/themes/noob/script/coreServicies/compiler/',
-                       {
-                           show: false,
-                           stayAlive: true,
-                           widget: false
-                       }
-                   )
-                   this.加载api()
-                   that.publishService = new module["default"](
-                       this.public.status.workspaceDir + '/conf/appearance/themes/noob/script/coreServicies/publishServer/',
-                       {
-                           show: false,
-                           stayAlive: true,
-                       }
-                   )
-                   that.viteService = new module["default"](
-                       this.public.status.workspaceDir + '/conf/appearance/themes/noob/script/coreServicies/viteServer/',
-                       {
-                           show: false,
-                           stayAlive: false,
-                       }
-                   )
-               }
-           )
        }
        开始监听文件修改() {
            let fs = require("fs")
