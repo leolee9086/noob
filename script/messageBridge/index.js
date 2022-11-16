@@ -1,86 +1,164 @@
-const express = require("express")
-const { WebSocketServer } = require("ws")
-if (!window.noobBridge) {
-    const app = express()
-    const server = app.listen(
-        "6807"
+export default class eventBridge {
+    constructor(name, serviceID) {
+        this.handlers = {}
+        this.id = new Date().getTime()
+        this.name = name
+        this.serviceID = serviceID
+        this.初始化(this.id)
+    }
+    初始化(id) {
+        let websocketURL = `${window.location.protocol === "https:" ? "wss" : "ws"}://127.0.0.1:6807/bridge?id=${this.id}`;
+        if (this.serviceID) {
+            websocketURL = websocketURL + `&&serviceID=${this.serviceID}`
+        }
+        this.ws = new WebSocket(`${websocketURL}`)
+        this.ws.onmessage = (msg) => {
+            let json = JSON.parse(msg.data)
+            let _type
+
+            if (typeof json.type == "string") {
+                _type = json.type
+            } else {
+                _type = JSON.stringify(json.type)
+            }
+            if (json && json.type && this.handlers[_type]) {
+                this.handlers[_type].forEach(
+                    cb => {
+                        cb(json.data)
+                    }
+                )
+            }
+        }
+        this.ws.onclose = () => { this.初始化(id) }
+        let aaa = () => {
+            this.ws.send("ping")
+        }
+        this.ws.onopen = () => {
+            setInterval(aaa, 3000)
+        }
+
+        this.ws.onclose = clearInterval(aaa)
+
+    
+
+}
+send(type, data) {
+    let obj = JSON.stringify(
+        {
+            type: type,
+            data: data,
+            aTime: new Date().getTime(),
+        }
     )
-    server.on(
-        "upgrade", (req, socket, head) => {
-            console.log(req, req.url)
-            let _url = new URL(`http://127.0.0.1${req.url}`)
-            const obj = app.wsRoute[_url.pathname]
-            obj ? obj.wss.handleUpgrade(req, socket, head, ws => obj.mid(ws, req)) : socket.destroy()
-        })
-    app.ws = (route, mid) => {
-        app.wsRoute = app.wsRoute || {}
-        app.wsRoute[route] = {
-            wss: new WebSocketServer({ noServer: true }),
-            mid,
-        }
+    this.ws.send(obj)
+}
+listen(type, cb) {
+    let _type
+    if (typeof type == "string") {
+        _type = type
     }
-    window.noobBridge = {
-        server: app,
-        registry: {},
-        handlers: {}
+    else if (type instanceof Object) {
+        _type = JSON.stringify(type)
     }
-    app.ws("/bridge", (ws, req) => {
-        let _url = new URL(`http://127.0.0.1${req.url}`)
-        let id = _url.searchParams.get("id")
-        if (id) {
-            !window.noobBridge.registry[id] ? window.noobBridge.registry[id] = {} : null
-            !window.noobBridge.handlers[id] ? window.noobBridge.handlers[id] = [] : null
-            window.noobBridge.registry[id] = ws
-            window.noobBridge.handlers[id].forEach(item => {
-                ws.on(item.type, item.cb)
-            });
-        }
+    if (!this.handlers[_type]) {
+        this.handlers[_type] = []
+    }
+    this.handlers[_type].push(cb)
+}
+call(name, type, data) {
+    let realType = { name: name, type: type }
+    this.send(realType, data)
+}
+on(type, cb) {
+    let realType = { name: this.name, type: type }
+    this.listen(realType, cb)
+}
+off(type, cb) {
+    if (this.handlers[type]) {
+        this.handlers.forEach(
+            item => {
+                item == cb ? item = undefined : null
+            }
+        )
+    }
+}
+once(type, cb) {
+    if (!this.handlers[type]) {
+        this.handlers[type] = []
+    }
+    this.handlers[type].push((...args) => {
+        cb(...args)
+        this.off(cb)
     })
 }
-export default class MessageBridge {
-    constructor(noobService) {
-        const websocketURL = `${window.location.protocol === "https:" ? "wss" : "ws"}://127.0.0.1:6807/bridge?id=${noobService.id}`;
-        this.client = new WebSocket(`${websocketURL}`)
-        this.id = noobService.id
-    }
-    send(data) {
-        window.noobBridge.registry[this.id].send(JSON.stringify(data))
-    }
-    on(type, cb) {
-        !window.noobBridge.handlers[this.id] ? window.noobBridge.handlers[this.id] = [] : null
-        window.noobBridge.handlers[this.id].push({ type: type, cb: cb })
-    }
-    handler(type, cb) {
-        this.on("message", async (msg) => {
-            let string = msg.toString()
-            let json
-            try {
-                json = JSON.parse(string)
-                if (json && json.actionId && json.type == type) {
-                    try {
-                        console.log(json)
-                        let result = await cb(json.data)
-                        console.log(result)
-                        let resData = {
-                            type: type,
-                            data: result,
-                            actionId: json.actionId
-                        }
-                        this.send(JSON.stringify(resData))
-                    } catch (e) {
-                        let resData = {
-                            type: type,
-                            error: e,
-                            actionId: json.actionId
-                        }
+invoke = (serviceID, name, ...args) => {
+    let meta = { callerID: this.id, name: name }
+    let fTime = new Date().getTime()
 
-                        this.send(resData)
-
-                    }
+    let obj = JSON.stringify(
+        {
+            serviceID: serviceID,
+            type: "FunctionCall",
+            data: {
+                args: Array.from(args),
+                meta: meta,
+                fTime: fTime
+            },
+        }
+    )
+    this.ws.send(obj)
+    return new Promise((resolve, reject) => {
+        this.once("FunctionReturn", (data) => {
+            if (data.fTime == fTime) {
+                if (!data.error) {
+                    resolve(data.result)
+                } else {
+                    reject(data.error)
                 }
-            } catch (e) {
-                console.error(e)
+            }
+        })
+    })
+}
+handler = (name, cb) => {
+    let ws = this.ws
+    if (!this.serviceID) {
+        throw "需要提供serviceID方可注册"
+    }
+    else {
+        this.listen("FunctionCall", async (data) => {
+            let { args, meta, fTime } = data
+            if (meta.name == name) {
+                try {
+                    let res = await cb(...args)
+                    ws.send(
+                        JSON.stringify(
+                            {
+                                callerID: meta.callerID,
+                                type: "FunctionReturn",
+                                data: {
+                                    result: res,
+                                    fTime: fTime
+                                }
+                            }
+                        )
+                    )
+                } catch (e) {
+                    ws.send(
+                        JSON.stringify(
+                            {
+                                callerID: meta.callerID,
+                                type: "FunctionReturn",
+                                data: {
+                                    error: e,
+                                    fTime: fTime
+                                }
+                            }
+                        )
+                    )
+                    throw { caller: meta.callerID, time: fTime, error: e }
+                }
             }
         })
     }
+}
 }

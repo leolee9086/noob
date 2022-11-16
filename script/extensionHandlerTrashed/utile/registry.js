@@ -1,6 +1,3 @@
-import { kernelApiList } from "../../public/kernelApi.js"
-//这里引入核心api列表是为了获取api名称避免占用
-let 思源核心api = new kernelApiList()
 //使用一个iframe来引入组件代码,避免污染主窗口全局变量
 let windowProxy = document.createElement('div')
 let fs = require('fs-extra')
@@ -65,14 +62,10 @@ registry.loadDir = (dirname) => {
                     }
 
                     if (name.endsWith('.js')) {
-                        if (思源核心api[name.slice(0, name.length - 3)]) {
-                            console.error("不能使用思源核心api中已经存在名称或者路径")
-                        }
                         let scriptEL = registry.document.createElement('script')
                         scriptEL.setAttribute('type', 'module')
                         scriptEL.innerHTML =
                             `
-                        console.log(window.parent)
                         await  import("${dirname.replace(/\\/g, "/")}"+'/'+"${name}").then(
                                 module=>{
                                     if(!module["default"]){

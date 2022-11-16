@@ -6,8 +6,9 @@ import { 升级核心服务 } from "./serviceHandler/util/installer.js"
 import { 启动核心服务, 启动配置服务, 启动挂件服务, 启动第三方服务, 监听服务添加 } from "./serviceHandler/util/launcher.js"
 import { noob设置文件路径 } from "./util/constants.js"
 import clear from "./serviceHandler/util/clear.js"
-
+import 创建事件服务器 from "./messageBridge/server.js"
 //刷新后清理掉所有后台正在运行的服务
+import 主窗口事件桥 from 'http://127.0.0.1:6806/appearance/themes/noob/script/messageBridge/mainBridge.js'
 clear()
 export default class noob {
     constructor() {
@@ -26,12 +27,13 @@ export default class noob {
                 this.启动()
             }
         }
-        if (!window.siyuan.api) {
-            this.加载api()
-        }
     }
     校验是否开发模式() {
         this.开发模式 = window.noobDevMode ? true : false
+        //如果是开发模式就引入并监听test.js,用来快速测试一些功能
+            import("./test.js")
+        
+        
     }
     校验是否第一次安装() {
         const fs = require("fs-extra")
@@ -44,6 +46,14 @@ export default class noob {
         await this.启动()
     }
     async 启动() {
+       await  this.加载api()
+
+        this.事件服务器 = await 创建事件服务器()
+        this.event_bridge = new 主窗口事件桥()
+        window.eventBridge = this.event_bridge
+        this.event_bridge.on("测试",(data)=>{
+            console.log(this,data)
+        })
         await 升级核心服务()
         //核心服务主要是compiler，用于伺服各个服务的脚本以及提供websocket连接。
         //sypublisher是一个思源的发布服务。
@@ -53,38 +63,11 @@ export default class noob {
         await 启动配置服务()
         await 启动挂件服务()
         await 启动第三方服务()
+        
     }
-    加载api() {
-        import("http://127.0.0.1:6809/siyuan/src/api.ts").then(
-            module => {
-                window.siyuan.api = new module["default"]()
-            }
-        )
+    async 加载api() {
+        await import("./noobApi/index.js")
     }
-    /*
-       合并设置() {
-           if (window.siyuan) {
-               this.public.status.workspaceDir = window.siyuan.config.system.workspaceDir
-               this.siyuan = window.siyuan
-               module.__dirname = this.public.status.workspaceDir + '/conf/appearance/themes/noob/script'
-           }
-           this.selfPath = this.public.status.workspaceDir + '/conf/appearance/themes/noob/script'
-       }
-       开始监听文件修改() {
-           let fs = require("fs")
-           let standalone = this.standalone
-           let watchFiletypes = this.watchFiletypes = this.public.config.backend.filesys.watchFiletypes
-           const option = {
-               persistent: true,
-               recursive: true,
-           };
-           this.文件监听器 = fs.watch(
-               this.public.config.backend.filesys.workspaceDir + `/conf/appearance/themes/noob`, option, (type, fileName) => {
-                   if (!standalone && watchFiletypes && watchFiletypes.indexOf(获取文件扩展名(fileName)) >= 0) {
-                       重新加载界面()
-                   }
-               }
-           )
-       }*/
+    
 }
 new noob()

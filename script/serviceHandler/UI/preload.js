@@ -34,36 +34,35 @@ ipcRenderer.on("id", (event, id) => {
             let obj = {
                 type: type,
                 data: data,
-                actionId:actionId
+                actionId: actionId,
+                provide: "req"
             }
             let error
-            try{
-            ws.send(
-                JSON.stringify(obj)
-            )
-            }catch(e){
+            try {
+                ws.send(
+                    JSON.stringify(obj)
+                )
+            } catch (e) {
                 error = e
             }
             return new Promise((resolve, reject) => {
-                if (error){
+                if (error) {
                     reject(error)
                     return
                 }
-                let a  = (e)=>{
-                    ws.removeEventListener("message",a)
-                    console.log(e)
-                    let data = JSON.parse(e.data)
-                    if(data.actionId==actionId){
-                       !data.error?resolve(data.data):reject(data.error)
+                let a = (e) => {
+                    ws.removeEventListener("message", a)
+                    if (data.actionId == actionId) {
+                        !data.error ? resolve(data.data) : reject(data.error)
                     }
                 }
-                ws.addEventListener("message",a)
+                ws.addEventListener("message", a)
             })
-        }
+        },
+      
     }
-
-
-})
+}
+)
 ipcRenderer.on("加载脚本", (event, path) => {
     if (!document.head.querySelector(`[path='${path}']`)) {
         let script = document.createElement("script")

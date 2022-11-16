@@ -36,10 +36,10 @@ let createServiceHost = (icon) => {
         }
     )
     window.addEventListener('beforeunload', () => {
-        try{
-        serverHost.close()
-        serverHost.webContents.destroy()
-        }catch(e){
+        try {
+            //serverHost.close()
+            serverHost.webContents.destroy()
+        } catch (e) {
             console.warn(e)
         }
         serverHost.webContents.send("重新加载", {})
@@ -60,17 +60,15 @@ export default class noobService extends EventEmitter {
         this.hosts = []
         this.id = _path
         this.path = _path
-        this.messageBridge =new MessageBridge(this)
-   
-
-        this.messageBridge.handler("msg",(data)=>{
-            return data.msg
-        })
+        
+        if(fs.existsSync(path.join(this.path,"appExtension.js"))){
+            import (path.join(this.path,"appExtension.js"))
+        }
         //心跳计数
         ipcMain.on(this.id, (event, msg) => {
             this.自杀计数 = 0
         })
-        
+
         //读取图标
         if (fs.existsSync(path.join(_path, "favicon.png"))) {
             this.icon = path.join(_path, "favicon.png")
@@ -110,8 +108,8 @@ export default class noobService extends EventEmitter {
             }
         })
         ipcMain.on("error", (event, msg) => {
-            if (msg && msg.服务名&&this.id.indexOf(服务名)) {
-                
+            if (msg && msg.服务名 && this.id.indexOf(服务名)) {
+
                 this.button.setColor("error")
             }
         })
@@ -154,7 +152,9 @@ export default class noobService extends EventEmitter {
                 console.log(`服务${this.path}失联,重新启动`)
             }
             if (this.serverHost && !this.destoyed) {
+                try{
                 this.serverHost.close()
+                }catch(e){}
                 this.serverHost = undefined
             }
             this.自杀计数 = -1
@@ -237,9 +237,9 @@ export default class noobService extends EventEmitter {
     销毁服务() {
         let that = this
         this.button.destroy()
-        try{
-        this.serverHost.webContents.destroy()
-        }catch(e){}
+        try {
+            this.serverHost.webContents.destroy()
+        } catch (e) { }
         that = undefined
     }
     加载脚本(filePath) {
