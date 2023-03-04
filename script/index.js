@@ -8,11 +8,12 @@ import { noob设置文件路径 } from "./util/constants.js"
 import clear from "./serviceHandler/util/clear.js"
 import 创建事件服务器 from "./messageBridge/server.js"
 //刷新后清理掉所有后台正在运行的服务
-import 主窗口事件桥 from 'http://127.0.0.1:6806/appearance/themes/noob/script/messageBridge/mainBridge.js'
+import 主窗口事件桥 from './messageBridge/mainBridge.js'
 clear()
 export default class noob {
     constructor() {
         if (window.require) {
+            //这里是通过校验是否存在config.json或者devConfig.js来判断是否为第一次安装的
             this.校验是否第一次安装()
             this.校验是否开发模式()
             this.vite服务列表 = []
@@ -25,14 +26,14 @@ export default class noob {
                 监听服务添加("viteService", this.vite服务列表)
                 this.启动()
             }
+                    //如果是开发模式就引入并监听test.js,用来快速测试一些功能
+        
+        import("/snippets/test.js")
+
         }
     }
     校验是否开发模式() {
         this.开发模式 = window.noobDevMode ? true : false
-        //如果是开发模式就引入并监听test.js,用来快速测试一些功能
-            import("./test.js")
-        
-        
     }
     校验是否第一次安装() {
         const fs = require("fs-extra")
@@ -67,6 +68,5 @@ export default class noob {
     async 加载api() {
         await import("./noobApi/index.js")
     }
-    
 }
 new noob()
