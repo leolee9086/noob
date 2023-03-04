@@ -19,7 +19,6 @@ export default class noob {
             this.常规服务列表 = []
             if (this.第一次安装) {
                 监听服务添加()
-
                 this.初始化()
             }
             else {
