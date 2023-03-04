@@ -11,5 +11,5 @@ export function 创建服务文件夹(){
     递归创建文件夹(noob文件夹路径,'servicies')
 }
 export function 安装基础依赖(){
-    递归创建文件夹(工作空间路径,"conf",'noobConf','deps')
+    递归创建文件夹(工作空间路径,"temp",'noobtemp','deps')
 }
