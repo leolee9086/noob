@@ -22,14 +22,19 @@ export async function 升级服务(服务名称) {
 }
 export async function 安装服务(服务名称) {
     let 设置 = await 解析用户设置()
-
     try {
+        if(设置.npm安装注册表地址.indexOf('npmmirror')>=0){
+            //如果用淘宝镜像就在安装之前同步一次
+            await fetch(`https://npmmirror.com/sync/${服务名称}`)
+        }
         await npmCmd(`--registry=${设置.npm安装注册表地址} install ${服务名称}`, node缓存路径)
         转移服务文件(服务名称)
+        await 安装服务依赖(服务名称)
     } catch (e) {
         console.log("服务安装失败", e)
     }
 }
+
 export function 转移服务文件(服务名称) {
     let noob服务路径 = path.join(noob文件夹路径, 'servicies')
     let 目标文件夹路径 = path.join(noob服务路径, 服务名称)
@@ -38,4 +43,10 @@ export function 转移服务文件(服务名称) {
         fs.removeSync(目标文件夹路径)
     }
     require("fs").renameSync(服务文件包路径, 目标文件夹路径)
+}
+export async function 安装服务依赖(服务名称){
+    let noob服务路径 = path.join(noob文件夹路径, 'servicies')
+    let 目标文件夹路径 = path.join(noob服务路径, 服务名称)
+    await npmCmd(`--registry=${设置.npm安装注册表地址} install` , 目标文件夹路径)
+
 }

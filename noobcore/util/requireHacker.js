@@ -209,7 +209,7 @@ else {
         const require = {}
 }
 require.setExternalDeps(workspaceDir + `/conf/noobConf/deps/node_modules`)
-require.setExternalDeps(workspaceDir + `/conf/appearance/themes/noob/script/node_modules`)
+require.setExternalDeps(workspaceDir + `/conf/appearance/themes/noob/noobCore/node_modules`)
 require.setExternalBase(workspaceDir + `/conf/noobConf/deps`)
 
 export default window.require

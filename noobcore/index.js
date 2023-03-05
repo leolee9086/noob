@@ -9,7 +9,9 @@ import clear from "./serviceHandler/util/clear.js"
 import 创建事件服务器 from "./messageBridge/server.js"
 //刷新后清理掉所有后台正在运行的服务
 import 主窗口事件桥 from './messageBridge/mainBridge.js'
+
 clear()
+
 export default class noob {
     constructor() {
         if (window.require) {
@@ -27,9 +29,7 @@ export default class noob {
                 this.启动()
             }
                     //如果是开发模式就引入并监听test.js,用来快速测试一些功能
-        
         import("/snippets/test.js")
-
         }
     }
     校验是否开发模式() {
@@ -46,16 +46,12 @@ export default class noob {
         await this.启动()
     }
     async 启动() {
-       await  this.加载api()
-
+        await  this.加载api()
         this.事件服务器 = await 创建事件服务器()
         this.event_bridge = new 主窗口事件桥()
         window.eventBridge = this.event_bridge
-        this.event_bridge.on("测试",(data)=>{
-            console.log(this,data)
-        })
         await 升级核心服务()
-        //核心服务主要是compiler，用于伺服各个服务的脚本以及提供websocket连接。
+        //核心服务主要是compiler，用于对插件代码进行一些转译.
         //sypublisher是一个思源的发布服务。
         //vite用于直接伺服vite项目作为服务使用，因为思源在本地运行，所以编译等开支应该是可以接受的。
         //在服务器运行时，可以放行80和443端口用于发布服务
@@ -63,7 +59,6 @@ export default class noob {
         await 启动配置服务()
         await 启动挂件服务()
         await 启动第三方服务()
-        
     }
     async 加载api() {
         await import("./noobApi/index.js")

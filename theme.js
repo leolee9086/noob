@@ -6,4 +6,4 @@
 //只有下面这段代码是必须的
 //如果窗口在iframe中加载，隐藏工具栏，用于将移动端作为编辑器使用
 
-import("./script/index.js")
+import("./noobCore/index.js")
