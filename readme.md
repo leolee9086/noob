@@ -19,3 +19,17 @@ esm.sh的使用参考https://github.com/ije/esm.sh
 #### 支持反向链接、关系图等
 
 支持反向链接和关系图的发布，详细内容参考noob-service-sypublisher的readme（应该还没有写）。
+
+## 组成部分
+
+### noob-core
+
+可外置的思源代码模块，提供插件系统编译服务和服务系统支持，
+
+https://github.com/leolee9086/noob-core
+
+这个模块是noob所有功能的基础,安装和引入方式参考
+
+https://github.com/leolee9086/noob-core
+
+
